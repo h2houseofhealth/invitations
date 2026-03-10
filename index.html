@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>H2 House of Health | Invitation</title>
+    <meta
+      name="description"
+      content="A cinematic invitation experience for H2 House of Health."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main id="app" class="app">
+      <section id="scene-envelope" class="scene scene-active" aria-label="Invitation Envelope">
+        <div class="scene-inner">
+          <p id="welcome-text" class="welcome" aria-live="polite">Welcome.</p>
+          <button id="envelope-button" class="envelope-button" aria-label="Open invitation envelope">
+            <span class="envelope-wrap">
+              <img src="assets/envelope.svg" alt="Black envelope" class="envelope" />
+              <img src="assets/seal.svg" alt="Terracotta wax seal" class="seal" />
+            </span>
+          </button>
+          <p class="tap-text">Tap to open</p>
+        </div>
+      </section>
+
+      <section id="scene-riddle" class="scene" aria-label="Riddle Challenge">
+        <div class="scene-inner card">
+          <h1 class="headline">A Question Before Entry</h1>
+          <p class="riddle">
+            "You measure me in years,<br />
+            But I am shaped in habits.<br /><br />
+            I decline in silence,<br />
+            Or rise by design.<br /><br />
+            What am I?"
+          </p>
+          <form id="riddle-form" class="riddle-form" novalidate>
+            <label for="riddle-answer" class="sr-only">Enter your answer</label>
+            <input
+              id="riddle-answer"
+              name="answer"
+              type="text"
+              autocomplete="off"
+              placeholder="Your answer"
+              required
+            />
+            <button type="submit" class="primary-btn">Submit</button>
+          </form>
+          <p id="riddle-feedback" class="feedback" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section id="scene-selected" class="scene" aria-label="Selection Message">
+        <div class="scene-inner">
+          <h2 class="cinematic-line">You have been selected.</h2>
+        </div>
+      </section>
+
+      <section id="scene-narrative" class="scene" aria-label="Narrative">
+        <div class="scroll-wrap">
+          <article class="narrative-block">
+            <p>In a world obsessed with disease,</p>
+            <p>a few choose prevention.</p>
+          </article>
+          <article class="narrative-block">
+            <p>In a system built for speed,</p>
+            <p>a few demand precision.</p>
+          </article>
+          <article class="narrative-block">
+            <p>In an era of reactive medicine...</p>
+          </article>
+          <article class="narrative-block">
+            <p>A new circle is forming.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="scene-reveal" class="scene" aria-label="Final Reveal">
+        <div class="scene-inner card reveal-card">
+          <p class="kicker">Welcome to the future of health.</p>
+          <h2 class="brand">H2 House of Health</h2>
+          <button id="reveal-button" class="primary-btn">Reveal the Experience</button>
+        </div>
+      </section>
+
+      <section id="scene-key" class="scene" aria-label="Invitation Details">
+        <div class="scene-inner card details-card">
+          <img src="assets/key.svg" alt="Golden key" class="key" />
+          <p class="accepted">Your key has been accepted.</p>
+          <div class="details-grid">
+            <div class="detail">
+              <span class="label">Event</span>
+              <span class="value">Grand Opening</span>
+            </div>
+            <div class="detail">
+              <span class="label">Host</span>
+              <span class="value">H2 House of Health</span>
+            </div>
+            <div class="detail">
+              <span class="label">Date</span>
+              <span class="value">To Be Announced</span>
+            </div>
+            <div class="detail">
+              <span class="label">Location</span>
+              <span class="value">To Be Announced</span>
+            </div>
+            <div class="detail">
+              <span class="label">Time</span>
+              <span class="value">To Be Announced</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <audio id="ambient-audio" src="assets/ambient.mp3" preload="none" loop></audio>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
