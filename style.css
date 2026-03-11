@@ -241,7 +241,7 @@ body.revealed .wrapper {
 .letter {
   position: absolute;
   top: 0;
-  width: 80%;
+  width: 86%;
   min-height: 88%;
   background-color: #e6b39c;
   border-radius: 15px;
@@ -644,8 +644,12 @@ body.opened .tap-open {
   }
 
   .letter {
+    top: 8%;
+    min-height: 0;
+    height: 84%;
     padding: 14px 12px 12px;
     gap: 8px;
+    overflow-y: auto;
   }
 
   .letter h1 {
@@ -667,6 +671,11 @@ body.opened .tap-open {
     --env-half-w: 150px;
     --env-half-h: 105px;
     width: min(calc(100vw - 12px), 320px);
+  }
+
+  .letter {
+    top: 9%;
+    height: 82%;
   }
 
   .answer-form {
