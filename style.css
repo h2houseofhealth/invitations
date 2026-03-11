@@ -277,26 +277,42 @@ body.revealed .wrapper {
 .answer-form {
   display: flex;
   gap: 6px;
+  align-items: stretch;
 }
 
 .answer-form input {
   flex: 1;
+  min-width: 0;
   border: 1px solid #000;
   border-radius: 8px;
   padding: 8px;
   font-size: 16px;
   color: #000;
   background: #f3d1c2;
+  line-height: 1.2;
+  min-height: 40px;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .answer-form button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid #000;
   border-radius: 8px;
   padding: 8px 10px;
+  min-width: 92px;
+  min-height: 40px;
   background: #d99b80;
   color: #000;
   font-size: 15px;
+  line-height: 1;
+  white-space: nowrap;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .hint,
