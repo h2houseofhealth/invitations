@@ -227,19 +227,6 @@ body.revealed .wrapper {
   opacity: 0;
 }
 
-.seal-bolt {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 16px;
-  height: 34px;
-  transform: translate(-50%, -50%) scale(0.85);
-  background: linear-gradient(180deg, #ffe8a6 0%, #ffd463 42%, #ffb12f 100%);
-  clip-path: polygon(47% 0, 100% 0, 62% 38%, 88% 38%, 30% 100%, 45% 56%, 14% 56%);
-  opacity: 0;
-  filter: drop-shadow(0 0 5px rgba(255, 196, 81, 0.92));
-}
-
 .letter {
   position: absolute;
   top: 0;
@@ -576,10 +563,6 @@ body.ready .tap-open {
   opacity: 1;
 }
 
-.wrapper.cracked .seal-bolt {
-  animation: boltFlash 0.38s ease forwards;
-}
-
 .wrapper.cracked .seal-core {
   animation: coreFade 0.16s linear forwards;
 }
@@ -596,13 +579,6 @@ body.ready .tap-open {
 .wrapper.envelope-gone .envelope,
 .wrapper.envelope-gone .seal {
   opacity: 0;
-}
-
-@keyframes boltFlash {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.78); }
-  22% { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
-  58% { opacity: 1; transform: translate(-50%, -50%) scale(0.92); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.65); }
 }
 
 @keyframes splitLeft {
