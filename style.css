@@ -241,7 +241,7 @@ body.revealed .wrapper {
 .letter {
   position: absolute;
   top: 0;
-  width: 86%;
+  width: 80%;
   min-height: 88%;
   background-color: #e6b39c;
   border-radius: 15px;
