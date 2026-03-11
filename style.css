@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   min-height: 100vh;
   width: 100%;
@@ -25,7 +30,7 @@ body.end-active {
   --env-half-w: 230px;
   --env-half-h: 150px;
   position: relative;
-  width: min(calc(100vw - 20px), 520px);
+  width: min(calc(100svw - 20px), 520px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -242,7 +247,8 @@ body.revealed .wrapper {
   position: absolute;
   top: 0;
   width: 86%;
-  min-height: 88%;
+  height: calc(var(--env-half-h) * 1.7);
+  max-height: calc(var(--env-half-h) * 1.7);
   background-color: #e6b39c;
   border-radius: 15px;
   z-index: 2;
@@ -251,6 +257,7 @@ body.revealed .wrapper {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow: hidden;
 }
 
 .letter h1 {
@@ -277,7 +284,7 @@ body.revealed .wrapper {
   border: 1px solid #000;
   border-radius: 8px;
   padding: 8px;
-  font-size: 12px;
+  font-size: 16px;
   color: #000;
   background: #f3d1c2;
 }
@@ -288,7 +295,7 @@ body.revealed .wrapper {
   padding: 8px 10px;
   background: #d99b80;
   color: #000;
-  font-size: 12px;
+  font-size: 15px;
   cursor: pointer;
 }
 
@@ -634,7 +641,7 @@ body.opened .tap-open {
     --env-width: 340px;
     --env-half-w: 170px;
     --env-half-h: 120px;
-    width: min(calc(100vw - 16px), 360px);
+    width: min(calc(100svw - 16px), 360px);
     gap: 14px;
   }
 
@@ -653,7 +660,7 @@ body.opened .tap-open {
   }
 
   .riddle {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .tap-open {
@@ -666,7 +673,22 @@ body.opened .tap-open {
     --env-width: 300px;
     --env-half-w: 150px;
     --env-half-h: 105px;
-    width: min(calc(100vw - 12px), 320px);
+    width: min(calc(100svw - 12px), 320px);
+  }
+
+  .letter {
+    height: calc(var(--env-half-h) * 1.62);
+    max-height: calc(var(--env-half-h) * 1.62);
+    padding: 12px 10px 10px;
+    gap: 7px;
+  }
+
+  .letter h1 {
+    font-size: 15px;
+  }
+
+  .riddle {
+    font-size: 11px;
   }
 
   .answer-form {
