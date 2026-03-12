@@ -2,9 +2,11 @@ window.addEventListener("load", () => {
   const body = document.body;
   const scene = document.querySelector(".scene");
   const wrapper = document.querySelector(".wrapper");
+  const letter = document.querySelector(".letter");
   const tapOpen = document.querySelector("#tap-open");
   const form = document.querySelector("#answer-form");
   const answerInput = document.querySelector("#riddle-answer");
+  const submitButton = form.querySelector('button[type="submit"]');
   const result = document.querySelector("#result");
   const hintWords = document.querySelector("#hint-words");
   const hintBottle = document.querySelector("#hint-bottle");
@@ -113,16 +115,19 @@ window.addEventListener("load", () => {
     }
 
     narrativeStarted = true;
+    wrapper.classList.remove("floating");
+    wrapper.classList.add("success-burning");
+    body.classList.add("card-burning");
 
     window.setTimeout(() => {
       endScreen.setAttribute("aria-hidden", "false");
       body.classList.add("end-active");
-    }, 900);
+    }, 3200);
 
     window.setTimeout(() => {
       body.classList.add("narrative-active");
       playNarrativeSequence();
-    }, 2500);
+    }, 5300);
   };
 
   form.addEventListener("submit", (event) => {
@@ -135,6 +140,10 @@ window.addEventListener("load", () => {
       hintWords.classList.remove("armed");
       hintWords.classList.remove("spill");
       hintWords.classList.add("hidden");
+      answerInput.disabled = true;
+      submitButton.disabled = true;
+      hintBottle.setAttribute("tabindex", "-1");
+      letter.setAttribute("aria-hidden", "true");
       runSuccessJourney();
       return;
     }
