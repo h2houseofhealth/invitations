@@ -31,12 +31,16 @@ body.end-active {
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 body.end-active .scene {
   opacity: 0;
   transform: scale(0.98);
+  pointer-events: none;
+}
+
+body.card-burning .scene {
   pointer-events: none;
 }
 
@@ -53,7 +57,7 @@ body.end-active .scene {
   padding: 24px 16px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.8s ease;
+  transition: opacity 0.35s ease;
 }
 
 body.end-active .end-screen {
@@ -240,6 +244,11 @@ body.revealed .wrapper {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow:
+    0 18px 28px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(96, 52, 37, 0.12);
 }
 
 .letter h1 {
@@ -254,6 +263,72 @@ body.revealed .wrapper {
   font-size: 15px;
   line-height: 1.35;
   color: #000;
+}
+
+.letter > * {
+  position: relative;
+  z-index: 2;
+}
+
+.letter::before,
+.letter::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.letter::before {
+  z-index: 3;
+  background-image:
+    url("noise.jpg"),
+    url("noise.jpg"),
+    linear-gradient(
+      180deg,
+      #fff 0%,
+      #fff3c9 12%,
+      #ffc54d 28%,
+      #ff7c1f 46%,
+      #ae2300 72%,
+      #220402 100%
+    );
+  background-size: 260% 320%, 220% 300%, 100% 100%;
+  background-position: 1536px 9216px, 0 7168px, 0 0;
+  background-repeat: repeat, repeat, no-repeat;
+  background-blend-mode: difference, difference, normal;
+  filter: sepia(1) contrast(6) saturate(2.2) brightness(1.05);
+  transform: translateY(100%);
+  mask-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 22%,
+    rgba(0, 0, 0, 0.92) 34%,
+    rgba(0, 0, 0, 0.55) 48%,
+    rgba(0, 0, 0, 0.16) 64%,
+    rgba(0, 0, 0, 0) 78%
+  );
+}
+
+.letter::after {
+  z-index: 4;
+  background:
+    radial-gradient(circle at 14% 100%, rgba(255, 236, 173, 0.92) 0%, rgba(255, 236, 173, 0) 26%),
+    radial-gradient(circle at 52% 100%, rgba(255, 208, 120, 0.9) 0%, rgba(255, 208, 120, 0) 32%),
+    radial-gradient(circle at 82% 100%, rgba(255, 163, 88, 0.86) 0%, rgba(255, 163, 88, 0) 28%),
+    linear-gradient(
+      to top,
+      rgba(10, 4, 2, 0.98) 0%,
+      rgba(23, 9, 4, 0.96) 14%,
+      rgba(49, 15, 4, 0.82) 28%,
+      rgba(77, 27, 7, 0.48) 42%,
+      rgba(45, 20, 12, 0.12) 60%,
+      rgba(45, 20, 12, 0) 76%
+    );
+  mix-blend-mode: multiply;
+  transform-origin: bottom center;
+  transform: scaleY(0);
+  filter: blur(1.2px) saturate(1.2);
 }
 
 .answer-form {
@@ -279,6 +354,12 @@ body.revealed .wrapper {
   color: #000;
   font-size: 12px;
   cursor: pointer;
+}
+
+.answer-form input:disabled,
+.answer-form button:disabled {
+  opacity: 0.72;
+  cursor: default;
 }
 
 .hint,
@@ -581,6 +662,51 @@ body.ready .tap-open {
   opacity: 0;
 }
 
+.wrapper.success-burning .letter {
+  transform: translateY(-8%) scale(1.05);
+  animation: letterBurnAway 5.4s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
+  clip-path: inset(0 0 0 0 round 15px);
+  background-image: linear-gradient(
+    to top,
+    rgba(12, 5, 2, 0.88) 0%,
+    rgba(30, 11, 5, 0.82) 10%,
+    rgba(64, 24, 10, 0.66) 22%,
+    rgba(122, 54, 21, 0.34) 36%,
+    rgba(230, 179, 156, 0) 62%
+  ),
+  radial-gradient(
+    120% 42% at 50% 100%,
+    rgba(255, 132, 36, 0.34) 0%,
+    rgba(185, 72, 18, 0.18) 26%,
+    rgba(24, 8, 2, 0.12) 48%,
+    rgba(24, 8, 2, 0) 72%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 0%, 140% 0%;
+  background-position: bottom center, center bottom;
+  background-blend-mode: normal, screen;
+  box-shadow:
+    0 18px 28px rgba(0, 0, 0, 0.28),
+    0 0 26px rgba(255, 146, 39, 0.48),
+    0 0 58px rgba(255, 90, 0, 0.18);
+}
+
+.wrapper.success-burning .letter::before {
+  opacity: 1;
+  animation:
+    fireNoise 5.4s linear infinite,
+    fireRise 5.2s ease forwards;
+}
+
+.wrapper.success-burning .letter::after {
+  opacity: 1;
+  animation: charSpread 5.4s ease forwards;
+}
+
+.wrapper.success-burning .letter > * {
+  animation: contentScorch 4s ease forwards;
+}
+
 @keyframes splitLeft {
   0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
   100% { opacity: 0; transform: translate(-14px, 22px) rotate(-20deg); }
@@ -599,6 +725,136 @@ body.ready .tap-open {
 @keyframes settleZoom {
   0% { transform: translateY(-8%) scale(1); }
   100% { transform: translateY(-8%) scale(1.05); }
+}
+
+@keyframes fireNoise {
+  from {
+    background-position: 1536px 9216px, 0 7168px, 0 0;
+  }
+  to {
+    background-position: 512px 0, 1024px 0, 0 0;
+  }
+}
+
+@keyframes fireRise {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  8% {
+    opacity: 0.82;
+    transform: translateY(84%) scaleY(1.03);
+  }
+  14% {
+    opacity: 1;
+    transform: translateY(74%) scaleY(1.06);
+  }
+  42% {
+    opacity: 1;
+    transform: translateY(26%) scaleY(1.14);
+  }
+  70% {
+    opacity: 0.78;
+    transform: translateY(6%) scaleY(1.1);
+  }
+  86% {
+    opacity: 0.18;
+    transform: translateY(-4%) scaleY(1.04);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-16%) scaleY(1.02);
+  }
+}
+
+@keyframes charSpread {
+  0% {
+    opacity: 0.65;
+    transform: scaleY(0.08);
+  }
+  12% {
+    opacity: 0.94;
+    transform: scaleY(0.26);
+  }
+  46% {
+    opacity: 1;
+    transform: scaleY(0.78);
+  }
+  72% {
+    opacity: 1;
+    transform: scaleY(0.88);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes contentScorch {
+  0% {
+    opacity: 1;
+    filter: none;
+  }
+  32% {
+    opacity: 0.95;
+    filter: none;
+  }
+  100% {
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+
+@keyframes letterBurnAway {
+  0% {
+    transform: translateY(-8%) scale(1.05);
+    opacity: 1;
+    filter: brightness(1);
+    clip-path: inset(0 0 0 0 round 15px);
+    background-size: 100% 0%, 140% 0%;
+  }
+  8% {
+    transform: translateY(-8.2%) scale(1.055);
+    opacity: 0.95;
+    filter: brightness(1.02);
+    clip-path: inset(0 0 0 0 round 15px);
+    background-size: 100% 14%, 140% 12%;
+  }
+  24% {
+    transform: translateY(-9%) scale(1.06);
+    opacity: 0.88;
+    filter: brightness(1);
+    clip-path: inset(0 0 0 0 round 15px);
+    background-size: 100% 34%, 140% 24%;
+  }
+  58% {
+    transform: translateY(-11%) scale(1.03);
+    opacity: 0.74;
+    filter: brightness(0.78);
+    clip-path: inset(0 0 0 0 round 15px);
+    background-size: 100% 62%, 140% 40%;
+  }
+  62% {
+    transform: translateY(-12%) scale(1);
+    opacity: 0.22;
+    filter: brightness(0.14);
+    clip-path: inset(0 0 22% 0 round 15px);
+    background-size: 100% 104%, 140% 6%;
+  }
+  80% {
+    transform: translateY(-14%) scale(0.95);
+    opacity: 0.08;
+    filter: brightness(0.05);
+    clip-path: inset(0 0 72% 0 round 15px);
+    background-size: 100% 120%, 140% 0%;
+  }
+  100% {
+    transform: translateY(-16%) scale(0.9);
+    opacity: 0;
+    filter: brightness(0);
+    clip-path: inset(0 0 100% 0 round 15px);
+    background-size: 100% 120%, 140% 0%;
+  }
 }
 
 @keyframes settleZoomMobile {
@@ -676,6 +932,11 @@ body.opened .tap-open {
   .wrapper.open.drop .letter {
     transform: translateY(-10%);
     animation: settleZoomMobile 1.2s ease-out 0.8s forwards;
+  }
+
+  .wrapper.success-burning .letter {
+    transform: translateY(-14%) scale(1.02);
+    animation: letterBurnAwayMobile 5.4s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
   }
 
   .letter h1 {
@@ -767,5 +1028,57 @@ body.opened .tap-open {
 
   .answer-form button {
     width: auto;
+  }
+}
+
+@keyframes letterBurnAwayMobile {
+  0% {
+    transform: translateY(-14%) scale(1.02);
+    opacity: 1;
+    filter: brightness(1);
+    clip-path: inset(0 0 0 0 round 15px);
+    background-size: 100% 0%, 140% 0%;
+  }
+  8% {
+    transform: translateY(-14.2%) scale(1.025);
+    opacity: 0.95;
+    filter: brightness(1.02);
+    clip-path: inset(0 0 0 0 round 15px);
+    background-size: 100% 14%, 140% 12%;
+  }
+  24% {
+    transform: translateY(-15%) scale(1.03);
+    opacity: 0.88;
+    filter: brightness(1);
+    clip-path: inset(0 0 0 0 round 15px);
+    background-size: 100% 34%, 140% 24%;
+  }
+  58% {
+    transform: translateY(-17%) scale(1);
+    opacity: 0.74;
+    filter: brightness(0.78);
+    clip-path: inset(0 0 0 0 round 15px);
+    background-size: 100% 62%, 140% 40%;
+  }
+  62% {
+    transform: translateY(-18.4%) scale(0.96);
+    opacity: 0.22;
+    filter: brightness(0.14);
+    clip-path: inset(0 0 22% 0 round 15px);
+    background-size: 100% 104%, 140% 6%;
+  }
+  80% {
+    transform: translateY(-19.6%) scale(0.92);
+    opacity: 0.08;
+    filter: brightness(0.05);
+    clip-path: inset(0 0 72% 0 round 15px);
+    background-size: 100% 120%, 140% 0%;
+  }
+  100% {
+    transform: translateY(-21%) scale(0.88);
+    opacity: 0;
+    filter: brightness(0);
+    clip-path: inset(0 0 100% 0 round 15px);
+    background-size: 100% 120%, 140% 0%;
   }
 }
