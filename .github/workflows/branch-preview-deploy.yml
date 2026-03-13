@@ -1,0 +1,72 @@
+name: Branch Preview Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+      - prd
+  workflow_dispatch:
+
+concurrency:
+  group: netlify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy based on branch
+        run: |
+          set -euo pipefail
+
+          BRANCH="${GITHUB_REF_NAME}"
+          DEPLOY_MESSAGE="${GITHUB_SHA} from ${GITHUB_REPOSITORY} (${BRANCH})"
+
+          if [ "$BRANCH" = "prd" ]; then
+            DEPLOY_URL=$(netlify deploy \
+              --dir . \
+              --site "$NETLIFY_SITE_ID" \
+              --auth "$NETLIFY_AUTH_TOKEN" \
+              --prod \
+              --message "$DEPLOY_MESSAGE" \
+              --json | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const j=JSON.parse(s);console.log(j.deploy_url||j.url||"")})')
+          else
+            DEPLOY_URL=$(netlify deploy \
+              --dir . \
+              --site "$NETLIFY_SITE_ID" \
+              --auth "$NETLIFY_AUTH_TOKEN" \
+              --alias "$BRANCH" \
+              --message "$DEPLOY_MESSAGE" \
+              --json | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const j=JSON.parse(s);console.log(j.deploy_url||j.url||"")})')
+          fi
+
+          echo "DEPLOY_URL=$DEPLOY_URL" >> "$GITHUB_ENV"
+          echo "Branch: $BRANCH"
+          echo "URL: $DEPLOY_URL"
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "### Deployment complete"
+            echo ""
+            echo "- Branch: \\`${GITHUB_REF_NAME}\\`"
+            echo "- URL: $DEPLOY_URL"
+          } >> "$GITHUB_STEP_SUMMARY"
