@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <audio id="bg-music" src="music.mpeg" loop preload="auto" playsinline></audio>
+
   <div class="scene">
     <div class="light" aria-hidden="true"></div>
     <div class="wrapper">
@@ -48,6 +50,62 @@
   </div>
 
   <section class="end-screen" id="end-screen" aria-hidden="true">
+    <div class="cinematic-stage" id="cinematic-stage">
+      <div class="quote-particle-field hidden" id="quote-particle-field" aria-hidden="true"></div>
+
+      <div class="quote-layer" id="quote-layer" aria-live="polite">
+        <p class="cinematic-quote" id="cinematic-quote"></p>
+      </div>
+
+      <div class="identity-panel hidden" id="identity-panel">
+        <h2 class="identity-title">H2 HOUSE OF HEALTH</h2>
+
+        <div class="lock-panel" id="lock-panel">
+          <button class="lock-button" id="lock-button" type="button" aria-label="Reveal the experience">
+            <span class="lock-icon" aria-hidden="true">🔒</span>
+          </button>
+          <p class="lock-copy">Reveal the experience</p>
+        </div>
+
+        <div class="key-panel hidden" id="key-panel" aria-live="polite">
+          <div class="key-icon" aria-hidden="true">🗝️</div>
+          <p class="key-status hidden" id="key-status">Your key has been accepted</p>
+          <button class="enter-button hidden" id="enter-button" type="button">Enter</button>
+        </div>
+      </div>
+
+      <div class="event-stage hidden" id="event-stage" aria-hidden="true">
+        <div class="particle-field" id="event-particle-field" aria-hidden="true"></div>
+
+        <article class="event-card">
+          <!-- <div class="event-key" aria-hidden="true">🗝️</div>
+          <p class="accepted-copy">Your key has been accepted.</p> -->
+
+          <div class="details-grid">
+            <div class="detail">
+              <span class="label">Event</span>
+              <span class="value">Grand Opening</span>
+            </div>
+            <div class="detail">
+              <span class="label">Host</span>
+              <span class="value">H2 House of Health</span>
+            </div>
+            <div class="detail">
+              <span class="label">Date</span>
+              <span class="value">19 March 2026</span>
+            </div>
+            <div class="detail">
+              <span class="label">Location</span>
+              <span class="value">Jubilee Hills</span>
+            </div>
+            <div class="detail">
+              <span class="label">Time</span>
+              <span class="value">11 am</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
     <article class="narrative-block">
       <p>You have been selected.</p>
     </article>
