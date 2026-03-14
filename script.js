@@ -24,17 +24,6 @@ window.addEventListener("load", () => {
   const enterButton = document.querySelector("#enter-button");
   const eventStage = document.querySelector("#event-stage");
   const eventParticleField = document.querySelector("#event-particle-field");
-  const rsvpButton = document.querySelector("#rsvp-button");
-  const rsvpPanel = document.querySelector("#rsvp-panel");
-  const rsvpForm = document.querySelector("#rsvp-form");
-  const rsvpName = document.querySelector("#rsvp-name");
-  const rsvpEmail = document.querySelector("#rsvp-email");
-  const rsvpPhone = document.querySelector("#rsvp-phone");
-  const rsvpAttend = document.querySelector("#rsvp-attend");
-  const rsvpGuests = document.querySelector("#rsvp-guests");
-  const rsvpMessage = document.querySelector("#rsvp-message");
-  const rsvpSuccess = document.querySelector("#rsvp-success");
-  const rsvpError = document.querySelector("#rsvp-error");
 
   const quotes = [
     { text: "You have been selected", className: "from-center", duration: 4800 },
@@ -314,9 +303,6 @@ window.addEventListener("load", () => {
     keyPanel.classList.add("hidden");
     eventStage.classList.remove("hidden");
     eventStage.classList.add("visible");
-    eventStage.classList.remove("scroll-unroll");
-    void eventStage.offsetWidth;
-    eventStage.classList.add("scroll-unroll");
     eventStage.setAttribute("aria-hidden", "false");
     window.requestAnimationFrame(() => {
       seedFinalStageParticles();
@@ -332,81 +318,6 @@ window.addEventListener("load", () => {
     tryStartMusic();
     showEventCard();
   });
-
-  if (rsvpButton && rsvpPanel) {
-    rsvpButton.addEventListener("click", () => {
-      tryStartMusic();
-      rsvpPanel.classList.toggle("hidden");
-      const isHidden = rsvpPanel.classList.contains("hidden");
-      rsvpPanel.setAttribute("aria-hidden", isHidden ? "true" : "false");
-      if (!isHidden) {
-        rsvpPanel.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    });
-  }
-
-  if (rsvpForm) {
-    rsvpForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      if (!rsvpForm.reportValidity()) {
-        return;
-      }
-
-      if (rsvpError) {
-        rsvpError.classList.add("hidden");
-        rsvpError.textContent = "";
-      }
-
-      const submitButton = rsvpForm.querySelector(".rsvp-submit");
-      if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.textContent = "Submitting...";
-      }
-
-      const payload = {
-        full_name: rsvpName.value.trim(),
-        phone_number: rsvpPhone.value.trim(),
-        email: rsvpEmail.value.trim(),
-        guests: rsvpGuests?.value?.trim() || "0",
-        attendance: rsvpAttend.value,
-        message: rsvpMessage?.value?.trim() || ""
-      };
-
-      fetch("/api/rsvp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      })
-        .then(async (response) => {
-          if (!response.ok) {
-            const data = await response.json().catch(() => ({}));
-            const errorMessage = data?.error || "Unable to submit RSVP. Please try again.";
-            throw new Error(errorMessage);
-          }
-          return response.json();
-        })
-        .then(() => {
-          rsvpForm.classList.add("hidden");
-          if (rsvpSuccess) {
-            rsvpSuccess.classList.remove("hidden");
-          }
-        })
-        .catch((error) => {
-          if (rsvpError) {
-            rsvpError.textContent = error.message;
-            rsvpError.classList.remove("hidden");
-          }
-        })
-        .finally(() => {
-          if (submitButton) {
-            submitButton.disabled = false;
-            submitButton.textContent = "Submit RSVP";
-          }
-        });
-    });
-  }
 
   const runSuccessJourney = () => {
     if (narrativeStarted) {
