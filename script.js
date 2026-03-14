@@ -22,20 +22,24 @@ window.addEventListener("load", () => {
   const eventStage = document.querySelector("#event-stage");
   const eventParticleField = document.querySelector("#event-particle-field");
 
-  // Quill writing elements
+  // Quill elements
   const quillStage = document.querySelector("#quill-stage");
   const quillEl = document.querySelector("#quill");
   const quillInk = document.querySelector("#quill-ink-line");
   const writtenTextEl = document.querySelector("#written-text");
   const quillParticleField = document.querySelector("#quill-particle-field");
 
-  const narrativeLines = [
-    "You have been selected.",
-    "In a world obsessed with disease,\na few choose prevention.",
-    "In a system built for speed,\na few demand precision.",
-    "In an era of reactive medicine...",
-    "A new circle is forming.",
-    "WELCOME TO THE FUTURE OF HEALTH"
+  // Cinematic quote elements
+  const quoteLayer = document.querySelector("#quote-layer");
+  const quoteEl = document.querySelector("#cinematic-quote");
+  const quoteParticleField = document.querySelector("#quote-particle-field");
+
+  const remainingQuotes = [
+    { text: "In a world obsessed with disease, a few choose prevention.", className: "from-top-left",    duration: 5000 },
+    { text: "In a system built for speed, a few demand precision.",       className: "from-bottom-right", duration: 5000 },
+    { text: "In an era of reactive medicine...",                          className: "from-bottom",       duration: 4700 },
+    { text: "A new circle is forming.",                                   className: "from-top",          duration: 4700 },
+    { text: "WELCOME TO THE FUTURE OF HEALTH",                           className: "from-center glow",  duration: 5200 },
   ];
 
   let narrativeStarted = false;
@@ -43,19 +47,19 @@ window.addEventListener("load", () => {
   let finalParticlesSeeded = false;
   let lightDotsSeeded = false;
   let quillParticlesSeeded = false;
+  let quoteParticlesSeeded = false;
   let hasActivatedMusic = false;
 
   const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const randomBetween = (min, max) => Math.random() * (max - min) + min;
 
+  // ── Music ─────────────────────────────────────────────────────────
   const tryStartMusic = () => {
     if (!bgMusic) return;
     bgMusic.volume = 0.55;
     bgMusic.loop = true;
-    const playPromise = bgMusic.play();
-    if (playPromise && typeof playPromise.catch === "function") {
-      playPromise.catch(() => {});
-    }
+    const p = bgMusic.play();
+    if (p && typeof p.catch === "function") p.catch(() => {});
   };
 
   const activateMusic = () => {
@@ -64,28 +68,28 @@ window.addEventListener("load", () => {
     tryStartMusic();
   };
 
-  ["click", "touchstart", "keydown"].forEach((eventName) => {
-    window.addEventListener(eventName, activateMusic, { once: true, passive: true });
+  ["click", "touchstart", "keydown"].forEach((ev) => {
+    window.addEventListener(ev, activateMusic, { once: true, passive: true });
   });
 
-  // ── Light dots ──────────────────────────────────────────────────
+  // ── Light dots ────────────────────────────────────────────────────
   const seedLightDots = (count = 420) => {
     if (lightDotsSeeded || !light) return;
     for (let i = 0; i < count; i++) {
       const dot = document.createElement("span");
       dot.className = "light-dot";
-      dot.style.setProperty("--left", `${randomBetween(0, 100)}%`);
-      dot.style.setProperty("--top", `${randomBetween(0, 100)}%`);
-      dot.style.setProperty("--size", `${randomBetween(1.4, 4.4)}px`);
-      dot.style.setProperty("--duration", `${randomBetween(7, 18)}s`);
-      dot.style.setProperty("--delay", `${randomBetween(-18, 0)}s`);
-      dot.style.setProperty("--x-mid", `${randomBetween(-120, 120)}px`);
-      dot.style.setProperty("--y-mid", `${randomBetween(-120, 120)}px`);
-      dot.style.setProperty("--x-end", `${randomBetween(-180, 180)}px`);
-      dot.style.setProperty("--y-end", `${randomBetween(-180, 180)}px`);
-      dot.style.setProperty("--start-scale", randomBetween(0.45, 0.95).toFixed(2));
-      dot.style.setProperty("--mid-scale", randomBetween(0.8, 1.3).toFixed(2));
-      dot.style.setProperty("--end-scale", randomBetween(0.5, 1.05).toFixed(2));
+      dot.style.setProperty("--left",         `${randomBetween(0, 100)}%`);
+      dot.style.setProperty("--top",          `${randomBetween(0, 100)}%`);
+      dot.style.setProperty("--size",         `${randomBetween(1.4, 4.4)}px`);
+      dot.style.setProperty("--duration",     `${randomBetween(7, 18)}s`);
+      dot.style.setProperty("--delay",        `${randomBetween(-18, 0)}s`);
+      dot.style.setProperty("--x-mid",        `${randomBetween(-120, 120)}px`);
+      dot.style.setProperty("--y-mid",        `${randomBetween(-120, 120)}px`);
+      dot.style.setProperty("--x-end",        `${randomBetween(-180, 180)}px`);
+      dot.style.setProperty("--y-end",        `${randomBetween(-180, 180)}px`);
+      dot.style.setProperty("--start-scale",  randomBetween(0.45, 0.95).toFixed(2));
+      dot.style.setProperty("--mid-scale",    randomBetween(0.8, 1.3).toFixed(2));
+      dot.style.setProperty("--end-scale",    randomBetween(0.5, 1.05).toFixed(2));
       dot.style.setProperty("--peak-opacity", randomBetween(0.22, 0.58).toFixed(2));
       light.appendChild(dot);
     }
@@ -93,62 +97,86 @@ window.addEventListener("load", () => {
   };
   seedLightDots();
 
-  // ── Quill particles ─────────────────────────────────────────────
+  // ── Quill particles ───────────────────────────────────────────────
   const seedQuillParticles = (count = 180) => {
     if (quillParticlesSeeded || !quillParticleField) return;
     for (let i = 0; i < count; i++) {
       const p = document.createElement("span");
       p.className = "quill-particle";
-      p.style.setProperty("--left", `${randomBetween(0, 100)}%`);
-      p.style.setProperty("--top", `${randomBetween(0, 100)}%`);
-      p.style.setProperty("--size", `${randomBetween(1.5, 5)}px`);
-      p.style.setProperty("--duration", `${randomBetween(8, 20)}s`);
-      p.style.setProperty("--delay", `${randomBetween(-20, 0)}s`);
-      p.style.setProperty("--x-mid", `${randomBetween(-100, 100)}px`);
-      p.style.setProperty("--y-mid", `${randomBetween(-100, -20)}px`);
-      p.style.setProperty("--x-end", `${randomBetween(-140, 140)}px`);
-      p.style.setProperty("--y-end", `${randomBetween(-240, 100)}px`);
-      p.style.setProperty("--start-scale", randomBetween(0.4, 0.9).toFixed(2));
-      p.style.setProperty("--mid-scale", randomBetween(0.8, 1.3).toFixed(2));
-      p.style.setProperty("--end-scale", randomBetween(0.4, 1.0).toFixed(2));
+      p.style.setProperty("--left",         `${randomBetween(0, 100)}%`);
+      p.style.setProperty("--top",          `${randomBetween(0, 100)}%`);
+      p.style.setProperty("--size",         `${randomBetween(1.5, 5)}px`);
+      p.style.setProperty("--duration",     `${randomBetween(8, 20)}s`);
+      p.style.setProperty("--delay",        `${randomBetween(-20, 0)}s`);
+      p.style.setProperty("--x-mid",        `${randomBetween(-100, 100)}px`);
+      p.style.setProperty("--y-mid",        `${randomBetween(-100, -20)}px`);
+      p.style.setProperty("--x-end",        `${randomBetween(-140, 140)}px`);
+      p.style.setProperty("--y-end",        `${randomBetween(-240, 100)}px`);
+      p.style.setProperty("--start-scale",  randomBetween(0.4, 0.9).toFixed(2));
+      p.style.setProperty("--mid-scale",    randomBetween(0.8, 1.3).toFixed(2));
+      p.style.setProperty("--end-scale",    randomBetween(0.4, 1.0).toFixed(2));
       p.style.setProperty("--peak-opacity", randomBetween(0.15, 0.55).toFixed(2));
       quillParticleField.appendChild(p);
     }
     quillParticlesSeeded = true;
   };
 
-  // ── Final stage particles ────────────────────────────────────────
+  // ── Quote particles ───────────────────────────────────────────────
+  const seedQuoteParticles = (count = 220) => {
+    if (quoteParticlesSeeded || !quoteParticleField) return;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement("span");
+      p.className = "quote-particle";
+      p.style.setProperty("--left",         `${randomBetween(0, 100)}%`);
+      p.style.setProperty("--top",          `${randomBetween(0, 100)}%`);
+      p.style.setProperty("--size",         `${randomBetween(2, 7)}px`);
+      p.style.setProperty("--duration",     `${randomBetween(8, 20)}s`);
+      p.style.setProperty("--delay",        `${randomBetween(-20, 0)}s`);
+      p.style.setProperty("--x-mid",        `${randomBetween(-130, 130)}px`);
+      p.style.setProperty("--y-mid",        `${randomBetween(-100, -20)}px`);
+      p.style.setProperty("--x-end",        `${randomBetween(-170, 170)}px`);
+      p.style.setProperty("--y-end",        `${randomBetween(-260, 140)}px`);
+      p.style.setProperty("--start-scale",  randomBetween(0.45, 0.95).toFixed(2));
+      p.style.setProperty("--mid-scale",    randomBetween(0.85, 1.35).toFixed(2));
+      p.style.setProperty("--end-scale",    randomBetween(0.45, 1.1).toFixed(2));
+      p.style.setProperty("--peak-opacity", randomBetween(0.22, 0.7).toFixed(2));
+      quoteParticleField.appendChild(p);
+    }
+    quoteParticlesSeeded = true;
+  };
+
+  // ── Final stage particles ─────────────────────────────────────────
   const seedFinalStageParticles = (count = 220) => {
     if (finalParticlesSeeded || !eventParticleField) return;
     for (let i = 0; i < count; i++) {
       const p = document.createElement("span");
       p.className = "quote-particle final-particle";
-      p.style.setProperty("--left", `${randomBetween(0, 100)}%`);
-      p.style.setProperty("--top", `${randomBetween(0, 100)}%`);
-      p.style.setProperty("--size", `${randomBetween(2, 7)}px`);
-      p.style.setProperty("--duration", `${randomBetween(8, 20)}s`);
-      p.style.setProperty("--delay", `${randomBetween(-20, 0)}s`);
-      p.style.setProperty("--x-mid", `${randomBetween(-130, 130)}px`);
-      p.style.setProperty("--y-mid", `${randomBetween(-100, -20)}px`);
-      p.style.setProperty("--x-end", `${randomBetween(-170, 170)}px`);
-      p.style.setProperty("--y-end", `${randomBetween(-260, 140)}px`);
-      p.style.setProperty("--start-scale", randomBetween(0.45, 0.95).toFixed(2));
-      p.style.setProperty("--mid-scale", randomBetween(0.85, 1.35).toFixed(2));
-      p.style.setProperty("--end-scale", randomBetween(0.45, 1.1).toFixed(2));
+      p.style.setProperty("--left",         `${randomBetween(0, 100)}%`);
+      p.style.setProperty("--top",          `${randomBetween(0, 100)}%`);
+      p.style.setProperty("--size",         `${randomBetween(2, 7)}px`);
+      p.style.setProperty("--duration",     `${randomBetween(8, 20)}s`);
+      p.style.setProperty("--delay",        `${randomBetween(-20, 0)}s`);
+      p.style.setProperty("--x-mid",        `${randomBetween(-130, 130)}px`);
+      p.style.setProperty("--y-mid",        `${randomBetween(-100, -20)}px`);
+      p.style.setProperty("--x-end",        `${randomBetween(-170, 170)}px`);
+      p.style.setProperty("--y-end",        `${randomBetween(-260, 140)}px`);
+      p.style.setProperty("--start-scale",  randomBetween(0.45, 0.95).toFixed(2));
+      p.style.setProperty("--mid-scale",    randomBetween(0.85, 1.35).toFixed(2));
+      p.style.setProperty("--end-scale",    randomBetween(0.45, 1.1).toFixed(2));
       p.style.setProperty("--peak-opacity", randomBetween(0.22, 0.7).toFixed(2));
       eventParticleField.appendChild(p);
     }
     finalParticlesSeeded = true;
   };
 
-  // ── Init ─────────────────────────────────────────────────────────
+  // ── Init ──────────────────────────────────────────────────────────
   setTimeout(() => { body.classList.add("revealed"); }, 250);
   setTimeout(() => {
     wrapper.classList.add("floating");
     body.classList.add("ready");
   }, 4700);
 
-  // ── Envelope open ────────────────────────────────────────────────
+  // ── Envelope open ─────────────────────────────────────────────────
   const openEnvelope = () => {
     if (wrapper.classList.contains("open") || wrapper.classList.contains("cracked")) return;
     wrapper.classList.remove("floating");
@@ -164,7 +192,7 @@ window.addEventListener("load", () => {
   tapOpen.addEventListener("click", () => { tryStartMusic(); openEnvelope(); });
   scene.addEventListener("click", () => { tryStartMusic(); openEnvelope(); });
 
-  // ── Hints ────────────────────────────────────────────────────────
+  // ── Hints ─────────────────────────────────────────────────────────
   const spillHints = () => {
     if (hintWords.classList.contains("hidden")) return;
     hintWords.classList.remove("armed", "spill");
@@ -186,105 +214,75 @@ window.addEventListener("load", () => {
     });
   });
 
-  // ── Quill writing engine ─────────────────────────────────────────
-  /**
-   * Measures where each character ends up in the rendered text block,
-   * so the quill tip can track from char to char.
-   */
-  const getCharPositions = (containerEl, text) => {
-    // We'll lay out the text char-by-char in a hidden clone to measure positions
-    const positions = [];
-    const clone = containerEl.cloneNode(false);
-    clone.style.visibility = "hidden";
-    clone.style.position = "absolute";
-    clone.style.pointerEvents = "none";
-    clone.style.width = window.getComputedStyle(containerEl).width;
-    clone.style.whiteSpace = "pre-wrap";
-    clone.style.opacity = "0";
-    document.body.appendChild(clone);
+  // ── Quill nib positioning ─────────────────────────────────────────
+  // Uses getBoundingClientRect on the #ink-drop SVG element directly —
+  // this is 100% accurate regardless of SVG rotation/flip transforms.
+  // setQuillPos moves the quill div so the ink-drop lands at (nibX, nibY).
+  const setQuillPos = (nibX, nibY) => {
+    const stageR = quillStage.getBoundingClientRect();
+    const inkDot = quillEl.querySelector("#ink-drop");
+    if (!inkDot) return;
 
-    for (let i = 0; i < text.length; i++) {
-      clone.textContent = text.slice(0, i + 1);
-      // Use a range to find where the last character is
-      const range = document.createRange();
-      const textNode = clone.firstChild;
-      if (!textNode) { positions.push({ x: 0, y: 0 }); continue; }
-      const safeEnd = Math.min(i + 1, textNode.length);
-      const safeStart = Math.max(0, safeEnd - 1);
-      range.setStart(textNode, safeStart);
-      range.setEnd(textNode, safeEnd);
-      const rect = range.getBoundingClientRect();
-      const containerRect = containerEl.getBoundingClientRect();
-      positions.push({
-        x: rect.right - containerRect.left,
-        y: rect.top - containerRect.top + rect.height * 0.5
-      });
-    }
+    // Current ink-drop centre in stage-relative coords
+    const dotR    = inkDot.getBoundingClientRect();
+    const curDotX = (dotR.left + dotR.right)  / 2 - stageR.left;
+    const curDotY = (dotR.top  + dotR.bottom) / 2 - stageR.top;
 
-    document.body.removeChild(clone);
-    return positions;
+    // Delta needed to reach target
+    const dx = nibX - curDotX;
+    const dy = nibY - curDotY;
+
+    quillEl.style.left = `${parseFloat(quillEl.style.left || 0) + dx}px`;
+    quillEl.style.top  = `${parseFloat(quillEl.style.top  || 0) + dy}px`;
   };
 
-  const CHAR_SPEED = 52; // ms per character
-  const PAUSE_AFTER = 1400; // ms to hold completed sentence
-  const FADE_OUT_TIME = 700; // ms for text fade out
+  // ── Quill writing engine ──────────────────────────────────────────
+  const CHAR_SPEED    = 52;
+  const PAUSE_AFTER   = 1400;
+  const FADE_OUT_TIME = 700;
 
   const writeOneSentence = async (rawText) => {
-    // Replace \n with actual newline for display
     const displayText = rawText.replace(/\\n/g, "\n");
-    const isGlowLine = rawText.includes("WELCOME");
+    const isGlowLine  = rawText.includes("WELCOME");
 
-    // Prepare text element
     writtenTextEl.textContent = "";
     writtenTextEl.className = "written-text" + (isGlowLine ? " glow" : "");
     writtenTextEl.style.opacity = "1";
 
-    // Position the quill at start
+    // Wait one frame so browser lays out writtenTextEl before querying rect
+    await wait(16);
+
     const stageRect = quillStage.getBoundingClientRect();
-    const textRect = writtenTextEl.getBoundingClientRect();
 
-    // Start quill at left of text block
-    let quillX = textRect.left - stageRect.left - 10;
-    let quillY = textRect.top - stageRect.top + 14;
-
-    setQuillPos(quillX, quillY);
+    // Park quill at centre of stage so first getBoundingClientRect on ink-drop is valid
+    quillEl.style.left = `${stageRect.width  / 2}px`;
+    quillEl.style.top  = `${stageRect.height / 2}px`;
     quillEl.classList.add("visible");
     quillInk.style.opacity = "1";
+    await wait(32); // let browser paint rotated element so ink-drop rect is valid
 
-    // Pre-measure positions using a temp element
-    const measureEl = document.createElement("div");
-    measureEl.className = "written-text" + (isGlowLine ? " glow" : "");
-    measureEl.style.cssText = window.getComputedStyle(writtenTextEl).cssText;
-    measureEl.style.visibility = "hidden";
-    measureEl.style.position = "absolute";
-    measureEl.style.top = writtenTextEl.getBoundingClientRect().top - stageRect.top + "px";
-    measureEl.style.left = writtenTextEl.getBoundingClientRect().left - stageRect.left + "px";
-    measureEl.style.width = window.getComputedStyle(writtenTextEl).width;
-    measureEl.style.whiteSpace = "pre-wrap";
-    measureEl.style.pointerEvents = "none";
-    quillStage.appendChild(measureEl);
-
-    // Write characters
     for (let i = 0; i < displayText.length; i++) {
       writtenTextEl.textContent = displayText.slice(0, i + 1);
 
-      // Measure last char position
-      const range = document.createRange();
       const textNode = writtenTextEl.firstChild;
-      if (textNode && textNode.length > 0) {
-        const safeEnd = Math.min(i + 1, textNode.length);
+      if (textNode && textNode.nodeType === Node.TEXT_NODE && textNode.length > 0) {
+        const safeEnd   = Math.min(i + 1, textNode.length);
         const safeStart = Math.max(0, safeEnd - 1);
         try {
+          const range = document.createRange();
           range.setStart(textNode, safeStart);
           range.setEnd(textNode, safeEnd);
           const charRect = range.getBoundingClientRect();
-          quillX = charRect.right - stageRect.left -48;
-          quillY = charRect.top - stageRect.top + charRect.height -200;
-          setQuillPos(quillX, quillY);
-        } catch (e) { /* skip */ }
+
+          if (charRect.width > 0 || charRect.height > 0) {
+            // Nib tip tracks right edge of last char, at the baseline
+            const nibTargetX = charRect.right  - stageRect.left;
+            const nibTargetY = charRect.bottom - stageRect.top;
+            setQuillPos(nibTargetX, nibTargetY);
+          }
+        } catch (e) { /* skip on layout errors */ }
       }
 
-      // Newline character: quill moves down
       if (displayText[i] === "\n") {
         await wait(CHAR_SPEED * 3);
       } else {
@@ -292,62 +290,69 @@ window.addEventListener("load", () => {
       }
     }
 
-    quillStage.removeChild(measureEl);
-
-    // Hold the sentence
     await wait(PAUSE_AFTER);
 
-    // Fade out text
     writtenTextEl.style.transition = `opacity ${FADE_OUT_TIME}ms ease`;
-    writtenTextEl.style.opacity = "0";
-    quillInk.style.opacity = "0";
-
+    writtenTextEl.style.opacity    = "0";
+    quillInk.style.opacity         = "0";
     await wait(FADE_OUT_TIME + 200);
 
-    // Reset
-    writtenTextEl.textContent = "";
+    writtenTextEl.textContent      = "";
     writtenTextEl.style.transition = "";
-    writtenTextEl.style.opacity = "1";
+    writtenTextEl.style.opacity    = "1";
     quillEl.classList.remove("visible");
-
-    // Brief pause before next line
     await wait(500);
   };
 
-  const setQuillPos = (x, y) => {
-    quillEl.style.transform = `translate(${x}px, ${y}px) rotate(145deg)`;
+  // ── Cinematic quote player ────────────────────────────────────────
+  const playQuote = async ({ text, className, duration }) => {
+    quoteEl.className = "cinematic-quote";
+    quoteEl.textContent = text;
+    quoteEl.classList.add(...className.split(" "));
+    void quoteEl.offsetWidth;
+    quoteEl.classList.add("play");
+    await wait(duration);
   };
 
-  // ── Narrative sequence ───────────────────────────────────────────
+  // ── Full narrative sequence ───────────────────────────────────────
   const playNarrativeSequence = async () => {
+
+    // PHASE 1: Quill writes first line
     seedQuillParticles();
     quillParticleField.classList.remove("hidden");
     quillParticleField.classList.add("active");
     quillStage.classList.remove("hidden");
     quillStage.classList.add("visible");
 
-    // Start quill off-screen
-    setQuillPos(-120, 200);
+    await wait(600);
+    await writeOneSentence("You have been selected.");
 
-    // Brief intro pause
-    await wait(800);
-
-    for (const line of narrativeLines) {
-      await writeOneSentence(line);
-    }
-
-    // All lines done → reveal identity panel
-    await wait(400);
+    // PHASE 2: Cinematic quotes
     quillStage.classList.add("hidden");
     quillStage.classList.remove("visible");
     quillParticleField.classList.add("hidden");
     quillParticleField.classList.remove("active");
 
+    seedQuoteParticles();
+    quoteParticleField.classList.remove("hidden");
+    quoteParticleField.classList.add("active");
+    quoteLayer.classList.remove("hidden");
+
+    for (const quote of remainingQuotes) {
+      await playQuote(quote);
+    }
+
+    // PHASE 3: Identity panel
+    await wait(400);
+    quoteLayer.classList.add("hidden");
+    quoteParticleField.classList.add("hidden");
+    quoteParticleField.classList.remove("active");
+
     identityPanel.classList.remove("hidden");
     identityPanel.classList.add("visible");
   };
 
-  // ── Lock / Key / Enter ───────────────────────────────────────────
+  // ── Lock / Key / Enter ────────────────────────────────────────────
   const activateKeySequence = async () => {
     if (gateUnlocked) return;
     gateUnlocked = true;
@@ -375,7 +380,7 @@ window.addEventListener("load", () => {
   lockButton.addEventListener("click", () => { tryStartMusic(); activateKeySequence(); });
   enterButton.addEventListener("click", () => { tryStartMusic(); showEventCard(); });
 
-  // ── Success journey ──────────────────────────────────────────────
+  // ── Success journey ───────────────────────────────────────────────
   const runSuccessJourney = () => {
     if (narrativeStarted) return;
     narrativeStarted = true;
@@ -393,7 +398,7 @@ window.addEventListener("load", () => {
     }, 5300);
   };
 
-  // ── Form submit ──────────────────────────────────────────────────
+  // ── Form submit ───────────────────────────────────────────────────
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     tryStartMusic();
@@ -404,7 +409,7 @@ window.addEventListener("load", () => {
       result.style.color = "#1f7a3d";
       hintWords.classList.remove("armed", "spill");
       hintWords.classList.add("hidden");
-      answerInput.disabled = true;
+      answerInput.disabled  = true;
       submitButton.disabled = true;
       hintBottle.setAttribute("tabindex", "-1");
       letter.setAttribute("aria-hidden", "true");

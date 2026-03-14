@@ -4,13 +4,16 @@
   box-sizing: border-box;
 }
 
+/* ── Calligraphy font stack ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Uncial+Antiqua&display=swap');
+
 body {
   min-height: 100vh;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: 'IM Fell English', Georgia, "Times New Roman", serif;
   background: #0b0b0b;
   overflow: hidden;
   padding: 16px 10px;
@@ -112,6 +115,82 @@ body.end-active .end-screen {
   z-index: 0;
 }
 
+/* ── Quote layer & cinematic text ──────────────────────────────── */
+.quote-layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.quote-layer.hidden { display: none; }
+
+.quote-particle-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+.quote-particle-field.hidden { display: none; }
+.quote-particle-field.active { display: block; }
+
+.quote-particle {
+  position: absolute;
+  width: var(--size, 4px);
+  height: var(--size, 4px);
+  left: var(--left, 50%);
+  top: var(--top, 50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(237,222,194,0.35) 45%, transparent 100%);
+  filter: blur(0.15px);
+  opacity: 0;
+  animation: quoteParticleDrift var(--duration, 16s) ease-in-out var(--delay, -8s) infinite;
+}
+
+.cinematic-quote {
+  width: min(90vw, 860px);
+  margin: 0 auto;
+  text-align: center;
+  color: #d6c8a0;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(20px, 2.8vw, 32px);
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  text-shadow: 0 0 18px rgba(206,180,140,0.12);
+}
+
+.cinematic-quote.glow {
+  color: #fff3dc;
+  font-family: 'Cinzel Decorative', Georgia, serif;
+  font-style: normal;
+  font-size: clamp(16px, 2.2vw, 26px);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  text-shadow:
+    0 0 12px rgba(255,233,194,0.95),
+    0 0 28px rgba(244,211,153,0.75),
+    0 0 52px rgba(230,175,95,0.52),
+    0 0 90px rgba(223,165,87,0.32);
+  filter: drop-shadow(0 0 24px rgba(255,212,148,0.55));
+}
+
+.cinematic-quote.play {
+  animation-duration: 4.8s;
+  animation-timing-function: cubic-bezier(0.2, 0.9, 0.22, 1);
+  animation-fill-mode: forwards;
+}
+.cinematic-quote.from-center.play    { animation-name: quoteCenterFade; }
+.cinematic-quote.from-top-left.play  { animation-name: quoteTopLeft; }
+.cinematic-quote.from-bottom-right.play { animation-name: quoteBottomRight; }
+.cinematic-quote.from-bottom.play    { animation-name: quoteBottom; }
+.cinematic-quote.from-top.play       { animation-name: quoteTop; }
+
 /* ── Quill Stage ────────────────────────────────────────────────── */
 .quill-stage {
   position: absolute;
@@ -131,21 +210,25 @@ body.end-active .end-screen {
   animation: fadeInSoft 0.6s ease forwards;
 }
 
-/* The quill feather element — positioned absolutely, moved via transform in JS */
+/* ── Quill feather — now uses left/top absolute positioning ── */
+.quill svg{
+filter: drop-shadow(0 5px 10px rgba(0,0,0,0.35));
+}
 .quill {
-  position: absolute;
+  position: absolute;    /* stays within quill-stage */
   top: 0;
   left: 0;
-  width: 72px;
-  height: 180px;
+  width: 160px;          /* matches JS QUILL_W/QUILL_H */
+  height: 176px;
   pointer-events: none;
   opacity: 0;
-  transition: transform 0.045s linear;
-  transform-origin: bottom center;
+  /* NO transform here — JS sets left/top directly */
+  transform-origin: 16% 96%;  /* near nib for any rotation */
   filter:
-    drop-shadow(0 4px 14px rgba(180,0,0,0.32))
-    drop-shadow(0 2px 6px rgba(0,0,0,0.28));
-  z-index: 5;
+    drop-shadow(0 3px 10px rgba(160,160,190,0.50))
+    drop-shadow(0 5px 20px rgba(0,0,0,0.35));
+  z-index: 3;
+  transition: left 0.045s linear, top 0.045s linear;
 }
 
 .quill.visible {
@@ -153,23 +236,20 @@ body.end-active .end-screen {
   animation: quillBob 0.9s ease-in-out infinite;
 }
 
-/* Subtle bobbing while writing */
 @keyframes quillBob {
-  0%   { margin-top: 0px;   }
-  50%  { margin-top: -2px;  }
-  100% { margin-top: 0px;   }
+  0%   { margin-top: 0px; }
+  50%  { margin-top: -2px; }
+  100% { margin-top: 0px; }
 }
 
-/* Ink dot that flickers at nib */
 #ink-drop {
   animation: inkPulse 0.35s ease-in-out infinite alternate;
 }
 @keyframes inkPulse {
   from { r: 1.2; opacity: 0.7; }
-  to   { r: 2.0; opacity: 1;   }
+  to   { r: 2.0; opacity: 1; }
 }
 
-/* The quill-ink underline behind the text cursor */
 .quill-ink-line {
   position: absolute;
   bottom: 0;
@@ -182,18 +262,19 @@ body.end-active .end-screen {
   z-index: 4;
 }
 
-/* ── Written text ───────────────────────────────────────────────── */
+/* ── Written text — calligraphy style ───────────────────────────── */
 .written-text {
   position: relative;
   z-index: 4;
   width: min(80vw, 760px);
   text-align: center;
   color: #d6c8a0;
-  font-size: clamp(18px, 2.6vw, 28px);
-  line-height: 1.55;
-  letter-spacing: 0.04em;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1.6;
+  letter-spacing: 0.03em;
   white-space: pre-wrap;
-  /* Ink-on-parchment feel */
   text-shadow:
     0 1px 3px rgba(0,0,0,0.55),
     0 0 18px rgba(206,180,140,0.10);
@@ -202,8 +283,10 @@ body.end-active .end-screen {
 
 .written-text.glow {
   color: #fff3dc;
+  font-family: 'Cinzel Decorative', Georgia, serif;
+  font-style: normal;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   font-size: clamp(16px, 2.2vw, 26px);
   text-shadow:
     0 0 12px rgba(255,233,194,0.95),
@@ -267,11 +350,12 @@ body.end-active .end-screen {
 }
 
 .identity-title {
-  color: #f5ead8;
-  font-size: clamp(2rem, 5vw, 4.3rem);
-  letter-spacing: 0.16em;
-  line-height: 1.1;
-  text-transform: uppercase;
+  color: rgb(174, 84, 49);
+  font-family: 'Cinzel Decorative', Georgia, serif;
+  font-size: clamp(1.6rem, 4.5vw, 3.6rem);
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  font-weight: 400;
   text-shadow:
     0 0 18px rgba(227,204,168,0.14),
     0 0 46px rgba(184,144,102,0.10);
@@ -325,9 +409,10 @@ body.end-active .end-screen {
 .lock-copy,
 .key-status {
   color: rgba(241,230,211,0.82);
-  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  letter-spacing: 0.08em;
 }
 
 .key-panel.visible {
@@ -355,9 +440,10 @@ body.end-active .end-screen {
   border-radius: 999px;
   background: linear-gradient(180deg, #e5d2b9 0%, #b89972 100%);
   color: #140f0c;
+  font-family: 'Cinzel Decorative', Georgia, serif;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.88rem;
+  letter-spacing: 0.14em;
+  font-size: 0.82rem;
   box-shadow: 0 12px 30px rgba(0,0,0,0.34);
   transition: transform 0.28s ease, box-shadow 0.28s ease, opacity 0.28s ease;
 }
@@ -367,7 +453,7 @@ body.end-active .end-screen {
   box-shadow: 0 16px 36px rgba(0,0,0,0.42);
 }
 
-/* ── Event stage & parchment scroll ────────────────────────────── */
+/* ── Event stage & scroll card ──────────────────────────────────── */
 .event-stage {
   position: absolute;
   inset: 0;
@@ -408,145 +494,133 @@ body.end-active .end-screen {
   z-index: 1;
 }
 
-/* ── Roller scroll card ─────────────────────────────────────────── */
+/* ── Scroll card ─────────────────────────────────────────────────── */
 .event-card {
-  position: relative;
-  z-index: 3;
   width: min(82vw, 420px);
   aspect-ratio: 420 / 640;
-  border: none;
-  background: transparent;
-  box-shadow:
-    0 40px 100px rgba(0,0,0,0.80),
-    0 10px 28px rgba(0,0,0,0.60);
-  opacity: 0;
-  transform: translateY(50px) scale(0.88) rotate(-0.8deg);
-  animation: scrollUnroll 1.8s cubic-bezier(0.14, 0.9, 0.18, 1) 0.3s forwards;
+  position: relative;   /* IMPORTANT FIX */
 }
 
-/* SVG fills the entire card including roller protrusions */
-.parchment-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  pointer-events: none;
-  z-index: 0;
-  overflow: visible;
-}
-
-/* Content sits over the parchment body, inset from rollers */
+/* TEXT AREA INSIDE SCROLL */
 .scroll-content {
   position: absolute;
-  top: 16%;
-  bottom: 16%;
+  top: 28%;
   left: 14%;
   right: 14%;
-  z-index: 2;
+  bottom: 22%;
+
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+
+  gap: 8px;
+  z-index: 2;
   pointer-events: none;
 }
 
+/* HEADER ORNAMENT */
 .scroll-header {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 0;
-  flex-shrink: 0;
+  width: 100%;
 }
 
 .scroll-rule {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(55,30,5,0.40), transparent);
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(55,30,5,0.40),
+    transparent
+  );
 }
 
 .scroll-ornament {
   color: rgba(55,30,5,0.55);
   font-size: 0.85rem;
-  line-height: 1;
-  font-family: Georgia, serif;
 }
+
+/* TITLE */
 
 .scroll-title {
   text-align: center;
-  font-family: 'Cinzel Decorative', 'IM Fell English', Georgia, serif;
-  font-size: clamp(0.9rem, 2.8vw, 1.3rem);
+  font-family: 'Cinzel Decorative', Georgia, serif;
+  font-size: clamp(0.85rem, 2.4vw, 1.15rem);
   font-weight: 700;
   color: #1a0c02;
-  letter-spacing: 0.12em;
-  line-height: 1.3;
-  flex-shrink: 0;
-  text-shadow:
-    1px 1px 0 rgba(210,165,85,0.30),
-    0 2px 8px rgba(50,22,3,0.20);
+  letter-spacing: 0.1em;
+  line-height: 1.2;
 }
+
+/* DIVIDER */
 
 .scroll-divider {
   text-align: center;
-  height: auto;
-  margin: 0;
-  background: none;
-  flex-shrink: 0;
 }
 
 .scroll-deco {
-  font-family: Georgia, serif;
   color: rgba(55,30,5,0.45);
   font-size: 0.75rem;
-  letter-spacing: 0.1em;
 }
 
-.scroll-footer {
-  text-align: center;
-  padding: 0;
-  flex-shrink: 0;
-}
+/* DETAILS GRID */
 
 .details-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px 10px;
-  text-align: left;
-  flex-shrink: 0;
+  grid-template-columns: repeat(2, 1fr);
+
+  width: 100%;
+  gap: 6px 12px;
+
+  margin-top: 4px;
 }
 
+/* DETAIL BLOCK */
+
 .detail {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(55,30,5,0.16);
-  border-radius: 0;
-  padding: 4px 2px 4px;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
+
+  border-bottom: 1px solid rgba(55,30,5,0.16);
+  padding-bottom: 4px;
 }
+
+/* FULL WIDTH ROW */
 
 .detail--full {
   grid-column: 1 / -1;
 }
 
+/* LABEL */
+
 .label {
-  color: rgba(70,38,8,0.65);
+  color: rgba(40,18,4,0.72);
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.58rem;
-  font-family: 'IM Fell English', Georgia, serif;
-  font-style: normal;
+  letter-spacing: 0.18em;
+  font-size: 0.52rem;
+  font-family: 'Cinzel Decorative', Georgia, serif;
 }
+
+/* VALUE */
 
 .value {
   color: #1a0c02;
-  font-size: clamp(0.72rem, 1.8vw, 0.9rem);
-  font-weight: 400;
-  line-height: 1.25;
+  font-size: clamp(0.68rem, 1.7vw, 0.88rem);
   font-style: italic;
   font-family: 'IM Fell English', Georgia, serif;
-  text-shadow: 0 1px 0 rgba(200,140,60,0.12);
+
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+/* FOOTER */
+
+.scroll-footer {
+  margin-top: 6px;
 }
 
 /* ── Particles ──────────────────────────────────────────────────── */
@@ -696,7 +770,7 @@ body.revealed .wrapper {
   opacity: 0;
 }
 
-/* ── Letter ─────────────────────────────────────────────────────── */
+/* ── Letter — calligraphy fonts ──────────────────────────────────── */
 .letter {
   position: absolute;
   top: 0;
@@ -719,16 +793,22 @@ body.revealed .wrapper {
 
 .letter h1 {
   text-align: center;
-  font-size: 19px;
-  color: #000;
+  font-family: 'Cinzel Decorative', Georgia, serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a0802;
   line-height: 1.2;
+  letter-spacing: 0.08em;
 }
 
 .riddle {
   text-align: center;
-  font-size: 15px;
-  line-height: 1.35;
-  color: #000;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #1a0802;
+  letter-spacing: 0.01em;
 }
 
 .letter > * {
@@ -793,21 +873,25 @@ body.revealed .wrapper {
 
 .answer-form input {
   flex: 1;
-  border: 1px solid #000;
+  border: 1px solid #7a4030;
   border-radius: 8px;
   padding: 8px;
-  font-size: 12px;
-  color: #000;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  font-size: 13px;
+  color: #1a0802;
   background: #f3d1c2;
 }
 
 .answer-form button {
-  border: 1px solid #000;
+  border: 1px solid #7a4030;
   border-radius: 8px;
   padding: 8px 10px;
   background: #d99b80;
-  color: #000;
-  font-size: 12px;
+  color: #1a0802;
+  font-family: 'Cinzel Decorative', Georgia, serif;
+  font-size: 10px;
+  letter-spacing: 0.05em;
   cursor: pointer;
 }
 
@@ -821,8 +905,9 @@ body.revealed .wrapper {
 .hint,
 .result {
   text-align: center;
+  font-family: 'IM Fell English', Georgia, serif;
   font-size: 11px;
-  color: #000;
+  color: #1a0802;
 }
 
 .hint {
@@ -907,7 +992,8 @@ body.revealed .wrapper {
   border: 1px solid #b36a51;
   background: #ffe7da;
   color: #7a351f;
-  font-size: 10px;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 9px;
   font-weight: 700;
   line-height: 1;
 }
@@ -932,6 +1018,7 @@ body.revealed .wrapper {
   border: 1px solid #7b5a4e;
   background: linear-gradient(180deg, #ffe2d4 0%, #efb79f 55%, #de987f 100%);
   padding: 4px 10px;
+  font-family: 'IM Fell English', Georgia, serif;
   font-size: 11px;
   font-weight: 700;
   color: #2b1c16;
@@ -974,9 +1061,10 @@ body.revealed .wrapper {
   border: none;
   background: transparent;
   color: #d6c8a0;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 18px;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  font-size: 20px;
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
@@ -1063,6 +1151,7 @@ body.opened .tap-open {
 .result {
   min-height: 16px;
   font-weight: 700;
+  font-style: normal;
 }
 
 /* ═══════════════════════════════════════════
@@ -1073,6 +1162,37 @@ body.opened .tap-open {
   0%   { transform: translateY(0); }
   50%  { transform: translateY(-12px); }
   100% { transform: translateY(0); }
+}
+
+@keyframes quoteCenterFade {
+  0%   { opacity: 0; transform: translateY(18px) scale(0.98); }
+  16%  { opacity: 1; transform: translateY(0) scale(1); }
+  70%  { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-18px) scale(1.01); }
+}
+@keyframes quoteTopLeft {
+  0%   { opacity: 0; transform: translate(-18vw, -16vh) scale(0.96); }
+  18%  { opacity: 1; transform: translate(0, 0) scale(1); }
+  72%  { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(2vw, -2vh) scale(1.01); }
+}
+@keyframes quoteBottomRight {
+  0%   { opacity: 0; transform: translate(18vw, 16vh) scale(0.96); }
+  18%  { opacity: 1; transform: translate(0, 0) scale(1); }
+  72%  { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(-2vw, 2vh) scale(1.01); }
+}
+@keyframes quoteBottom {
+  0%   { opacity: 0; transform: translateY(18vh) scale(0.96); }
+  18%  { opacity: 1; transform: translateY(0) scale(1); }
+  72%  { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-2vh) scale(1.01); }
+}
+@keyframes quoteTop {
+  0%   { opacity: 0; transform: translateY(-18vh) scale(0.96); }
+  18%  { opacity: 1; transform: translateY(0) scale(1); }
+  72%  { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(2vh) scale(1.01); }
 }
 
 @keyframes fadeInSoft {
@@ -1288,11 +1408,11 @@ body.opened .tap-open {
     animation: letterBurnAwayMobile 5.4s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
   }
 
-  .letter h1    { font-size: 14px; }
-  .riddle       { font-size: 9px; line-height: 1.2; }
+  .letter h1    { font-size: 13px; }
+  .riddle       { font-size: 9px; line-height: 1.3; }
 
   .answer-form input,
-  .answer-form button { padding: 6px 7px; font-size: 10px; }
+  .answer-form button { padding: 6px 7px; font-size: 9px; }
 
   .hint-bottle { width: 38px; height: 58px; }
   .hint-bottle-cap { top: -10px; width: 36px; height: 10px; }
@@ -1305,18 +1425,18 @@ body.opened .tap-open {
   .hint.spill .hint-pill:nth-child(3) { animation: roll3Mobile 1.65s 0.24s forwards; }
 
   .result    { min-height: 12px; font-size: 10px; line-height: 1.1; }
-  .tap-open  { font-size: 15px; }
+  .tap-open  { font-size: 16px; }
 
-  .written-text { font-size: clamp(14px, 4.5vw, 20px); }
+  .written-text { font-size: clamp(16px, 5vw, 24px); }
   .written-text.glow { font-size: clamp(13px, 4vw, 18px); }
 
-  .identity-title { letter-spacing: 0.1em; }
+  .identity-title { font-size: clamp(1.2rem, 5vw, 2rem); letter-spacing: 0.08em; }
   .lock-button    { width: 74px; height: 74px; }
 
-  .event-card { width: min(80vw, 340px); }
-  .scroll-title  { font-size: clamp(0.8rem, 3.5vw, 1.1rem); }
-  .value { font-size: clamp(0.65rem, 2.2vw, 0.82rem); }
-  .label { font-size: 0.52rem; }
+  .event-card { width: min(80vw, 260px); }
+  .scroll-title  { font-size: clamp(0.76rem, 3.2vw, 1rem); }
+  .value { font-size: clamp(0.64rem, 2.2vw, 0.80rem); }
+  .label { font-size: 0.48rem; }
 }
 
 @media (max-width: 400px) {
