@@ -24,6 +24,17 @@ window.addEventListener("load", () => {
   const enterButton = document.querySelector("#enter-button");
   const eventStage = document.querySelector("#event-stage");
   const eventParticleField = document.querySelector("#event-particle-field");
+  const rsvpButton = document.querySelector("#rsvp-button");
+  const rsvpPanel = document.querySelector("#rsvp-panel");
+  const rsvpForm = document.querySelector("#rsvp-form");
+  const rsvpName = document.querySelector("#rsvp-name");
+  const rsvpPhone = document.querySelector("#rsvp-phone");
+  const rsvpAttend = document.querySelector("#rsvp-attend");
+  const rsvpGuests = document.querySelector("#rsvp-guests");
+  const rsvpMessage = document.querySelector("#rsvp-message");
+  const rsvpSuccess = document.querySelector("#rsvp-success");
+  const rsvpError = document.querySelector("#rsvp-error");
+  const rsvpWhatsAppNumber = "918985064450";
 
   const quotes = [
     { text: "You have been selected", className: "from-center", duration: 4800 },
@@ -318,6 +329,70 @@ window.addEventListener("load", () => {
     tryStartMusic();
     showEventCard();
   });
+
+  if (rsvpButton && rsvpPanel) {
+    rsvpButton.addEventListener("click", () => {
+      tryStartMusic();
+      rsvpPanel.classList.toggle("hidden");
+      const isHidden = rsvpPanel.classList.contains("hidden");
+      rsvpPanel.setAttribute("aria-hidden", isHidden ? "true" : "false");
+      if (!isHidden) {
+        rsvpPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  }
+
+  if (rsvpForm) {
+    rsvpForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!rsvpForm.reportValidity()) {
+        return;
+      }
+
+      if (rsvpError) {
+        rsvpError.classList.add("hidden");
+        rsvpError.textContent = "";
+      }
+
+      const submitButton = rsvpForm.querySelector(".rsvp-submit");
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Opening WhatsApp...";
+      }
+
+      const guestsValue = rsvpGuests?.value?.trim() || "0";
+      const messageLines = [
+        "New RSVP Received 🎉",
+        `Name: ${rsvpName.value.trim()}`,
+        `Phone: ${rsvpPhone.value.trim()}`,
+        `Guests: ${guestsValue}`,
+        `Attendance: ${rsvpAttend.value}`,
+        `Message: ${rsvpMessage?.value?.trim() || "-"}`
+      ];
+
+      if (rsvpAttend.value.toLowerCase() === "yes") {
+        messageLines.push(
+          "Yes! I’m honored to be the chosen one and excited to grace the occasion with my presence."
+        );
+      }
+
+      const url = `https://wa.me/${rsvpWhatsAppNumber}?text=${encodeURIComponent(messageLines.join("\n"))}`;
+      const opened = window.open(url, "_blank");
+      if (!opened) {
+        window.location.href = url;
+      }
+
+      rsvpForm.classList.add("hidden");
+      if (rsvpSuccess) {
+        rsvpSuccess.classList.remove("hidden");
+      }
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit RSVP";
+      }
+    });
+  }
 
   const runSuccessJourney = () => {
     if (narrativeStarted) {
