@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <audio id="bg-music" src="music.mpeg" loop preload="auto" playsinline></audio>
+  <audio id="bg-music" src="Hedwigs_HP_music.mp3" loop preload="auto" playsinline></audio>
 
   <div class="scene">
     <div class="light" aria-hidden="true"></div>
@@ -51,22 +51,185 @@
 
   <section class="end-screen" id="end-screen" aria-hidden="true">
     <div class="cinematic-stage" id="cinematic-stage">
-      <div class="quote-particle-field hidden" id="quote-particle-field" aria-hidden="true"></div>
 
-      <div class="quote-layer" id="quote-layer" aria-live="polite">
-        <p class="cinematic-quote" id="cinematic-quote"></p>
+      <!-- ── QUILL WRITING STAGE (first line only) ── -->
+      <div class="quill-stage hidden" id="quill-stage" aria-live="polite">
+        <div class="quill-particle-field hidden" id="quill-particle-field" aria-hidden="true"></div>
+
+        <!-- Clean white feather quill — no glow, no strokes, gap near spine -->
+        <div class="quill" id="quill" aria-hidden="true">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+            <defs>
+              <!-- Upper vane: bright white fading to soft grey at edges -->
+              <linearGradient id="uvane" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#d0d0d0"/>
+                <stop offset="30%"  stop-color="#eeeeee"/>
+                <stop offset="55%"  stop-color="#ffffff"/>
+                <stop offset="80%"  stop-color="#f0f0f0"/>
+                <stop offset="100%" stop-color="#d8d8d8"/>
+              </linearGradient>
+              <!-- Lower vane: slightly dimmer -->
+              <linearGradient id="lvane" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#c0c0c0"/>
+                <stop offset="40%"  stop-color="#dedede"/>
+                <stop offset="70%"  stop-color="#eeeeee"/>
+                <stop offset="100%" stop-color="#cccccc"/>
+              </linearGradient>
+              <!-- Shaft: warm ivory -->
+              <linearGradient id="spineG" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#a09888"/>
+                <stop offset="40%"  stop-color="#cec6b4"/>
+                <stop offset="100%" stop-color="#928880"/>
+              </linearGradient>
+              <!-- Nib dark -->
+              <linearGradient id="nibG" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#303040"/>
+                <stop offset="60%"  stop-color="#14141e"/>
+                <stop offset="100%" stop-color="#040408"/>
+              </linearGradient>
+              <!-- Barb layer gradients (per-group, white fading to transparent) -->
+              <linearGradient id="bL1" x1="100%" y1="0%" x2="0%" y2="0%">
+                <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.0"/>
+                <stop offset="40%"  stop-color="#f0f0f0" stop-opacity="0.7"/>
+                <stop offset="100%" stop-color="#e8e8e8" stop-opacity="0.9"/>
+              </linearGradient>
+              <linearGradient id="bR1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.0"/>
+                <stop offset="40%"  stop-color="#e8e8e8" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#d8d8d8" stop-opacity="0.8"/>
+              </linearGradient>
+            </defs>
+
+            <!-- ── LOWER VANE (behind upper vane) ── -->
+            <!-- Gap near spine: path does NOT touch the shaft line, leaves ~4px space -->
+            <path d="
+              M 164,26
+              C 150,34  126,52  102,72
+              C  78,92   54,116  38,140
+              C  30,154  28,166  30,176
+              C  36,166  46,152  60,138
+              C  76,122  98,100  120,80
+              C  142,60  158,44  166,30
+              Z"
+              fill="url(#lvane)"/>
+
+            <!-- ── UPPER VANE (on top) ── -->
+            <!-- Gap near spine: inner edge offset ~4-5px from shaft path -->
+            <path d="
+              M 164,26
+              C 154,20  138,14  116,18
+              C  94,22   70,34   50,54
+              C  32,72   18,94   16,116
+              C  14,134  20,150  28,160
+              C  32,150  36,136  44,122
+              C  54,104  70,84   90,66
+              C 110,48  134,34  156,26
+              Z"
+              fill="url(#uvane)"/>
+
+            <!-- ── BARB TEXTURE — thin wedge shapes, upper vane ── -->
+            <!-- Each barb is a very thin filled sliver that fades from shaft outward.
+                 They start slightly away from the shaft (the gap) -->
+            <g opacity="0.55">
+              <path d="M152 28 C138 20 116 16 96 22 C116 20 138 22 152 30 Z" fill="#e8e8e8"/>
+              <path d="M140 36 C124 26 100 22 76 30 C98 26 122 28 140 38 Z" fill="#e4e4e4"/>
+              <path d="M126 46 C108 36  82 32  56 42 C80 36 106 38 126 48 Z" fill="#e0e0e0"/>
+              <path d="M112 58 C92  48  64 44  38 56 C62 48  90 50 112 60 Z" fill="#dcdcdc"/>
+              <path d="M96  72 C76  62  46 58  22 72 C46 64  74 64  96 74 Z" fill="#d8d8d8"/>
+              <path d="M80  88 C60  78  30 76   8 92 C32 82  58 80  80 90 Z" fill="#d4d4d4"/>
+              <path d="M64 106 C44  96  16 96   4 112 C18 100 42 98  64 108 Z" fill="#d0d0d0"/>
+              <path d="M50 122 C32 112  10 114  4 130 C14 118 34 114 50 124 Z" fill="#cccccc"/>
+              <path d="M38 136 C24 126  10 130  8 146 C14 134 26 128 38 138 Z" fill="#c8c8c8"/>
+              <path d="M28 150 C18 142  10 146 10 160 C14 150 20 144 28 152 Z" fill="#c4c4c4"/>
+            </g>
+
+            <!-- ── BARB TEXTURE — lower vane ── -->
+            <g opacity="0.45">
+              <path d="M158 32 C164 44 162 60 156 72 C160 58 162 44 160 34 Z" fill="#d8d8d8"/>
+              <path d="M148 42 C156 56 154 74 148 90 C152 74 154 58 150 44 Z" fill="#d4d4d4"/>
+              <path d="M136 54 C146 70 144 90 136 108 C142 90 144 72 138 56 Z" fill="#d0d0d0"/>
+              <path d="M122 68 C134 86 132 108 122 126 C130 108 132 88 124 70 Z" fill="#cccccc"/>
+              <path d="M106 84 C120 104 118 126 106 144 C116 126 118 106 108 86 Z" fill="#c8c8c8"/>
+              <path d="M90 102 C104 122 100 144  88 162 C100 144 104 124  92 104 Z" fill="#c4c4c4"/>
+              <path d="M74 118 C86 138  82 158  68 174 C82 158  86 140  76 120 Z" fill="#c0c0c0"/>
+              <path d="M58 134 C68 154  62 172  48 186 C62 172  68 156  60 136 Z" fill="#bcbcbc"/>
+            </g>
+
+            <!-- ── CURVED SHAFT (spine) — sits on top of gap ── -->
+            <path d="
+              M 162,24
+              C 156,32  142,48  124,66
+              C 106,84   84,104  62,124
+              C  46,140   34,156  30,172
+              C  31,168   32,164  33,160
+              C  37,146   50,130   68,112
+              C  88,92   110,72  128,54
+              C  146,38  158,26  164,22
+              Z"
+              fill="url(#spineG)"/>
+            <!-- Spine highlight -->
+            <line x1="160" y1="25" x2="32" y2="170"
+                  stroke="rgba(255,255,255,0.55)" stroke-width="0.8"
+                  stroke-linecap="round"/>
+
+            <!-- ── FEATHER TIP ── -->
+            <path d="M 162,24 C 166,20 172,16 176,18 C 172,20 168,22 164,26 Z"
+                  fill="#e8e8e8"/>
+            <path d="M 162,24 C 160,18 158,14 160,16 C 161,18 162,22 162,24 Z"
+                  fill="#f4f4f4"/>
+
+            <!-- ── GLOSS on upper vane ── -->
+            <path d="M 154,28 C 144,40 124,58 102,76 C 114,62 132,44 152,30 Z"
+                  fill="rgba(255,255,255,0.40)"/>
+            <path d="M 136,38 C 122,54 100,74  76,94 C  90,78 112,58 134,40 Z"
+                  fill="rgba(255,255,255,0.22)"/>
+            <path d="M 114,52 C  98,70  74,92  50,112 C 66,94  90,72 112,54 Z"
+                  fill="rgba(255,255,255,0.14)"/>
+
+            <!-- ── DARK NIB ── -->
+            <path d="
+              M 30,170
+              C 28,176  27,184  27.5,192
+              C 28,198  29,204  29.5,208
+              C 30,204  31,198  31.5,192
+              C 32,184  31,176  30,170 Z"
+              fill="url(#nibG)"/>
+            <!-- Nib highlight -->
+            <path d="M 28.5,172 C 27.8,180 27.5,188 28,195 C 28.3,188 28.4,180 28.4,174 Z"
+                  fill="rgba(140,150,200,0.40)"/>
+            <!-- Nib split -->
+            <line x1="29.5" y1="180" x2="29.5" y2="209"
+                  stroke="rgba(4,4,14,0.40)" stroke-width="0.8"/>
+            <!-- Sharp tip -->
+            <path d="M 28.5,204 C 29.5,216 31,204 31,204
+                     C 30.5,208 30,212 29.8,214
+                     C 29.5,212 29,208 28.5,204 Z"
+                  fill="#02020a"/>
+            <!-- Ink drop -->
+            <ellipse cx="29.8" cy="215" rx="2" ry="1.4"
+                     fill="rgba(4,4,16,0.90)" id="ink-drop"/>
+          </svg>
+        </div>
+
+        <div class="quill-ink-line" id="quill-ink-line" aria-hidden="true"></div>
+        <p class="written-text" id="written-text" aria-live="polite"></p>
       </div>
 
+      <!-- ── CINEMATIC QUOTE LAYER (remaining lines after quill) ── -->
+      <div class="quote-layer hidden" id="quote-layer" aria-live="polite">
+        <p class="cinematic-quote" id="cinematic-quote"></p>
+      </div>
+      <div class="quote-particle-field hidden" id="quote-particle-field" aria-hidden="true"></div>
+
+      <!-- ── IDENTITY PANEL ── -->
       <div class="identity-panel hidden" id="identity-panel">
         <h2 class="identity-title">H2 HOUSE OF HEALTH</h2>
-
         <div class="lock-panel" id="lock-panel">
           <button class="lock-button" id="lock-button" type="button" aria-label="Reveal the experience">
             <span class="lock-icon" aria-hidden="true">🔒</span>
           </button>
           <p class="lock-copy">Reveal the experience</p>
         </div>
-
         <div class="key-panel hidden" id="key-panel" aria-live="polite">
           <div class="key-icon" aria-hidden="true">🗝️</div>
           <p class="key-status hidden" id="key-status">Your key has been accepted</p>
@@ -74,37 +237,182 @@
         </div>
       </div>
 
+      <!-- ── FINAL SCROLL INVITATION ── -->
       <div class="event-stage hidden" id="event-stage" aria-hidden="true">
         <div class="particle-field" id="event-particle-field" aria-hidden="true"></div>
 
-        <article class="event-card">
-          <!-- <div class="event-key" aria-hidden="true">🗝️</div>
-          <p class="accepted-copy">Your key has been accepted.</p> -->
+        <article class="event-card" role="region" aria-label="Invitation details">
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel+Decorative:wght@400;700&display=swap">
 
-          <div class="details-grid">
-            <div class="detail">
-              <span class="label">Event</span>
-              <span class="value">Grand Opening</span>
+          <svg class="parchment-svg" viewBox="0 0 420 640" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="parch" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#b89050"/>
+                <stop offset="12%"  stop-color="#cba868"/>
+                <stop offset="30%"  stop-color="#e2c888"/>
+                <stop offset="50%"  stop-color="#edd9a0"/>
+                <stop offset="68%"  stop-color="#dfc488"/>
+                <stop offset="85%"  stop-color="#c8a862"/>
+                <stop offset="100%" stop-color="#b08040"/>
+              </linearGradient>
+              <radialGradient id="vig" cx="50%" cy="50%" r="60%">
+                <stop offset="0%"   stop-color="rgba(0,0,0,0)"/>
+                <stop offset="65%"  stop-color="rgba(40,20,5,0.0)"/>
+                <stop offset="100%" stop-color="rgba(20,8,1,0.68)"/>
+              </radialGradient>
+              <linearGradient id="roll" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%"   stop-color="#6b4a1a"/>
+                <stop offset="20%"  stop-color="#a87830"/>
+                <stop offset="38%"  stop-color="#c89848"/>
+                <stop offset="55%"  stop-color="#b08035"/>
+                <stop offset="72%"  stop-color="#8a5e22"/>
+                <stop offset="88%"  stop-color="#a87030"/>
+                <stop offset="100%" stop-color="#7a5020"/>
+              </linearGradient>
+              <radialGradient id="cap" cx="40%" cy="35%" r="65%">
+                <stop offset="0%"   stop-color="#d4a848"/>
+                <stop offset="50%"  stop-color="#9a6c28"/>
+                <stop offset="100%" stop-color="#5a3810"/>
+              </radialGradient>
+              <radialGradient id="ws" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"   stop-color="rgba(100,65,15,0)"/>
+                <stop offset="60%"  stop-color="rgba(100,65,15,0.07)"/>
+                <stop offset="100%" stop-color="rgba(100,65,15,0.20)"/>
+              </radialGradient>
+              <clipPath id="parchClip">
+                <path d="M 52,72 C 52,72 44,95 54,115 C 64,135 44,155 54,178 C 64,201 44,220 54,244 C 64,268 44,288 54,312 C 64,336 44,356 54,380 C 64,404 44,424 54,448 C 58,462 54,472 54,480 L 366,480 C 366,480 376,462 366,448 C 356,424 376,404 366,380 C 356,356 376,336 366,312 C 356,288 376,268 366,244 C 376,220 356,201 366,178 C 376,155 356,135 366,115 C 376,95 366,72 366,72 Z"/>
+              </clipPath>
+            </defs>
+
+            <ellipse cx="210" cy="620" rx="130" ry="14" fill="rgba(0,0,0,0.38)"/>
+
+            <!-- TOP ROLLER -->
+            <rect x="30" y="52" width="360" height="44" rx="22" fill="url(#roll)"/>
+            <rect x="30" y="57" width="360" height="8"  rx="4"  fill="rgba(255,220,140,0.22)" opacity="0.7"/>
+            <g stroke="rgba(0,0,0,0.25)" stroke-width="1" fill="none">
+              <line x1="80"  y1="52" x2="80"  y2="96"/><line x1="108" y1="52" x2="108" y2="96"/>
+              <line x1="136" y1="52" x2="136" y2="96"/><line x1="164" y1="52" x2="164" y2="96"/>
+              <line x1="192" y1="52" x2="192" y2="96"/><line x1="220" y1="52" x2="220" y2="96"/>
+              <line x1="248" y1="52" x2="248" y2="96"/><line x1="276" y1="52" x2="276" y2="96"/>
+              <line x1="304" y1="52" x2="304" y2="96"/><line x1="332" y1="52" x2="332" y2="96"/>
+            </g>
+            <line x1="30" y1="66" x2="390" y2="66" stroke="rgba(255,210,120,0.18)" stroke-width="2"/>
+            <ellipse cx="30"  cy="74" rx="22" ry="22" fill="url(#cap)"/>
+            <ellipse cx="30"  cy="74" rx="22" ry="22" fill="none" stroke="#5a3810" stroke-width="1.5"/>
+            <ellipse cx="30"  cy="74" rx="14" ry="14" fill="none" stroke="rgba(200,150,60,0.55)" stroke-width="1"/>
+            <ellipse cx="30"  cy="74" rx="6"  ry="6"  fill="rgba(80,50,15,0.8)"/>
+            <circle  cx="30"  cy="74" r="2"   fill="#d4a848"/>
+            <ellipse cx="390" cy="74" rx="22" ry="22" fill="url(#cap)"/>
+            <ellipse cx="390" cy="74" rx="22" ry="22" fill="none" stroke="#5a3810" stroke-width="1.5"/>
+            <ellipse cx="390" cy="74" rx="14" ry="14" fill="none" stroke="rgba(200,150,60,0.55)" stroke-width="1"/>
+            <ellipse cx="390" cy="74" rx="6"  ry="6"  fill="rgba(80,50,15,0.8)"/>
+            <circle  cx="390" cy="74" r="2"   fill="#d4a848"/>
+            <path d="M 210,52 Q 210,38 208,30 Q 205,20 210,10" stroke="#8B6914" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <path d="M 210,52 Q 212,38 214,30 Q 217,20 212,10" stroke="#8B6914" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+            <!-- PARCHMENT BODY -->
+            <g clip-path="url(#parchClip)">
+              <rect x="52" y="72" width="316" height="408" fill="url(#parch)"/>
+              <g stroke="#5a3200" stroke-width="0.4" opacity="0.08">
+                <line x1="52" y1="90"  x2="368" y2="90"/> <line x1="52" y1="108" x2="368" y2="108"/>
+                <line x1="52" y1="126" x2="368" y2="126"/><line x1="52" y1="144" x2="368" y2="144"/>
+                <line x1="52" y1="162" x2="368" y2="162"/><line x1="52" y1="180" x2="368" y2="180"/>
+                <line x1="52" y1="198" x2="368" y2="198"/><line x1="52" y1="216" x2="368" y2="216"/>
+                <line x1="52" y1="234" x2="368" y2="234"/><line x1="52" y1="252" x2="368" y2="252"/>
+                <line x1="52" y1="270" x2="368" y2="270"/><line x1="52" y1="288" x2="368" y2="288"/>
+                <line x1="52" y1="306" x2="368" y2="306"/><line x1="52" y1="324" x2="368" y2="324"/>
+                <line x1="52" y1="342" x2="368" y2="342"/><line x1="52" y1="360" x2="368" y2="360"/>
+                <line x1="52" y1="378" x2="368" y2="378"/><line x1="52" y1="396" x2="368" y2="396"/>
+                <line x1="52" y1="414" x2="368" y2="414"/><line x1="52" y1="432" x2="368" y2="432"/>
+                <line x1="52" y1="450" x2="368" y2="450"/><line x1="52" y1="468" x2="368" y2="468"/>
+              </g>
+              <ellipse cx="100" cy="130" rx="48" ry="34" fill="url(#ws)" opacity="0.9"/>
+              <ellipse cx="100" cy="130" rx="48" ry="34" fill="none" stroke="rgba(110,68,18,0.13)" stroke-width="1.5"/>
+              <ellipse cx="310" cy="420" rx="52" ry="36" fill="url(#ws)" opacity="0.8"/>
+              <ellipse cx="310" cy="420" rx="52" ry="36" fill="none" stroke="rgba(90,55,14,0.11)" stroke-width="1.2"/>
+              <ellipse cx="200" cy="440" rx="34" ry="22" fill="url(#ws)" opacity="0.5"/>
+              <circle cx="68"  cy="88"  r="5"   fill="rgba(110,62,16,0.30)"/>
+              <circle cx="76"  cy="82"  r="3"   fill="rgba(95,54,13,0.24)"/>
+              <circle cx="340" cy="92"  r="4.5" fill="rgba(118,68,18,0.26)"/>
+              <circle cx="62"  cy="448" r="5"   fill="rgba(108,62,16,0.28)"/>
+              <circle cx="346" cy="452" r="4"   fill="rgba(112,65,17,0.25)"/>
+              <circle cx="160" cy="85"  r="3"   fill="rgba(105,60,15,0.18)"/>
+              <line x1="52" y1="192" x2="368" y2="196" stroke="rgba(80,45,8,0.16)" stroke-width="1.4"/>
+              <line x1="52" y1="193" x2="368" y2="197" stroke="rgba(255,230,160,0.09)" stroke-width="0.8"/>
+              <line x1="52" y1="350" x2="368" y2="354" stroke="rgba(80,45,8,0.12)" stroke-width="1.1"/>
+              <line x1="130" y1="220" x2="170" y2="260" stroke="rgba(80,45,8,0.10)" stroke-width="1.2"/>
+              <line x1="170" y1="220" x2="130" y2="260" stroke="rgba(80,45,8,0.10)" stroke-width="1.2"/>
+              <rect x="52"  y="72"  width="24"  height="408" fill="rgba(40,18,4,0.14)"/>
+              <rect x="344" y="72"  width="24"  height="408" fill="rgba(40,18,4,0.12)"/>
+              <rect x="52"  y="72"  width="316" height="28"  fill="rgba(40,18,4,0.22)"/>
+              <rect x="52"  y="452" width="316" height="28"  fill="rgba(40,18,4,0.18)"/>
+              <rect x="52"  y="72"  width="316" height="408" fill="url(#vig)"/>
+            </g>
+
+            <!-- BOTTOM ROLLER -->
+            <rect x="30" y="480" width="360" height="44" rx="22" fill="url(#roll)"/>
+            <rect x="30" y="484" width="360" height="8"  rx="4"  fill="rgba(255,220,140,0.22)" opacity="0.7"/>
+            <g stroke="rgba(0,0,0,0.25)" stroke-width="1" fill="none">
+              <line x1="80"  y1="480" x2="80"  y2="524"/><line x1="108" y1="480" x2="108" y2="524"/>
+              <line x1="136" y1="480" x2="136" y2="524"/><line x1="164" y1="480" x2="164" y2="524"/>
+              <line x1="192" y1="480" x2="192" y2="524"/><line x1="220" y1="480" x2="220" y2="524"/>
+              <line x1="248" y1="480" x2="248" y2="524"/><line x1="276" y1="480" x2="276" y2="524"/>
+              <line x1="304" y1="480" x2="304" y2="524"/><line x1="332" y1="480" x2="332" y2="524"/>
+            </g>
+            <line x1="30" y1="494" x2="390" y2="494" stroke="rgba(255,210,120,0.18)" stroke-width="2"/>
+            <ellipse cx="30"  cy="502" rx="22" ry="22" fill="url(#cap)"/>
+            <ellipse cx="30"  cy="502" rx="22" ry="22" fill="none" stroke="#5a3810" stroke-width="1.5"/>
+            <ellipse cx="30"  cy="502" rx="14" ry="14" fill="none" stroke="rgba(200,150,60,0.55)" stroke-width="1"/>
+            <ellipse cx="30"  cy="502" rx="6"  ry="6"  fill="rgba(80,50,15,0.8)"/>
+            <circle  cx="30"  cy="502" r="2"   fill="#d4a848"/>
+            <ellipse cx="390" cy="502" rx="22" ry="22" fill="url(#cap)"/>
+            <ellipse cx="390" cy="502" rx="22" ry="22" fill="none" stroke="#5a3810" stroke-width="1.5"/>
+            <ellipse cx="390" cy="502" rx="14" ry="14" fill="none" stroke="rgba(200,150,60,0.55)" stroke-width="1"/>
+            <ellipse cx="390" cy="502" rx="6"  ry="6"  fill="rgba(80,50,15,0.8)"/>
+            <circle  cx="390" cy="502" r="2"   fill="#d4a848"/>
+            <path d="M 210,524 Q 210,538 208,546 Q 205,556 210,566" stroke="#8B6914" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <path d="M 210,524 Q 212,538 214,546 Q 217,556 212,566" stroke="#8B6914" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+
+          <div class="scroll-content">
+            <div class="scroll-header" aria-hidden="true">
+              <span class="scroll-rule"></span>
+              <span class="scroll-ornament">✦</span>
+              <span class="scroll-rule"></span>
             </div>
-            <div class="detail">
-              <span class="label">Host</span>
-              <span class="value">H2 House of Health</span>
+            <h3 class="scroll-title">You Are Invited</h3>
+            <div class="scroll-divider" aria-hidden="true">
+              <span class="scroll-deco">— ❧ —</span>
             </div>
-            <div class="detail">
-              <span class="label">Date</span>
-              <span class="value">19 March 2026</span>
+            <div class="details-grid">
+              <div class="detail">
+                <span class="label">Event</span>
+                <span class="value">Grand Opening</span>
+              </div>
+              <div class="detail">
+                <span class="label">Host</span>
+                <span class="value">H2 House of Health</span>
+              </div>
+              <div class="detail">
+                <span class="label">Date</span>
+                <span class="value">19 March 2026</span>
+              </div>
+              <div class="detail">
+                <span class="label">Location</span>
+                <span class="value">Jubilee Hills</span>
+              </div>
+              <div class="detail detail--full">
+                <span class="label">Time</span>
+                <span class="value">11 am</span>
+              </div>
             </div>
-            <div class="detail">
-              <span class="label">Location</span>
-              <span class="value">Jubilee Hills</span>
-            </div>
-            <div class="detail">
-              <span class="label">Time</span>
-              <span class="value">11 am</span>
+            <div class="scroll-footer" aria-hidden="true">
+              <span class="scroll-deco">— ✦ —</span>
             </div>
           </div>
         </article>
       </div>
+
     </div>
   </section>
 
