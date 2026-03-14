@@ -366,11 +366,15 @@ window.addEventListener("load", () => {
         `Name: ${rsvpName.value.trim()}`,
         `Phone: ${rsvpPhone.value.trim()}`,
         `Guests: ${guestsValue}`,
-        `Attendance: ${rsvpAttend.value}`,
-        `Message: ${rsvpMessage?.value?.trim() || "-"}`
+        `Attendance: ${rsvpAttend.value}`
       ];
 
-      if (rsvpAttend.value.toLowerCase() === "yes") {
+      const guestMessage = rsvpMessage?.value?.trim();
+      if (guestMessage) {
+        messageLines.push(`Message: ${guestMessage}`);
+      }
+
+      if (rsvpAttend.value.toLowerCase() === "attending") {
         messageLines.push(
           "Yes! I’m honored to be the chosen one and excited to grace the occasion with my presence."
         );
