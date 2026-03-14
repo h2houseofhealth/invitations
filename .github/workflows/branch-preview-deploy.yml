@@ -1,4 +1,4 @@
-name: Branch Preview Deploy (GitHub Pages)
+name: Branch Preview Deploy
 
 on:
   push:
@@ -8,52 +8,65 @@ on:
       - prd
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 concurrency:
-  group: pages-${{ github.ref }}
+  group: netlify-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare branch folder
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy based on branch
         run: |
           set -euo pipefail
+
           BRANCH="${GITHUB_REF_NAME}"
-          mkdir -p "dist/${BRANCH}"
+          DEPLOY_MESSAGE="${GITHUB_SHA} from ${GITHUB_REPOSITORY} (${BRANCH})"
 
-          rsync -av --delete \
-            --exclude '.git' \
-            --exclude '.github' \
-            --exclude 'dist' \
-            ./ "dist/${BRANCH}/"
+          if [ "$BRANCH" = "prd" ]; then
+            DEPLOY_URL=$(netlify deploy \
+              --dir . \
+              --site "$NETLIFY_SITE_ID" \
+              --auth "$NETLIFY_AUTH_TOKEN" \
+              --prod \
+              --message "$DEPLOY_MESSAGE" \
+              --json | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const j=JSON.parse(s);console.log(j.deploy_url||j.url||"")})')
+          else
+            DEPLOY_URL=$(netlify deploy \
+              --dir . \
+              --site "$NETLIFY_SITE_ID" \
+              --auth "$NETLIFY_AUTH_TOKEN" \
+              --alias "$BRANCH" \
+              --message "$DEPLOY_MESSAGE" \
+              --json | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const j=JSON.parse(s);console.log(j.deploy_url||j.url||"")})')
+          fi
 
-          touch dist/.nojekyll
-          echo "Branch deployed to /${BRANCH}"
-
-      - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./dist
-          keep_files: true
+          echo "DEPLOY_URL=$DEPLOY_URL" >> "$GITHUB_ENV"
+          echo "Branch: $BRANCH"
+          echo "URL: $DEPLOY_URL"
 
       - name: Deployment summary
         run: |
-          REPO_NAME="${GITHUB_REPOSITORY#*/}"
-          URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${REPO_NAME}/${GITHUB_REF_NAME}/"
-
           {
             echo "### Deployment complete"
             echo ""
-            echo "- Branch: \`${GITHUB_REF_NAME}\`"
-            echo "- URL: ${URL}"
+            echo "- Branch: \\`${GITHUB_REF_NAME}\\`"
+            echo "- URL: $DEPLOY_URL"
           } >> "$GITHUB_STEP_SUMMARY"
