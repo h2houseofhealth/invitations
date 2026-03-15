@@ -474,10 +474,10 @@ body.end-active .end-screen {
 
 .event-image-details {
   position: absolute;
-  inset: 24% 12% 22%;
+  inset: 24% 12% 16%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   gap: clamp(6px, 1.4vw, 12px);
   text-align: center;
 }
@@ -504,6 +504,70 @@ body.end-active .end-screen {
   font-weight: 700;
   line-height: 1.2;
   text-shadow: 0 1px 2px rgba(52, 20, 10, 0.75);
+}
+
+.invitation-text .value {
+  font-family: "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive;
+  font-size: clamp(1.12rem, 2.7vw, 1.7rem);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: 0.01em;
+  text-align: center;
+  display: block;
+  padding-top: 0.8em;
+}
+
+.invitation-text .invite-brand {
+  display: block;
+  text-align: center;
+  margin-top: 1.2em;
+}
+
+.invitation-text .invite-brand-logo {
+  display: block;
+  width: clamp(195px, 50%, 285px);
+  height: auto;
+  margin: 0 auto;
+}
+
+.event-meta-footer {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(8px, 1.8vw, 16px);
+  align-items: end;
+  transform: translateY(-20px);
+}
+
+.event-meta-footer .event-detail-line {
+  gap: 3px;
+}
+
+.event-meta-footer .value {
+  font-size: clamp(0.8rem, 1.7vw, 1.02rem);
+}
+
+.location-detail-line {
+  align-items: center;
+}
+
+.location-map-link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.location-castle-icon {
+  width: clamp(48px, 6.8vw, 68px);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.location-map-link:hover .location-castle-icon {
+  transform: translateY(-1px) scale(1.05);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.42));
 }
 
 .rsvp-row {
@@ -1763,8 +1827,17 @@ body.opened .tap-open {
   }
 
   .event-image-details {
-    inset: 22% 11% 18%;
+    inset: 22% 11% 14%;
     gap: 7px;
+  }
+
+  .invitation-text .value {
+    font-size: clamp(1.04rem, 4.1vw, 1.34rem);
+  }
+
+  .event-meta-footer {
+    gap: 8px;
+    transform: translateY(-15px);
   }
 
   .rsvp-row {
@@ -1787,6 +1860,10 @@ body.opened .tap-open {
 
   .value {
     font-size: clamp(0.84rem, 3.4vw, 1.08rem);
+  }
+
+  .event-meta-footer .value {
+    font-size: clamp(0.73rem, 2.8vw, 0.9rem);
   }
 }
 
