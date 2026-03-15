@@ -26,6 +26,7 @@ window.addEventListener("load", () => {
   const eventParticleField = document.querySelector("#event-particle-field");
   const rsvpButton = document.querySelector("#rsvp-button");
   const rsvpPanel = document.querySelector("#rsvp-panel");
+  const eventImageCard = document.querySelector(".event-image-card");
   const rsvpForm = document.querySelector("#rsvp-form");
   const rsvpName = document.querySelector("#rsvp-name");
   const rsvpPhone = document.querySelector("#rsvp-phone");
@@ -330,15 +331,14 @@ window.addEventListener("load", () => {
     showEventCard();
   });
 
-  if (rsvpButton && rsvpPanel) {
+  if (rsvpButton && rsvpPanel && eventImageCard) {
     rsvpButton.addEventListener("click", () => {
       tryStartMusic();
       rsvpPanel.classList.toggle("hidden");
       const isHidden = rsvpPanel.classList.contains("hidden");
       rsvpPanel.setAttribute("aria-hidden", isHidden ? "true" : "false");
-      if (!isHidden) {
-        rsvpPanel.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
+      rsvpButton.setAttribute("aria-expanded", isHidden ? "false" : "true");
+      eventImageCard.classList.toggle("show-rsvp", !isHidden);
     });
   }
 
