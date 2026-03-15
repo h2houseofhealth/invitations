@@ -19,6 +19,7 @@
         <span class="seal-core"></span>
         <span class="seal-half left"></span>
         <span class="seal-half right"></span>
+        <span class="seal-logo" aria-hidden="true"></span>
       </div>
       <div class="letter">
         <h1>WHAT AM I?</h1>
@@ -102,6 +103,52 @@
               <span class="label">Time</span>
               <span class="value">11 am</span>
             </div>
+          </div>
+
+          <div class="rsvp-row">
+            <button class="rsvp-button" id="rsvp-button" type="button">RSVP</button>
+          </div>
+
+          <div class="rsvp-panel hidden" id="rsvp-panel" aria-hidden="true">
+            <h3 class="rsvp-title">RSVP</h3>
+            <form class="rsvp-form" id="rsvp-form">
+              <label class="rsvp-field">
+                <span>Full Name *</span>
+                <input id="rsvp-name" name="fullName" type="text" autocomplete="name" required>
+              </label>
+              <label class="rsvp-field">
+                <span>Phone Number *</span>
+                <input id="rsvp-phone" name="phone" type="tel" autocomplete="tel" required>
+              </label>
+              <label class="rsvp-field">
+                <span>Will you attend? *</span>
+                <select id="rsvp-attend" name="attend" required>
+                  <option value="" disabled selected>Select one</option>
+                  <option value="Attending">Attending</option>
+                  <option value="Regrets">Regrets</option>
+                </select>
+              </label>
+              <label class="rsvp-field">
+                <span>Number of Guests</span>
+                <input id="rsvp-guests" name="guests" type="number" min="0" max="20" inputmode="numeric">
+              </label>
+              <label class="rsvp-field">
+                <span>Message or Special Request (optional)</span>
+                <textarea id="rsvp-message" name="message" rows="3" placeholder="Allergies, accessibility needs, etc."></textarea>
+              </label>
+              <button class="rsvp-submit" type="submit">Submit RSVP</button>
+            </form>
+
+            <div class="rsvp-success hidden" id="rsvp-success" aria-live="polite">
+              <p class="rsvp-success-title">RSVP Submitted ✅</p>
+              <p class="rsvp-success-copy">Thank you for confirming your attendance.</p>
+              <div class="rsvp-actions">
+                <a class="rsvp-action" id="rsvp-add-calendar" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Grand%20Opening&dates=20260319T110000/20260319T130000&details=H2%20House%20of%20Health%20Grand%20Opening&location=Jubilee%20Hills&ctz=Asia%2FKolkata" target="_blank" rel="noopener">📅 Add to Calendar</a>
+                <a class="rsvp-action secondary" id="rsvp-view-location" href="https://www.google.com/maps/search/?api=1&query=Jubilee%20Hills" target="_blank" rel="noopener">📍 View Location</a>
+              </div>
+            </div>
+
+            <p class="rsvp-error hidden" id="rsvp-error" role="alert"></p>
           </div>
         </article>
       </div>
