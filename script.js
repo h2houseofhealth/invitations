@@ -67,6 +67,22 @@ window.addEventListener("load", () => {
 
   const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const randomBetween = (min, max) => Math.random() * (max - min) + min;
+  const isMobileViewport = window.matchMedia("(max-width: 768px)").matches;
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isLowPowerDevice =
+    Number(navigator.deviceMemory || 0) > 0 && Number(navigator.deviceMemory) <= 4;
+
+  const PARTICLE_COUNTS = (() => {
+    if (prefersReducedMotion) {
+      return { light: 80, quote: 36, final: 40 };
+    }
+
+    if (isMobileViewport || isLowPowerDevice) {
+      return { light: 140, quote: 70, final: 78 };
+    }
+
+    return { light: 260, quote: 120, final: 130 };
+  })();
 
   const tryStartMusic = () => {
     if (!bgMusic) {
@@ -95,7 +111,7 @@ window.addEventListener("load", () => {
     window.addEventListener(eventName, activateMusic, { once: true, passive: true });
   });
 
-  const seedLightDots = (count = 420) => {
+  const seedLightDots = (count = PARTICLE_COUNTS.light) => {
     if (lightDotsSeeded || !light) {
       return;
     }
@@ -124,7 +140,7 @@ window.addEventListener("load", () => {
 
   seedLightDots();
 
-  const seedQuoteParticles = (count = 220) => {
+  const seedQuoteParticles = (count = PARTICLE_COUNTS.quote) => {
     if (quoteParticlesSeeded || !quoteParticleField) {
       return;
     }
@@ -151,7 +167,7 @@ window.addEventListener("load", () => {
     quoteParticlesSeeded = true;
   };
 
-  const seedFinalStageParticles = (count = 220) => {
+  const seedFinalStageParticles = (count = PARTICLE_COUNTS.final) => {
     if (finalParticlesSeeded || !eventParticleField) {
       return;
     }
