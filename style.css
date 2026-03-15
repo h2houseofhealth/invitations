@@ -242,14 +242,13 @@ body.end-active .end-screen {
 }
 
 .identity-title {
-  color: #f5ead8;
-  font-size: clamp(2rem, 5vw, 4.3rem);
-  letter-spacing: 0.16em;
-  line-height: 1.1;
-  text-transform: uppercase;
-  text-shadow:
-    0 0 18px rgba(227, 204, 168, 0.14),
-    0 0 46px rgba(184, 144, 102, 0.1);
+  height: clamp(205px, 37vh, 430px);
+  width: clamp(700px, 94vw, 1360px);
+  max-width: 98vw;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 0 18px rgba(227, 204, 168, 0.14))
+    drop-shadow(0 0 34px rgba(184, 144, 102, 0.1));
 }
 
 .lock-panel,
@@ -1725,8 +1724,7 @@ body.opened .tap-open {
     letter-spacing: 0.03em;
   }
 
-  .cinematic-quote.glow,
-  .identity-title {
+  .cinematic-quote.glow {
     letter-spacing: 0.1em;
   }
 
