@@ -358,9 +358,21 @@ window.addEventListener("load", () => {
     });
   }
 
+  if (rsvpPhone) {
+    rsvpPhone.addEventListener("input", () => {
+      const numericValue = rsvpPhone.value.replace(/\D+/g, "").slice(0, 10);
+      if (rsvpPhone.value !== numericValue) {
+        rsvpPhone.value = numericValue;
+      }
+    });
+  }
+
   if (rsvpForm) {
     rsvpForm.addEventListener("submit", (event) => {
       event.preventDefault();
+      if (rsvpPhone) {
+        rsvpPhone.value = rsvpPhone.value.replace(/\D+/g, "").slice(0, 10);
+      }
       if (!rsvpForm.reportValidity()) {
         return;
       }
@@ -382,7 +394,7 @@ window.addEventListener("load", () => {
         `Name: ${rsvpName.value.trim()}`,
         `Phone: ${rsvpPhone.value.trim()}`,
         `Guests: ${guestsValue}`,
-        `Attending: ${rsvpAttend.value}`
+        `Will you be attending?: ${rsvpAttend.value}`
       ];
 
       const guestMessage = rsvpMessage?.value?.trim();
