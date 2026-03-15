@@ -64,6 +64,15 @@ window.addEventListener("load", () => {
   let finalParticlesSeeded = false;
   let lightDotsSeeded = false;
   let hasActivatedMusic = false;
+  const quoteVoiceSources = new Map([
+    ["in a world", "In_a_world.mp3"],
+    ["in a system", "in_a_system.mp3"],
+    ["in an era", "In_an_era.mp3"],
+    ["a new circle", "a_new_circle.mp3"],
+    ["welcome", "welcome.mp3"]
+  ]);
+  const quoteVoiceTracks = new Map();
+  let activeQuoteVoiceTrack = null;
 
   const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const randomBetween = (min, max) => Math.random() * (max - min) + min;
@@ -96,6 +105,70 @@ window.addEventListener("load", () => {
     if (playPromise && typeof playPromise.catch === "function") {
       playPromise.catch(() => {});
     }
+  };
+
+  const normalizeQuoteText = (text) =>
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]+/g, " ")
+      .trim()
+      .replace(/\s+/g, " ");
+
+  const resolveQuoteVoiceSource = (quoteText) => {
+    const words = normalizeQuoteText(quoteText).split(" ").filter(Boolean);
+    const maxWords = Math.min(4, words.length);
+
+    for (let size = maxWords; size >= 1; size -= 1) {
+      const key = words.slice(0, size).join(" ");
+      if (quoteVoiceSources.has(key)) {
+        return quoteVoiceSources.get(key);
+      }
+    }
+
+    return null;
+  };
+
+  const getOrCreateQuoteVoiceTrack = (src) => {
+    if (!src) {
+      return null;
+    }
+
+    if (!quoteVoiceTracks.has(src)) {
+      const track = new Audio(src);
+      track.preload = "auto";
+      track.volume = 1;
+      quoteVoiceTracks.set(src, track);
+    }
+
+    return quoteVoiceTracks.get(src);
+  };
+
+  const startQuoteVoiceForQuote = (quoteText) => {
+    const src = resolveQuoteVoiceSource(quoteText);
+    const track = getOrCreateQuoteVoiceTrack(src);
+    if (!track) {
+      return;
+    }
+
+    if (activeQuoteVoiceTrack && activeQuoteVoiceTrack !== track) {
+      activeQuoteVoiceTrack.pause();
+      activeQuoteVoiceTrack.currentTime = 0;
+    }
+
+    activeQuoteVoiceTrack = track;
+    track.currentTime = 0;
+    const playPromise = track.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {});
+    }
+  };
+
+  const stopQuoteVoice = () => {
+    quoteVoiceTracks.forEach((track) => {
+      track.pause();
+      track.currentTime = 0;
+    });
+    activeQuoteVoiceTrack = null;
   };
 
   const activateMusic = () => {
@@ -270,6 +343,7 @@ window.addEventListener("load", () => {
   });
 
   const playQuote = async ({ text, className, duration }) => {
+    startQuoteVoiceForQuote(text);
     quoteEl.className = "cinematic-quote";
     quoteEl.textContent = text;
     quoteEl.classList.add(...className.split(" "));
@@ -292,8 +366,8 @@ window.addEventListener("load", () => {
       quoteParticleField.classList.add("active");
     }
 
-    for (const quote of quotes) {
-      await playQuote(quote);
+    for (let index = 0; index < quotes.length; index += 1) {
+      await playQuote(quotes[index]);
     }
 
     await revealIdentityPanel();
@@ -321,6 +395,7 @@ window.addEventListener("load", () => {
   };
 
   const showEventCard = () => {
+    stopQuoteVoice();
     identityPanel.classList.add("hidden");
     identityPanel.classList.remove("visible");
     quoteLayer.classList.add("hidden");
