@@ -37,7 +37,7 @@ window.addEventListener("load", () => {
   const rsvpWhatsAppNumber = "918985064450";
 
   const quotes = [
-    { text: "You have been selected", className: "from-center", duration: 4800 },
+    { text: "You have been selected!", className: "from-center", duration: 4800 },
     {
       text: "In a world obsessed with disease, a few choose prevention",
       className: "from-top-left",
