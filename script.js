@@ -35,7 +35,7 @@ window.addEventListener("load", () => {
   const rsvpMessage = document.querySelector("#rsvp-message");
   const rsvpSuccess = document.querySelector("#rsvp-success");
   const rsvpError = document.querySelector("#rsvp-error");
-  const rsvpWhatsAppNumber = "918985064450";
+  const rsvpWhatsAppNumber = "919100056979";
 
   const quotes = [
     { text: "You have been selected!", className: "from-center", duration: 4800 },
@@ -378,16 +378,16 @@ window.addEventListener("load", () => {
 
       const guestsValue = rsvpGuests?.value?.trim() || "0";
       const messageLines = [
-        "New RSVP Received 🎉",
+        "RSVP",
         `Name: ${rsvpName.value.trim()}`,
         `Phone: ${rsvpPhone.value.trim()}`,
         `Guests: ${guestsValue}`,
-        `Attendance: ${rsvpAttend.value}`
+        `Attending: ${rsvpAttend.value}`
       ];
 
       const guestMessage = rsvpMessage?.value?.trim();
       if (guestMessage) {
-        messageLines.push(`Message: ${guestMessage}`);
+        messageLines.push(`${guestMessage}`);
       }
 
       if (rsvpAttend.value.toLowerCase() === "attending") {
