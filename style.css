@@ -638,7 +638,7 @@ body.end-active .end-screen {
 .rsvp-row {
   position: absolute;
   left: 50%;
-  bottom: 11%;
+  bottom: -2%;
   transform: translateX(-50%);
   display: flex;
   justify-content: center;
@@ -1987,7 +1987,7 @@ body.opened .tap-open {
   }
 
   .rsvp-row {
-    bottom: 10%;
+    bottom: -1%;
   }
 
   .rsvp-panel {
