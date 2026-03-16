@@ -137,6 +137,60 @@ body.end-active .end-screen {
   z-index: 2;
 }
 
+.quote-write-stage {
+  position: relative;
+  width: min(90vw, 860px);
+  margin: 0 auto;
+}
+
+.quill-writer {
+  --quill-progress: 0;
+  position: absolute;
+  left: calc(-5% + (110% * var(--quill-progress)));
+  top: 58%;
+  width: clamp(112px, 17vw, 160px);
+  height: clamp(62px, 8.5vw, 94px);
+  transform: translate(-50%, -50%) rotate(-8deg);
+  transform-origin: 70% 70%;
+  opacity: 0;
+  z-index: 3;
+  pointer-events: none;
+  transition: left 85ms linear, transform 85ms ease, opacity 0.2s ease;
+}
+
+.quill-writer.active {
+  opacity: 1;
+}
+
+.quill-feather-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter:
+    drop-shadow(0 0 1px rgba(255, 231, 195, 0.28))
+    drop-shadow(0 0 8px rgba(0, 0, 0, 0.4));
+}
+
+.quill-feather-fill,
+.quill-feather-base {
+  fill: #030303;
+}
+
+.quill-feather-vein {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.82);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-opacity: 0.85;
+}
+
+.quill-feather-line {
+  fill: none;
+  stroke: #090909;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
 .quote-particle-field {
   position: absolute;
   inset: 0;
@@ -173,7 +227,7 @@ body.end-active .end-screen {
 }
 
 .cinematic-quote {
-  width: min(90vw, 860px);
+  width: 100%;
   margin: 0 auto;
   text-align: center;
   color: #f1e6d3;
@@ -183,6 +237,34 @@ body.end-active .end-screen {
   text-transform: none;
   opacity: 0;
   text-shadow: 0 0 18px rgba(206, 180, 140, 0.12);
+}
+
+.cinematic-quote.quill-feather {
+  font-family: "Tangerine", "Times New Roman", serif;
+  font-size: clamp(2.4rem, 6.2vw, 5rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  color: #ffe7bf;
+  text-shadow:
+    0 0 10px rgba(255, 228, 179, 0.8),
+    0 0 24px rgba(226, 173, 88, 0.38);
+  transform: rotate(-2deg);
+}
+
+.cinematic-quote.quill-feather .quill-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(8px) scale(0.92);
+  filter: blur(1.2px);
+}
+
+.cinematic-quote.quill-feather .quill-char.revealed {
+  animation: quillInkIn 250ms ease forwards;
+}
+
+.cinematic-quote.quill-feather .quill-space {
+  display: inline-block;
 }
 
 .cinematic-quote.glow {
@@ -731,6 +813,11 @@ body.end-active .end-screen {
   18% { opacity: 1; transform: translateY(0) scale(1); }
   72% { opacity: 1; transform: translateY(0) scale(1); }
   100% { opacity: 0; transform: translateY(2vh) scale(1.01); }
+}
+
+@keyframes quillInkIn {
+  0% { opacity: 0; transform: translateY(8px) scale(0.92); filter: blur(1.2px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
 
 @keyframes fadeInSoft {
@@ -1811,6 +1898,17 @@ body.opened .tap-open {
   .cinematic-quote {
     font-size: clamp(1.1rem, 5vw, 1.6rem);
     letter-spacing: 0.03em;
+  }
+
+  .cinematic-quote.quill-feather {
+    font-size: clamp(2rem, 10vw, 3.4rem);
+    line-height: 1.08;
+  }
+
+  .quill-writer {
+    width: clamp(88px, 24vw, 128px);
+    height: clamp(52px, 12vw, 76px);
+    left: -6%;
   }
 
   .cinematic-quote.glow {

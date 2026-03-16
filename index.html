@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -55,7 +58,25 @@
       <div class="quote-particle-field hidden" id="quote-particle-field" aria-hidden="true"></div>
 
       <div class="quote-layer" id="quote-layer" aria-live="polite">
-        <p class="cinematic-quote" id="cinematic-quote"></p>
+        <div class="quote-write-stage">
+          <div class="quill-writer hidden" id="quill-writer" aria-hidden="true">
+            <svg class="quill-feather-svg" viewBox="0 0 220 140" role="presentation" aria-hidden="true">
+              <path
+                class="quill-feather-fill"
+                d="M39 106C49 80 67 46 95 24C121 3 149 8 163 29C177 50 176 78 153 97C123 121 83 127 50 117Z"
+              />
+              <path class="quill-feather-vein" d="M42 104L142 28" />
+              <path class="quill-feather-vein" d="M61 90L103 53" />
+              <path class="quill-feather-vein" d="M70 75L121 39" />
+              <path class="quill-feather-vein" d="M84 65L132 33" />
+              <path class="quill-feather-vein" d="M95 98L142 61" />
+              <path class="quill-feather-vein" d="M112 91L151 61" />
+              <path class="quill-feather-base" d="M35 107L45 114L54 104L44 97Z" />
+              <path class="quill-feather-line" d="M42 116C74 118 113 117 189 105" />
+            </svg>
+          </div>
+          <p class="cinematic-quote" id="cinematic-quote"></p>
+        </div>
       </div>
 
       <div class="identity-panel hidden" id="identity-panel">

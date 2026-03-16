@@ -16,6 +16,7 @@ window.addEventListener("load", () => {
   const endScreen = document.querySelector("#end-screen");
   const quoteEl = document.querySelector("#cinematic-quote");
   const quoteLayer = document.querySelector("#quote-layer");
+  const quillWriter = document.querySelector("#quill-writer");
   const quoteParticleField = document.querySelector("#quote-particle-field");
   const identityPanel = document.querySelector("#identity-panel");
   const lockButton = document.querySelector("#lock-button");
@@ -38,7 +39,7 @@ window.addEventListener("load", () => {
   const rsvpWhatsAppNumber = "919100056979";
 
   const quotes = [
-    { text: "You have been selected!", className: "from-center", duration: 4800 },
+    { text: "you have been selected!", className: "from-center quill-feather", duration: 4800 },
     {
       text: "In a world obsessed with disease, a few choose prevention",
       className: "from-top-left",
@@ -342,8 +343,81 @@ window.addEventListener("load", () => {
     });
   });
 
+  const hideQuillWriter = () => {
+    if (!quillWriter) {
+      return;
+    }
+
+    quillWriter.classList.remove("active");
+    quillWriter.classList.add("hidden");
+    quillWriter.style.removeProperty("--quill-progress");
+  };
+
+  const renderQuillLetters = (text) => {
+    const writingLetters = [];
+    quoteEl.innerHTML = "";
+
+    const fragment = document.createDocumentFragment();
+    for (const character of text) {
+      const letter = document.createElement("span");
+      const isWhitespace = character.trim() === "";
+      letter.className = isWhitespace ? "quill-space" : "quill-char";
+      if (!isWhitespace) {
+        writingLetters.push(letter);
+      }
+      letter.textContent = isWhitespace ? "\u00A0" : character;
+      fragment.appendChild(letter);
+    }
+
+    quoteEl.appendChild(fragment);
+    return writingLetters;
+  };
+
+  const playQuillQuote = async ({ text, className, duration }) => {
+    const classTokens = className.split(" ").filter(Boolean);
+    quoteEl.className = "cinematic-quote";
+    quoteEl.classList.add(...classTokens);
+
+    const writingLetters = renderQuillLetters(text);
+    const letterCount = Math.max(writingLetters.length, 1);
+    const writeDuration = Math.max(1500, Math.min(duration - 900, letterCount * 95));
+    const stepMs = Math.max(40, writeDuration / letterCount);
+    const quoteStart = performance.now();
+
+    if (quillWriter) {
+      quillWriter.classList.remove("hidden");
+      quillWriter.style.setProperty("--quill-progress", "0");
+      void quillWriter.offsetWidth;
+      quillWriter.classList.add("active");
+    }
+
+    void quoteEl.offsetWidth;
+    quoteEl.classList.add("play");
+
+    for (let index = 0; index < writingLetters.length; index += 1) {
+      writingLetters[index].classList.add("revealed");
+      if (quillWriter) {
+        const progress = (index + 1) / letterCount;
+        quillWriter.style.setProperty("--quill-progress", progress.toFixed(4));
+      }
+      await wait(stepMs);
+    }
+
+    const elapsed = performance.now() - quoteStart;
+    const remainingDuration = Math.max(0, duration - elapsed);
+    await wait(remainingDuration);
+    hideQuillWriter();
+  };
+
   const playQuote = async ({ text, className, duration }) => {
     startQuoteVoiceForQuote(text);
+    hideQuillWriter();
+
+    if (className.includes("quill-feather")) {
+      await playQuillQuote({ text, className, duration });
+      return;
+    }
+
     quoteEl.className = "cinematic-quote";
     quoteEl.textContent = text;
     quoteEl.classList.add(...className.split(" "));
