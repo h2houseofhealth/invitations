@@ -4,6 +4,7 @@ window.addEventListener("load", () => {
   const scene = document.querySelector(".scene");
   const light = document.querySelector(".light");
   const wrapper = document.querySelector(".wrapper");
+  const sealButton = document.querySelector("#seal-button");
   const letter = document.querySelector(".letter");
   const tapOpen = document.querySelector("#tap-open");
   const form = document.querySelector("#answer-form");
@@ -16,6 +17,7 @@ window.addEventListener("load", () => {
   const endScreen = document.querySelector("#end-screen");
   const quoteEl = document.querySelector("#cinematic-quote");
   const quoteLayer = document.querySelector("#quote-layer");
+  const quoteWriteStage = document.querySelector(".quote-write-stage");
   const quillWriter = document.querySelector("#quill-writer");
   const quoteParticleField = document.querySelector("#quote-particle-field");
   const identityPanel = document.querySelector("#identity-panel");
@@ -304,6 +306,25 @@ window.addEventListener("load", () => {
     openEnvelope();
   });
 
+  if (sealButton) {
+    sealButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      tryStartMusic();
+      openEnvelope();
+    });
+
+    sealButton.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      tryStartMusic();
+      openEnvelope();
+    });
+  }
+
   scene.addEventListener("click", () => {
     tryStartMusic();
     openEnvelope();
@@ -350,7 +371,193 @@ window.addEventListener("load", () => {
 
     quillWriter.classList.remove("active");
     quillWriter.classList.add("hidden");
-    quillWriter.style.removeProperty("--quill-progress");
+    quillWriter.style.removeProperty("--quill-x");
+    quillWriter.style.removeProperty("--quill-y");
+    quillWriter.style.removeProperty("--quill-tilt");
+  };
+
+  const QUILL_GLYPH_STROKES = {
+    a: [
+      { x: 0.15, y: 0.62 },
+      { x: 0.36, y: 0.42 },
+      { x: 0.64, y: 0.42 },
+      { x: 0.82, y: 0.62 },
+      { x: 0.62, y: 0.76 },
+      { x: 0.34, y: 0.76 },
+      { x: 0.2, y: 0.6 }
+    ],
+    b: [
+      { x: 0.18, y: 0.2 },
+      { x: 0.18, y: 0.9 },
+      { x: 0.45, y: 0.72 },
+      { x: 0.75, y: 0.62 },
+      { x: 0.46, y: 0.46 },
+      { x: 0.2, y: 0.54 }
+    ],
+    c: [
+      { x: 0.8, y: 0.4 },
+      { x: 0.58, y: 0.3 },
+      { x: 0.26, y: 0.5 },
+      { x: 0.34, y: 0.78 },
+      { x: 0.72, y: 0.72 }
+    ],
+    d: [
+      { x: 0.72, y: 0.18 },
+      { x: 0.72, y: 0.92 },
+      { x: 0.46, y: 0.76 },
+      { x: 0.2, y: 0.56 },
+      { x: 0.36, y: 0.32 },
+      { x: 0.7, y: 0.44 }
+    ],
+    e: [
+      { x: 0.78, y: 0.48 },
+      { x: 0.52, y: 0.38 },
+      { x: 0.27, y: 0.52 },
+      { x: 0.45, y: 0.7 },
+      { x: 0.77, y: 0.62 }
+    ],
+    h: [
+      { x: 0.17, y: 0.2 },
+      { x: 0.17, y: 0.88 },
+      { x: 0.25, y: 0.64 },
+      { x: 0.5, y: 0.5 },
+      { x: 0.78, y: 0.68 },
+      { x: 0.78, y: 0.88 }
+    ],
+    l: [
+      { x: 0.35, y: 0.2 },
+      { x: 0.35, y: 0.88 },
+      { x: 0.56, y: 0.88 }
+    ],
+    n: [
+      { x: 0.2, y: 0.7 },
+      { x: 0.2, y: 0.42 },
+      { x: 0.45, y: 0.52 },
+      { x: 0.7, y: 0.7 },
+      { x: 0.7, y: 0.42 }
+    ],
+    o: [
+      { x: 0.22, y: 0.58 },
+      { x: 0.4, y: 0.36 },
+      { x: 0.68, y: 0.36 },
+      { x: 0.84, y: 0.58 },
+      { x: 0.67, y: 0.78 },
+      { x: 0.38, y: 0.78 },
+      { x: 0.22, y: 0.58 }
+    ],
+    s: [
+      { x: 0.76, y: 0.36 },
+      { x: 0.49, y: 0.28 },
+      { x: 0.28, y: 0.45 },
+      { x: 0.55, y: 0.56 },
+      { x: 0.77, y: 0.72 },
+      { x: 0.45, y: 0.82 },
+      { x: 0.24, y: 0.74 }
+    ],
+    t: [
+      { x: 0.46, y: 0.2 },
+      { x: 0.46, y: 0.88 },
+      { x: 0.28, y: 0.42 },
+      { x: 0.68, y: 0.42 }
+    ],
+    u: [
+      { x: 0.24, y: 0.42 },
+      { x: 0.24, y: 0.74 },
+      { x: 0.52, y: 0.82 },
+      { x: 0.78, y: 0.72 },
+      { x: 0.78, y: 0.42 }
+    ],
+    v: [
+      { x: 0.2, y: 0.42 },
+      { x: 0.46, y: 0.84 },
+      { x: 0.8, y: 0.42 }
+    ],
+    y: [
+      { x: 0.17, y: 0.38 },
+      { x: 0.46, y: 0.74 },
+      { x: 0.74, y: 0.4 },
+      { x: 0.58, y: 0.74 },
+      { x: 0.47, y: 1.02 },
+      { x: 0.62, y: 1.3 }
+    ],
+    "!": [
+      { x: 0.48, y: 0.2 },
+      { x: 0.48, y: 0.72 },
+      { x: 0.48, y: 0.9 }
+    ]
+  };
+
+  const DEFAULT_QUILL_STROKE = [
+    { x: 0.15, y: 0.7 },
+    { x: 0.42, y: 0.45 },
+    { x: 0.78, y: 0.7 }
+  ];
+
+  const getQuillStrokeForGlyph = (character) => {
+    const token = (character || "").toLowerCase();
+    return QUILL_GLYPH_STROKES[token] || DEFAULT_QUILL_STROKE;
+  };
+
+  const positionQuillTipAtStrokePoint = (letterEl, strokePoint, fallbackTilt, previousPoint) => {
+    if (!quillWriter || !quoteWriteStage || !letterEl) {
+      return;
+    }
+
+    const stageRect = quoteWriteStage.getBoundingClientRect();
+    const letterRect = letterEl.getBoundingClientRect();
+    const pointX = Math.max(0, Math.min(1.03, strokePoint.x));
+    const pointY = Math.max(0.12, Math.min(1.34, strokePoint.y));
+    const targetX = letterRect.left - stageRect.left + letterRect.width * pointX;
+    const targetY = letterRect.top - stageRect.top + letterRect.height * pointY;
+    let tilt = fallbackTilt;
+
+    if (previousPoint) {
+      const dx = strokePoint.x - previousPoint.x;
+      const dy = strokePoint.y - previousPoint.y;
+      if (Math.abs(dx) > 0.0005 || Math.abs(dy) > 0.0005) {
+        const segmentAngle = (Math.atan2(dy, dx) * 180) / Math.PI;
+        tilt = Math.max(-38, Math.min(16, segmentAngle - 34));
+      }
+    }
+
+    quillWriter.style.setProperty("--quill-x", `${targetX.toFixed(2)}px`);
+    quillWriter.style.setProperty("--quill-y", `${targetY.toFixed(2)}px`);
+    quillWriter.style.setProperty("--quill-tilt", `${tilt.toFixed(2)}deg`);
+  };
+
+  const traceQuillGlyph = async (letterEl, index, letterCount, letterBudgetMs) => {
+    const stroke = getQuillStrokeForGlyph(letterEl.textContent);
+    const sweep = letterCount > 1 ? index / (letterCount - 1) : 0;
+    const sweepTilt = -16 + Math.sin(sweep * Math.PI) * 4;
+
+    if (stroke.length === 0) {
+      letterEl.classList.add("revealed");
+      await wait(letterBudgetMs);
+      return;
+    }
+
+    positionQuillTipAtStrokePoint(letterEl, stroke[0], sweepTilt);
+
+    if (stroke.length > 1) {
+      const traceBudgetMs = Math.max(20, letterBudgetMs * 0.74);
+      const segmentMs = Math.max(10, traceBudgetMs / (stroke.length - 1));
+
+      for (let pointIndex = 1; pointIndex < stroke.length; pointIndex += 1) {
+        const currentPoint = stroke[pointIndex];
+        const previousPoint = stroke[pointIndex - 1];
+        positionQuillTipAtStrokePoint(letterEl, currentPoint, sweepTilt, previousPoint);
+        await wait(segmentMs);
+      }
+
+      letterEl.classList.add("revealed");
+      await wait(Math.max(8, letterBudgetMs - segmentMs * (stroke.length - 1)));
+      return;
+    }
+
+    const moveLeadMs = Math.min(70, Math.max(28, letterBudgetMs * 0.45));
+    await wait(moveLeadMs);
+    letterEl.classList.add("revealed");
+    await wait(Math.max(8, letterBudgetMs - moveLeadMs));
   };
 
   const renderQuillLetters = (text) => {
@@ -386,7 +593,10 @@ window.addEventListener("load", () => {
 
     if (quillWriter) {
       quillWriter.classList.remove("hidden");
-      quillWriter.style.setProperty("--quill-progress", "0");
+      if (writingLetters[0]) {
+        const firstStroke = getQuillStrokeForGlyph(writingLetters[0].textContent);
+        positionQuillTipAtStrokePoint(writingLetters[0], firstStroke[0], -16);
+      }
       void quillWriter.offsetWidth;
       quillWriter.classList.add("active");
     }
@@ -395,12 +605,8 @@ window.addEventListener("load", () => {
     quoteEl.classList.add("play");
 
     for (let index = 0; index < writingLetters.length; index += 1) {
-      writingLetters[index].classList.add("revealed");
-      if (quillWriter) {
-        const progress = (index + 1) / letterCount;
-        quillWriter.style.setProperty("--quill-progress", progress.toFixed(4));
-      }
-      await wait(stepMs);
+      const activeLetter = writingLetters[index];
+      await traceQuillGlyph(activeLetter, index, letterCount, stepMs);
     }
 
     const elapsed = performance.now() - quoteStart;
