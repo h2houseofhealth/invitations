@@ -41,23 +41,39 @@ window.addEventListener("load", () => {
   const rsvpWhatsAppNumber = "919100056979";
 
   const quotes = [
-    { text: "you have been selected!", className: "from-center quill-feather", duration: 4800 },
+    { text: "you are the chosen one!", className: "from-center quill-feather", duration: 4800 },
     {
-      text: "In a world obsessed with disease, a few choose prevention",
-      className: "from-top-left",
-      duration: 5000
+      text: "In a world obsessed with disease,\n a few choose prevention.",
+      className: "from-top-left windsong typewriter",
+      duration: 5600,
+      voiceSrc: "voicesai-dumbledore-1.mp3",
+      typeSpeedMultiplier: 1.2,
+      gapAfterMs: 640
     },
     {
-      text: "In a system built for speed, a few demand precision.",
-      className: "from-bottom-right",
-      duration: 5000
+      text: "In a system built for speed,\n a few demand precision.",
+      className: "from-bottom-right windsong typewriter",
+      duration: 5000,
+      voiceSrc: "voicesai-dumbledore-2.mp3"
     },
-    { text: "In an era of reactive medicine...", className: "from-bottom", duration: 4700 },
-    { text: "A new circle is forming", className: "from-top", duration: 4700 },
     {
-      text: "WELCOME TO THE FUTURE OF HEALTH",
-      className: "from-center glow",
-      duration: 5200
+      text: "In an era of reactive medicine...",
+      className: "from-bottom windsong typewriter",
+      duration: 4700,
+      voiceSrc: "voicesai-dumbledore-3.mp3",
+      gapAfterMs: 140
+    },
+    {
+      text: "A new circle is forming",
+      className: "from-top windsong typewriter",
+      duration: 4700,
+      voiceSrc: "voicesai-dumbledore-4.mp3"
+    },
+    {
+      text: "Welcome to the\nFuture of Health",
+      className: "from-center glow windsong typewriter",
+      duration: 5200,
+      voiceSrc: "voicesai-dumbledore-5.mp3"
     }
   ];
 
@@ -146,8 +162,8 @@ window.addEventListener("load", () => {
     return quoteVoiceTracks.get(src);
   };
 
-  const startQuoteVoiceForQuote = (quoteText) => {
-    const src = resolveQuoteVoiceSource(quoteText);
+  const startQuoteVoiceForQuote = ({ text: quoteText, voiceSrc }) => {
+    const src = voiceSrc || resolveQuoteVoiceSource(quoteText);
     const track = getOrCreateQuoteVoiceTrack(src);
     if (!track) {
       return;
@@ -615,12 +631,67 @@ window.addEventListener("load", () => {
     hideQuillWriter();
   };
 
-  const playQuote = async ({ text, className, duration }) => {
-    startQuoteVoiceForQuote(text);
+  const renderTypewriterLetters = (text) => {
+    const writingLetters = [];
+    quoteEl.innerHTML = "";
+
+    const fragment = document.createDocumentFragment();
+    for (const character of text) {
+      if (character === "\n") {
+        fragment.appendChild(document.createElement("br"));
+        continue;
+      }
+
+      const letter = document.createElement("span");
+      const isWhitespace = character.trim() === "";
+      letter.className = isWhitespace ? "type-space" : "type-char";
+      if (!isWhitespace) {
+        writingLetters.push(letter);
+      }
+      letter.textContent = isWhitespace ? "\u00A0" : character;
+      fragment.appendChild(letter);
+    }
+
+    quoteEl.appendChild(fragment);
+    return writingLetters;
+  };
+
+  const playTypewriterQuote = async ({ text, className, duration, typeSpeedMultiplier = 1 }) => {
+    const classTokens = className.split(" ").filter(Boolean);
+    quoteEl.className = "cinematic-quote";
+    quoteEl.classList.add(...classTokens);
+
+    const writingLetters = renderTypewriterLetters(text);
+    const letterCount = Math.max(writingLetters.length, 1);
+    const writeDuration = Math.max(1000, Math.min(duration - 700, letterCount * 72));
+    const stepMs = Math.max(26, (writeDuration / letterCount) * typeSpeedMultiplier);
+    const quoteStart = performance.now();
+
+    void quoteEl.offsetWidth;
+    quoteEl.classList.add("play");
+
+    for (let index = 0; index < writingLetters.length; index += 1) {
+      writingLetters[index].classList.add("revealed");
+      await wait(stepMs);
+    }
+
+    const elapsed = performance.now() - quoteStart;
+    const remainingDuration = Math.max(0, duration - elapsed);
+    await wait(remainingDuration);
+  };
+
+  const playQuote = async ({ text, className, duration, voiceSrc, typeSpeedMultiplier }) => {
+    startQuoteVoiceForQuote({ text, voiceSrc });
     hideQuillWriter();
+    quoteEl.style.setProperty("--quote-play-ms", `${duration}ms`);
 
     if (className.includes("quill-feather")) {
       await playQuillQuote({ text, className, duration });
+      return;
+    }
+
+    if (className.includes("typewriter")) {
+      await playTypewriterQuote({ text, className, duration, typeSpeedMultiplier });
       return;
     }
 
@@ -640,6 +711,8 @@ window.addEventListener("load", () => {
   };
 
   const playNarrativeSequence = async () => {
+    const interQuoteGapMs = 360;
+
     seedQuoteParticles();
     if (quoteParticleField) {
       quoteParticleField.classList.remove("hidden");
@@ -648,6 +721,9 @@ window.addEventListener("load", () => {
 
     for (let index = 0; index < quotes.length; index += 1) {
       await playQuote(quotes[index]);
+      if (index < quotes.length - 1) {
+        await wait(quotes[index].gapAfterMs ?? interQuoteGapMs);
+      }
     }
 
     await revealIdentityPanel();
@@ -794,11 +870,11 @@ window.addEventListener("load", () => {
     window.setTimeout(() => {
       endScreen.setAttribute("aria-hidden", "false");
       body.classList.add("end-active");
-    }, 3200);
+    }, 120);
 
     window.setTimeout(() => {
       playNarrativeSequence();
-    }, 5300);
+    }, 350);
   };
 
   form.addEventListener("submit", (event) => {
