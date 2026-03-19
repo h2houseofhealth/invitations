@@ -32,11 +32,13 @@ window.addEventListener("load", () => {
   const eventImageCard = document.querySelector(".event-image-card");
   const rsvpForm = document.querySelector("#rsvp-form");
   const rsvpName = document.querySelector("#rsvp-name");
-  const rsvpPhone = document.querySelector("#rsvp-phone");
   const rsvpAttend = document.querySelector("#rsvp-attend");
+  const rsvpGuestsField = document.querySelector("#rsvp-guests-field");
   const rsvpGuests = document.querySelector("#rsvp-guests");
-  const rsvpMessage = document.querySelector("#rsvp-message");
   const rsvpSuccess = document.querySelector("#rsvp-success");
+  const rsvpSuccessTitle = document.querySelector("#rsvp-success-title");
+  const rsvpSuccessCopy = document.querySelector("#rsvp-success-copy");
+  const rsvpAddCalendar = document.querySelector("#rsvp-add-calendar");
   const rsvpError = document.querySelector("#rsvp-error");
   const rsvpWhatsAppNumber = "919000141936";
 
@@ -791,21 +793,29 @@ window.addEventListener("load", () => {
     });
   }
 
-  if (rsvpPhone) {
-    rsvpPhone.addEventListener("input", () => {
-      const numericValue = rsvpPhone.value.replace(/\D+/g, "").slice(0, 10);
-      if (rsvpPhone.value !== numericValue) {
-        rsvpPhone.value = numericValue;
-      }
-    });
+  const syncRsvpGuestsField = () => {
+    if (!rsvpAttend || !rsvpGuestsField || !rsvpGuests) {
+      return;
+    }
+
+    const isAttending = rsvpAttend.value.toLowerCase() === "yes";
+    rsvpGuestsField.classList.toggle("hidden", !isAttending);
+    rsvpGuests.required = isAttending;
+
+    if (!isAttending) {
+      rsvpGuests.value = "";
+    }
+  };
+
+  if (rsvpAttend) {
+    rsvpAttend.addEventListener("change", syncRsvpGuestsField);
+    syncRsvpGuestsField();
   }
 
   if (rsvpForm) {
     rsvpForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      if (rsvpPhone) {
-        rsvpPhone.value = rsvpPhone.value.replace(/\D+/g, "").slice(0, 10);
-      }
+
       if (!rsvpForm.reportValidity()) {
         return;
       }
@@ -821,25 +831,29 @@ window.addEventListener("load", () => {
         submitButton.textContent = "Opening WhatsApp...";
       }
 
-      const guestsValue = rsvpGuests?.value?.trim() || "0";
-      const messageLines = [
-        "RSVP",
-        `Name: ${rsvpName.value.trim()}`,
-        `Phone: ${rsvpPhone.value.trim()}`,
-        `Guests: ${guestsValue}`,
-        `Will you be attending?: ${rsvpAttend.value}`
-      ];
+      const isAttending = rsvpAttend.value.toLowerCase() === "yes";
+      const guestCount = isAttending ? rsvpGuests?.value?.trim() || "1" : "0";
 
-      const guestMessage = rsvpMessage?.value?.trim();
-      if (guestMessage) {
-        messageLines.push(`${guestMessage}`);
-      }
-
-      if (rsvpAttend.value.toLowerCase() === "attending") {
-        messageLines.push(
-          "Yes! I’m honored to be the chosen one and excited to grace the occasion with my presence."
-        );
-      }
+      const messageLines = isAttending
+        ? [
+            "Hello H2 House of Health Team,",
+            "",
+            "Yes, I am truly honored to be the chosen one, and delighted to confirm my RSVP for the Grand Opening.",
+            `Name: ${rsvpName.value.trim()}`,
+            "Attending: Yes",
+            `Number of Guests: ${guestCount}`,
+            "",
+            "We are excited to celebrate this beautiful milestone with you."
+          ]
+        : [
+            "Hello H2 House of Health Team,",
+            "",
+            "With sincere regrets, I am unable to attend the Grand Opening.",
+            `Name: ${rsvpName.value.trim()}`,
+            "Attending: No",
+            "",
+            "Sending warm wishes for a wonderful celebration and continued success."
+          ];
 
       const url = `https://wa.me/${rsvpWhatsAppNumber}?text=${encodeURIComponent(messageLines.join("\n"))}`;
       const opened = window.open(url, "_blank");
@@ -850,6 +864,17 @@ window.addEventListener("load", () => {
       rsvpForm.classList.add("hidden");
       if (rsvpSuccess) {
         rsvpSuccess.classList.remove("hidden");
+      }
+      if (rsvpSuccessTitle) {
+        rsvpSuccessTitle.textContent = isAttending ? "RSVP Confirmed ✅" : "Regret Noted ✅";
+      }
+      if (rsvpSuccessCopy) {
+        rsvpSuccessCopy.textContent = isAttending
+          ? "Your WhatsApp RSVP is ready. Please review and tap send."
+          : "Your WhatsApp regret message is ready. Please review and tap send.";
+      }
+      if (rsvpAddCalendar) {
+        rsvpAddCalendar.classList.toggle("hidden", !isAttending);
       }
 
       if (submitButton) {
