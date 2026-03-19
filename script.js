@@ -96,6 +96,7 @@ window.addEventListener("load", () => {
   ]);
   const quoteVoiceTracks = new Map();
   let activeQuoteVoiceTrack = null;
+  let quoteVoicesUnlocked = false;
 
   const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const randomBetween = (min, max) => Math.random() * (max - min) + min;
@@ -159,6 +160,7 @@ window.addEventListener("load", () => {
     if (!quoteVoiceTracks.has(src)) {
       const track = new Audio(src);
       track.preload = "auto";
+      track.playsInline = true;
       track.volume = 1;
       quoteVoiceTracks.set(src, track);
     }
@@ -194,12 +196,65 @@ window.addEventListener("load", () => {
     activeQuoteVoiceTrack = null;
   };
 
+  const warmQuoteVoiceTracks = () => {
+    const voiceSources = new Set();
+    quoteVoiceSources.forEach((src) => voiceSources.add(src));
+    quotes.forEach((quote) => {
+      if (quote.voiceSrc) {
+        voiceSources.add(quote.voiceSrc);
+      }
+    });
+    voiceSources.forEach((src) => {
+      const track = getOrCreateQuoteVoiceTrack(src);
+      if (track) {
+        track.load();
+      }
+    });
+  };
+
+  const unlockQuoteVoices = () => {
+    if (quoteVoicesUnlocked) {
+      return;
+    }
+
+    quoteVoicesUnlocked = true;
+    quoteVoiceTracks.forEach((track) => {
+      const previousMuted = track.muted;
+      const previousVolume = track.volume;
+      track.muted = true;
+      track.volume = 0;
+      track.currentTime = 0;
+
+      const playPromise = track.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise
+          .then(() => {
+            track.pause();
+            track.currentTime = 0;
+          })
+          .catch(() => {})
+          .finally(() => {
+            track.muted = previousMuted;
+            track.volume = previousVolume;
+          });
+        return;
+      }
+
+      track.pause();
+      track.currentTime = 0;
+      track.muted = previousMuted;
+      track.volume = previousVolume;
+    });
+  };
+
   const activateMusic = () => {
     if (hasActivatedMusic) {
       return;
     }
 
     hasActivatedMusic = true;
+    warmQuoteVoiceTracks();
+    unlockQuoteVoices();
     tryStartMusic();
   };
 
