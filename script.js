@@ -47,21 +47,23 @@ window.addEventListener("load", () => {
       className: "from-top-left windsong typewriter",
       duration: 5600,
       voiceSrc: "voicesai-dumbledore-1.mp3",
-      typeSpeedMultiplier: 1.2,
-      gapAfterMs: 640
+      typeSpeedMultiplier: 0.7,
+      gapAfterMs: 660
     },
     {
       text: "In a system built for speed,\n a few demand precision.",
       className: "from-bottom-right windsong typewriter",
       duration: 5000,
-      voiceSrc: "voicesai-dumbledore-2.mp3"
+      voiceSrc: "voicesai-dumbledore-2.mp3",
+      typeSpeedMultiplier: 0.7,
+      gapAfterMs: 20
     },
     {
       text: "In an era of reactive medicine...",
       className: "from-bottom windsong typewriter",
       duration: 4700,
       voiceSrc: "voicesai-dumbledore-3.mp3",
-      gapAfterMs: 140
+      gapAfterMs: 10
     },
     {
       text: "A new circle is forming",
