@@ -38,7 +38,7 @@ window.addEventListener("load", () => {
   const rsvpMessage = document.querySelector("#rsvp-message");
   const rsvpSuccess = document.querySelector("#rsvp-success");
   const rsvpError = document.querySelector("#rsvp-error");
-  const rsvpWhatsAppNumber = "919100056979";
+  const rsvpWhatsAppNumber = "919000141936";
 
   const quotes = [
     { text: "you are the chosen one!", className: "from-center quill-feather", duration: 4800 },
