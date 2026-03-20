@@ -89,7 +89,6 @@ window.addEventListener("load", () => {
   let hasActivatedMusic = false;
   const quoteVoiceTracks = new Map();
   let activeQuoteVoiceTrack = null;
-  let quoteVoicesUnlocked = false;
 
   const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const randomBetween = (min, max) => Math.random() * (max - min) + min;
@@ -182,41 +181,6 @@ window.addEventListener("load", () => {
     });
   };
 
-  const unlockQuoteVoices = () => {
-    if (quoteVoicesUnlocked) {
-      return;
-    }
-
-    quoteVoicesUnlocked = true;
-    quoteVoiceTracks.forEach((track) => {
-      const previousMuted = track.muted;
-      const previousVolume = track.volume;
-      track.muted = true;
-      track.volume = 0;
-      track.currentTime = 0;
-
-      const playPromise = track.play();
-      if (playPromise && typeof playPromise.then === "function") {
-        playPromise
-          .then(() => {
-            track.pause();
-            track.currentTime = 0;
-          })
-          .catch(() => {})
-          .finally(() => {
-            track.muted = previousMuted;
-            track.volume = previousVolume;
-          });
-        return;
-      }
-
-      track.pause();
-      track.currentTime = 0;
-      track.muted = previousMuted;
-      track.volume = previousVolume;
-    });
-  };
-
   const activateMusic = () => {
     if (hasActivatedMusic) {
       return;
@@ -224,7 +188,6 @@ window.addEventListener("load", () => {
 
     hasActivatedMusic = true;
     warmQuoteVoiceTracks();
-    unlockQuoteVoices();
     tryStartMusic();
   };
 
