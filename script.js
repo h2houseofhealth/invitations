@@ -48,7 +48,7 @@ window.addEventListener("load", () => {
     {
       text: "In a world obsessed with disease,\na few choose prevention.",
       className: "from-top-left windsong typewriter",
-      duration: 5600,
+      duration: 6400,
       voiceSrc: "voicesai-dumbledore-1.mp3",
       typeSpeedMultiplier: 0.7,
       gapAfterMs: 660
@@ -56,7 +56,7 @@ window.addEventListener("load", () => {
     {
       text: "In a system built for speed,\na few demand precision.",
       className: "from-bottom-right windsong typewriter",
-      duration: 5000,
+      duration: 5900,
       voiceSrc: "voicesai-dumbledore-2.mp3",
       typeSpeedMultiplier: 0.7,
       gapAfterMs: 20
