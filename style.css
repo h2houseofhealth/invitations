@@ -4,6 +4,14 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
 :root {
   --brand-primary: #ae5431; /* R174 G84 B49 */
   --brand-primary-dark: #7f3b22;
@@ -12,6 +20,8 @@
 
 body {
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -19,7 +29,11 @@ body {
   font-family: "Trakya-Sans", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
   background: #0b0b0b;
   overflow: hidden;
-  padding: 16px 10px;
+  padding:
+    calc(12px + env(safe-area-inset-top))
+    calc(10px + env(safe-area-inset-right))
+    calc(12px + env(safe-area-inset-bottom))
+    calc(10px + env(safe-area-inset-left));
 }
 
 button,
@@ -82,6 +96,8 @@ body.end-active .end-screen {
   position: relative;
   width: 100%;
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   isolation: isolate;
@@ -1863,7 +1879,7 @@ body.opened .tap-open {
   .answer-form input,
   .answer-form button {
     padding: 6px 7px;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .hint-bottle {
@@ -1981,6 +1997,45 @@ body.opened .tap-open {
 
   .event-meta-footer .value {
     font-size: clamp(0.73rem, 2.8vw, 0.9rem);
+  }
+}
+
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-height: 760px) and (max-width: 560px) {
+  .scene {
+    --env-width: 312px;
+    --env-half-w: 156px;
+    --env-half-h: 108px;
+    gap: 10px;
+    width: min(100%, 326px);
+  }
+
+  .seal {
+    width: 146px;
+    height: 146px;
+  }
+
+  .letter h1 {
+    font-size: 13px;
+  }
+
+  .riddle {
+    font-size: 8.5px;
+  }
+
+  .tap-open {
+    font-size: 13px;
+  }
+
+  .event-image-card {
+    width: min(94vw, 390px);
   }
 }
 

@@ -93,9 +93,38 @@ window.addEventListener("load", () => {
   const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const randomBetween = (min, max) => Math.random() * (max - min) + min;
   const isMobileViewport = window.matchMedia("(max-width: 768px)").matches;
+  const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || "ontouchstart" in window;
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isLowPowerDevice =
     Number(navigator.deviceMemory || 0) > 0 && Number(navigator.deviceMemory) <= 4;
+
+  const lockZoomInteractions = () => {
+    if (!isTouchDevice) {
+      return;
+    }
+
+    // Prevent Safari gesture zoom and desktop-style ctrl+wheel zoom on touch devices.
+    ["gesturestart", "gesturechange", "gestureend"].forEach((eventName) => {
+      document.addEventListener(eventName, (event) => {
+        event.preventDefault();
+      }, { passive: false });
+    });
+
+    let lastTouchEnd = 0;
+    document.addEventListener("touchend", (event) => {
+      const now = Date.now();
+      if (now - lastTouchEnd < 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+
+    window.addEventListener("wheel", (event) => {
+      if (event.ctrlKey) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+  };
 
   const PARTICLE_COUNTS = (() => {
     if (prefersReducedMotion) {
@@ -108,6 +137,8 @@ window.addEventListener("load", () => {
 
     return { light: 260, quote: 120, final: 130 };
   })();
+
+  lockZoomInteractions();
 
   const tryStartMusic = () => {
     if (!bgMusic) {
