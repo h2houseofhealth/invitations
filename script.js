@@ -87,13 +87,6 @@ window.addEventListener("load", () => {
   let finalParticlesSeeded = false;
   let lightDotsSeeded = false;
   let hasActivatedMusic = false;
-  const quoteVoiceSources = new Map([
-    ["in a world", "In_a_world.mp3"],
-    ["in a system", "in_a_system.mp3"],
-    ["in an era", "In_an_era.mp3"],
-    ["a new circle", "a_new_circle.mp3"],
-    ["welcome", "welcome.mp3"]
-  ]);
   const quoteVoiceTracks = new Map();
   let activeQuoteVoiceTrack = null;
   let quoteVoicesUnlocked = false;
@@ -131,27 +124,6 @@ window.addEventListener("load", () => {
     }
   };
 
-  const normalizeQuoteText = (text) =>
-    text
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]+/g, " ")
-      .trim()
-      .replace(/\s+/g, " ");
-
-  const resolveQuoteVoiceSource = (quoteText) => {
-    const words = normalizeQuoteText(quoteText).split(" ").filter(Boolean);
-    const maxWords = Math.min(4, words.length);
-
-    for (let size = maxWords; size >= 1; size -= 1) {
-      const key = words.slice(0, size).join(" ");
-      if (quoteVoiceSources.has(key)) {
-        return quoteVoiceSources.get(key);
-      }
-    }
-
-    return null;
-  };
-
   const getOrCreateQuoteVoiceTrack = (src) => {
     if (!src) {
       return null;
@@ -168,9 +140,8 @@ window.addEventListener("load", () => {
     return quoteVoiceTracks.get(src);
   };
 
-  const startQuoteVoiceForQuote = ({ text: quoteText, voiceSrc }) => {
-    const src = voiceSrc || resolveQuoteVoiceSource(quoteText);
-    const track = getOrCreateQuoteVoiceTrack(src);
+  const startQuoteVoiceForQuote = ({ voiceSrc }) => {
+    const track = getOrCreateQuoteVoiceTrack(voiceSrc);
     if (!track) {
       return;
     }
@@ -198,7 +169,6 @@ window.addEventListener("load", () => {
 
   const warmQuoteVoiceTracks = () => {
     const voiceSources = new Set();
-    quoteVoiceSources.forEach((src) => voiceSources.add(src));
     quotes.forEach((quote) => {
       if (quote.voiceSrc) {
         voiceSources.add(quote.voiceSrc);
