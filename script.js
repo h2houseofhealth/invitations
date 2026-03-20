@@ -41,6 +41,31 @@ window.addEventListener("load", () => {
   const rsvpAddCalendar = document.querySelector("#rsvp-add-calendar");
   const rsvpError = document.querySelector("#rsvp-error");
   const rsvpWhatsAppNumber = "919000141936";
+  let viewportSyncHandle = null;
+
+  const syncViewportHeightVar = () => {
+    if (!document?.documentElement) {
+      return;
+    }
+
+    const viewportUnit = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--app-vh", `${viewportUnit}px`);
+  };
+
+  const queueViewportSync = () => {
+    if (viewportSyncHandle !== null) {
+      window.cancelAnimationFrame(viewportSyncHandle);
+    }
+
+    viewportSyncHandle = window.requestAnimationFrame(() => {
+      syncViewportHeightVar();
+      viewportSyncHandle = null;
+    });
+  };
+
+  syncViewportHeightVar();
+  window.addEventListener("resize", queueViewportSync, { passive: true });
+  window.addEventListener("orientationchange", queueViewportSync, { passive: true });
 
   const quotes = [
     { text: "you are the chosen one!", className: "from-center quill-feather", duration: 4800 },
