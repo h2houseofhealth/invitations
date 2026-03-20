@@ -889,16 +889,20 @@ window.addEventListener("load", () => {
       const isAttending = rsvpAttend.value.toLowerCase() === "yes";
       const guestCount = isAttending ? rsvpGuests?.value?.trim() || "1" : "0";
 
+      const parsedGuestCount = Number.parseInt(guestCount, 10);
+      const hasMultipleGuests = Number.isFinite(parsedGuestCount) && parsedGuestCount > 1;
+      const attendingLine = hasMultipleGuests
+        ? "Yes! We're honored to be the chosen ones and excited to grace the occasion with our presence."
+        : "Yes! I'm honored to be the chosen one and excited to grace the occasion with my presence.";
+
       const messageLines = isAttending
         ? [
             "Hello H2 House of Health Team,",
             "",
-            "Yes, I am truly honored to be the chosen one, and delighted to confirm my RSVP for the Grand Opening.",
-            `Name: ${rsvpName.value.trim()}`,
-            "Attending: Yes",
-            `Number of Guests: ${guestCount}`,
+            attendingLine,
             "",
-            "We are excited to celebrate this beautiful milestone with you."
+            `Name: ${rsvpName.value.trim()}`,
+            `Number of Guests: ${guestCount}`
           ]
         : [
             "Hello H2 House of Health Team,",
