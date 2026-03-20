@@ -21,6 +21,7 @@ window.addEventListener("load", () => {
   const quillWriter = document.querySelector("#quill-writer");
   const quoteParticleField = document.querySelector("#quote-particle-field");
   const identityPanel = document.querySelector("#identity-panel");
+  const lockPanel = document.querySelector("#lock-panel");
   const lockButton = document.querySelector("#lock-button");
   const keyPanel = document.querySelector("#key-panel");
   const keyStatus = document.querySelector("#key-status");
@@ -45,7 +46,7 @@ window.addEventListener("load", () => {
   const quotes = [
     { text: "you are the chosen one!", className: "from-center quill-feather", duration: 4800 },
     {
-      text: "In a world obsessed with disease,\n a few choose prevention.",
+      text: "In a world obsessed with disease,\na few choose prevention.",
       className: "from-top-left windsong typewriter",
       duration: 5600,
       voiceSrc: "voicesai-dumbledore-1.mp3",
@@ -53,7 +54,7 @@ window.addEventListener("load", () => {
       gapAfterMs: 660
     },
     {
-      text: "In a system built for speed,\n a few demand precision.",
+      text: "In a system built for speed,\na few demand precision.",
       className: "from-bottom-right windsong typewriter",
       duration: 5000,
       voiceSrc: "voicesai-dumbledore-2.mp3",
@@ -759,6 +760,9 @@ window.addEventListener("load", () => {
 
     gateUnlocked = true;
     lockButton.disabled = true;
+    if (lockPanel) {
+      lockPanel.classList.add("hidden");
+    }
     keyPanel.classList.remove("hidden");
     keyPanel.classList.add("visible");
 
