@@ -1287,10 +1287,12 @@ body.revealed .wrapper {
 .answer-form {
   display: flex;
   gap: 6px;
+  width: 100%;
 }
 
 .answer-form input {
   flex: 1;
+  min-width: 0;
   border: 1px solid #000;
   border-radius: 8px;
   padding: 8px;
@@ -1300,6 +1302,8 @@ body.revealed .wrapper {
 }
 
 .answer-form button {
+  flex-shrink: 0;
+  white-space: nowrap;
   border: 1px solid #000;
   border-radius: 8px;
   padding: 8px 10px;
@@ -1935,6 +1939,27 @@ body.opened .tap-open {
   .cinematic-quote {
     font-size: clamp(1.1rem, 5vw, 1.6rem);
     letter-spacing: 0.03em;
+    text-align: center;
+    margin-inline: auto;
+    width: fit-content;
+    max-width: 92vw;
+  }
+
+  .quote-layer {
+    padding: 16px 10px;
+  }
+
+  .quote-write-stage {
+    width: min(94vw, 860px);
+    display: grid;
+    justify-items: center;
+  }
+
+  .cinematic-quote.from-top-left.play,
+  .cinematic-quote.from-bottom-right.play,
+  .cinematic-quote.from-bottom.play,
+  .cinematic-quote.from-top.play {
+    animation-name: quoteCenterFade;
   }
 
   .cinematic-quote.quill-feather {
@@ -1953,6 +1978,46 @@ body.opened .tap-open {
   .lock-button {
     width: 74px;
     height: 74px;
+  }
+
+  .identity-panel {
+    gap: 14px;
+    padding: 16px 12px 24px;
+    align-content: center;
+  }
+
+  .identity-title {
+    width: min(96vw, 560px);
+    height: clamp(130px, 26vh, 210px);
+    max-width: 96vw;
+    margin-inline: auto;
+    object-position: center;
+    transform: translateX(-4%);
+  }
+
+  .lock-copy,
+  .key-status {
+    font-size: clamp(0.76rem, 3vw, 0.9rem);
+    letter-spacing: 0.09em;
+  }
+
+  .lock-panel,
+  .key-panel {
+    width: 100%;
+    justify-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .lock-copy,
+  .key-status {
+    width: 100%;
+    text-align: center;
+  }
+
+  .enter-button {
+    margin-inline: auto;
+    justify-self: center;
   }
 
   .event-card {
@@ -2036,6 +2101,46 @@ body.opened .tap-open {
 
   .event-image-card {
     width: min(94vw, 390px);
+  }
+
+  .identity-panel {
+    gap: 10px;
+    padding: 12px 10px 20px;
+  }
+
+  .identity-title {
+    height: clamp(108px, 23vh, 170px);
+    transform: translateX(-5%);
+  }
+
+  .lock-button {
+    width: 64px;
+    height: 64px;
+  }
+
+  .lock-copy,
+  .key-status {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .lock-panel,
+  .key-panel {
+    width: 100%;
+    justify-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .lock-copy,
+  .key-status {
+    width: 100%;
+    text-align: center;
+  }
+
+  .enter-button {
+    margin-inline: auto;
+    justify-self: center;
   }
 }
 
