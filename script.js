@@ -96,6 +96,10 @@ window.addEventListener("load", () => {
   const isMobileViewport = window.matchMedia("(max-width: 768px)").matches;
   const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || "ontouchstart" in window;
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const connection =
+    navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+  const isSlowNetwork =
+    Boolean(connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || "")));
   const isLowPowerDevice =
     Number(navigator.deviceMemory || 0) > 0 && Number(navigator.deviceMemory) <= 4;
 
@@ -129,14 +133,18 @@ window.addEventListener("load", () => {
 
   const PARTICLE_COUNTS = (() => {
     if (prefersReducedMotion) {
-      return { light: 80, quote: 36, final: 40 };
+      return { light: 36, quote: 18, final: 20 };
+    }
+
+    if (isSlowNetwork) {
+      return { light: 44, quote: 24, final: 30 };
     }
 
     if (isMobileViewport || isLowPowerDevice) {
-      return { light: 140, quote: 70, final: 78 };
+      return { light: 72, quote: 40, final: 46 };
     }
 
-    return { light: 260, quote: 120, final: 130 };
+    return { light: 140, quote: 72, final: 78 };
   })();
 
   lockZoomInteractions();
@@ -146,6 +154,7 @@ window.addEventListener("load", () => {
       return;
     }
 
+    bgMusic.preload = "none";
     bgMusic.volume = 0.55;
     bgMusic.loop = true;
 
@@ -162,7 +171,7 @@ window.addEventListener("load", () => {
 
     if (!quoteVoiceTracks.has(src)) {
       const track = new Audio(src);
-      track.preload = "auto";
+      track.preload = "metadata";
       track.playsInline = true;
       track.volume = 1;
       quoteVoiceTracks.set(src, track);
@@ -198,28 +207,12 @@ window.addEventListener("load", () => {
     activeQuoteVoiceTrack = null;
   };
 
-  const warmQuoteVoiceTracks = () => {
-    const voiceSources = new Set();
-    quotes.forEach((quote) => {
-      if (quote.voiceSrc) {
-        voiceSources.add(quote.voiceSrc);
-      }
-    });
-    voiceSources.forEach((src) => {
-      const track = getOrCreateQuoteVoiceTrack(src);
-      if (track) {
-        track.load();
-      }
-    });
-  };
-
   const activateMusic = () => {
     if (hasActivatedMusic) {
       return;
     }
 
     hasActivatedMusic = true;
-    warmQuoteVoiceTracks();
     tryStartMusic();
   };
 

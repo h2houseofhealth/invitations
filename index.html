@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
- <audio id="bg-music" src="Hedwigs_HP_music.mp3" loop preload="auto" playsinline></audio>
+ <audio id="bg-music" src="Hedwigs_HP_music.mp3" loop preload="none" playsinline></audio>
 
   <div class="scene">
     <div class="light" aria-hidden="true"></div>
@@ -19,8 +19,8 @@
       <div class="lid two"></div>
       <div class="envelope"></div>
       <div class="seal" id="seal-button" role="button" tabindex="0" aria-label="Open envelope seal">
-        <img class="seal-image seal-intact" src="seal.png" alt="" aria-hidden="true">
-        <img class="seal-image seal-broken" src="seal-broken.png" alt="" aria-hidden="true">
+        <img class="seal-image seal-intact" src="seal.png" alt="" aria-hidden="true" decoding="async">
+        <img class="seal-image seal-broken" src="seal-broken.png" alt="" aria-hidden="true" decoding="async">
       </div>
       <div class="letter">
         <h1>WHAT AM I?</h1>
@@ -58,14 +58,14 @@
       <div class="quote-layer" id="quote-layer" aria-live="polite">
         <div class="quote-write-stage">
           <div class="quill-writer hidden" id="quill-writer" aria-hidden="true">
-            <img class="quill-feather-image" src="quill_transparent2.png" alt="" role="presentation" aria-hidden="true" />
+            <img class="quill-feather-image" src="quill_transparent2.png" alt="" role="presentation" aria-hidden="true" loading="lazy" decoding="async" />
           </div>
           <p class="cinematic-quote" id="cinematic-quote"></p>
         </div>
       </div>
 
       <div class="identity-panel hidden" id="identity-panel">
-        <img class="identity-title" src="h2-bg-removed.png" alt="H2 House of Health">
+        <img class="identity-title" src="h2-bg-removed.png" alt="H2 House of Health" loading="lazy" decoding="async">
 
         <div class="lock-panel" id="lock-panel">
           <button class="lock-button" id="lock-button" type="button" aria-label="Reveal the experience">
@@ -89,14 +89,14 @@
           <p class="accepted-copy">Your key has been accepted.</p> -->
 
           <div class="event-image-card">
-            <img class="event-image" src="end-scroll-card-removebg-preview2.png" alt="Grand opening invitation card">
+            <img class="event-image" src="end-scroll-card-removebg-preview2.png" alt="Grand opening invitation card" loading="lazy" decoding="async">
             <div class="event-image-details">
-              <p class="event-detail-line invitation-text"><span class="value">You are cordially invited<br>to the Grand Opening of<br><span class="invite-brand"><img class="invite-brand-logo" src="h2-black-logo-removebg-preview.png" alt="H2 House of Health"></span></span></p>
+              <p class="event-detail-line invitation-text"><span class="value">You are cordially invited<br>to the Grand Opening of<br><span class="invite-brand"><img class="invite-brand-logo" src="h2-black-logo-removebg-preview.png" alt="H2 House of Health" loading="lazy" decoding="async"></span></span></p>
               <div class="event-meta-footer" aria-label="Event details">
                 <p class="event-detail-line"><span class="label">DATE</span><span class="value">19 March 2026</span></p>
                 <p class="event-detail-line location-detail-line">
                   <a class="location-map-link" href="https://www.google.com/maps/place/17°25'19.6%22N+78°24'27.4%22E/@17.422112,78.4050411,17z/data=!3m1!4b1!4m4!3m3!8m2!3d17.422112!4d78.407616!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDMxNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="Open venue location on Google Maps">
-                    <img class="location-castle-icon" src="castle.png" alt="Open location map">
+                    <img class="location-castle-icon" src="castle.png" alt="Open location map" loading="lazy" decoding="async">
                   </a>
                   <span class="label">LOCATION</span>
                   <span class="value">Jubilee Hills</span>
