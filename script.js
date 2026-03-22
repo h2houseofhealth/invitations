@@ -88,8 +88,11 @@ window.addEventListener("load", () => {
   let finalParticlesSeeded = false;
   let lightDotsSeeded = false;
   let hasActivatedMusic = false;
-  const quoteVoiceTracks = new Map();
-  let activeQuoteVoiceTrack = null;
+  let hasUnlockedQuoteVoices = false;
+  let isNarrativeSequenceRunning = false;
+  const quoteVoicePlayer = new Audio();
+  let quoteVoiceLoadedSrc = "";
+  const IOS_AUDIO_UNLOCK_SRC = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAABCxAgAEABAAZGF0YQAAAAA=";
 
   const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const randomBetween = (min, max) => Math.random() * (max - min) + min;
@@ -164,47 +167,78 @@ window.addEventListener("load", () => {
     }
   };
 
-  const getOrCreateQuoteVoiceTrack = (src) => {
+  quoteVoicePlayer.preload = "metadata";
+  quoteVoicePlayer.playsInline = true;
+  quoteVoicePlayer.setAttribute("playsinline", "");
+  quoteVoicePlayer.setAttribute("webkit-playsinline", "");
+  quoteVoicePlayer.volume = 1;
+
+  const prepareQuoteVoiceSource = (src) => {
     if (!src) {
-      return null;
+      return false;
     }
 
-    if (!quoteVoiceTracks.has(src)) {
-      const track = new Audio(src);
-      track.preload = "metadata";
-      track.playsInline = true;
-      track.volume = 1;
-      quoteVoiceTracks.set(src, track);
+    if (quoteVoiceLoadedSrc !== src) {
+      quoteVoicePlayer.src = src;
+      quoteVoiceLoadedSrc = src;
+      quoteVoicePlayer.load();
     }
 
-    return quoteVoiceTracks.get(src);
+    return true;
   };
 
-  const startQuoteVoiceForQuote = ({ voiceSrc }) => {
-    const track = getOrCreateQuoteVoiceTrack(voiceSrc);
-    if (!track) {
+  const unlockQuoteVoices = () => {
+    if (hasUnlockedQuoteVoices) {
       return;
     }
 
-    if (activeQuoteVoiceTrack && activeQuoteVoiceTrack !== track) {
-      activeQuoteVoiceTrack.pause();
-      activeQuoteVoiceTrack.currentTime = 0;
+    hasUnlockedQuoteVoices = true;
+    quoteVoicePlayer.src = IOS_AUDIO_UNLOCK_SRC;
+    quoteVoiceLoadedSrc = "";
+    quoteVoicePlayer.currentTime = 0;
+    quoteVoicePlayer.volume = 0;
+    const playPromise = quoteVoicePlayer.play();
+    if (playPromise && typeof playPromise.then === "function") {
+      playPromise
+        .then(() => {
+          quoteVoicePlayer.pause();
+          quoteVoicePlayer.currentTime = 0;
+          quoteVoicePlayer.removeAttribute("src");
+          quoteVoicePlayer.load();
+          quoteVoicePlayer.volume = 1;
+        })
+        .catch(() => {
+          quoteVoicePlayer.removeAttribute("src");
+          quoteVoicePlayer.load();
+          quoteVoicePlayer.volume = 1;
+        });
+    } else {
+      quoteVoicePlayer.removeAttribute("src");
+      quoteVoicePlayer.load();
+      quoteVoicePlayer.volume = 1;
+    }
+  };
+
+  const startQuoteVoiceForQuote = ({ voiceSrc }) => {
+    if (!prepareQuoteVoiceSource(voiceSrc)) {
+      return;
     }
 
-    activeQuoteVoiceTrack = track;
-    track.currentTime = 0;
-    const playPromise = track.play();
+    quoteVoicePlayer.pause();
+    quoteVoicePlayer.currentTime = 0;
+    const playPromise = quoteVoicePlayer.play();
     if (playPromise && typeof playPromise.catch === "function") {
       playPromise.catch(() => {});
     }
   };
 
   const stopQuoteVoice = () => {
-    quoteVoiceTracks.forEach((track) => {
-      track.pause();
-      track.currentTime = 0;
-    });
-    activeQuoteVoiceTrack = null;
+    quoteVoicePlayer.pause();
+    quoteVoicePlayer.currentTime = 0;
+  };
+
+  const stopActiveQuoteVoice = () => {
+    stopQuoteVoice();
   };
 
   const activateMusic = () => {
@@ -214,6 +248,7 @@ window.addEventListener("load", () => {
 
     hasActivatedMusic = true;
     tryStartMusic();
+    unlockQuoteVoices();
   };
 
   ["click", "touchstart", "keydown"].forEach((eventName) => {
@@ -698,17 +733,24 @@ window.addEventListener("load", () => {
   };
 
   const playQuote = async ({ text, className, duration, voiceSrc, typeSpeedMultiplier }) => {
+    stopQuoteVoice();
+    quoteEl.className = "cinematic-quote";
+    quoteEl.textContent = "";
+    void quoteEl.offsetWidth;
+
     startQuoteVoiceForQuote({ text, voiceSrc });
     hideQuillWriter();
     quoteEl.style.setProperty("--quote-play-ms", `${duration}ms`);
 
     if (className.includes("quill-feather")) {
       await playQuillQuote({ text, className, duration });
+      stopActiveQuoteVoice();
       return;
     }
 
     if (className.includes("typewriter")) {
       await playTypewriterQuote({ text, className, duration, typeSpeedMultiplier });
+      stopActiveQuoteVoice();
       return;
     }
 
@@ -718,6 +760,7 @@ window.addEventListener("load", () => {
     void quoteEl.offsetWidth;
     quoteEl.classList.add("play");
     await wait(duration);
+    stopActiveQuoteVoice();
   };
 
   const revealIdentityPanel = async () => {
@@ -728,6 +771,11 @@ window.addEventListener("load", () => {
   };
 
   const playNarrativeSequence = async () => {
+    if (isNarrativeSequenceRunning) {
+      return;
+    }
+
+    isNarrativeSequenceRunning = true;
     const interQuoteGapMs = 360;
 
     seedQuoteParticles();
@@ -736,14 +784,18 @@ window.addEventListener("load", () => {
       quoteParticleField.classList.add("active");
     }
 
-    for (let index = 0; index < quotes.length; index += 1) {
-      await playQuote(quotes[index]);
-      if (index < quotes.length - 1) {
-        await wait(quotes[index].gapAfterMs ?? interQuoteGapMs);
+    try {
+      for (let index = 0; index < quotes.length; index += 1) {
+        await playQuote(quotes[index]);
+        if (index < quotes.length - 1) {
+          await wait(quotes[index].gapAfterMs ?? interQuoteGapMs);
+        }
       }
-    }
 
-    await revealIdentityPanel();
+      await revealIdentityPanel();
+    } finally {
+      isNarrativeSequenceRunning = false;
+    }
   };
 
   const activateKeySequence = async () => {
