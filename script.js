@@ -167,6 +167,15 @@ window.addEventListener("load", () => {
     }
   };
 
+  const stopMusic = () => {
+    if (!bgMusic) {
+      return;
+    }
+
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+  };
+
   quoteVoicePlayer.preload = "metadata";
   quoteVoicePlayer.playsInline = true;
   quoteVoicePlayer.setAttribute("playsinline", "");
@@ -928,6 +937,7 @@ window.addEventListener("load", () => {
           ];
 
       const url = `https://wa.me/${rsvpWhatsAppNumber}?text=${encodeURIComponent(messageLines.join("\n"))}`;
+      stopMusic();
       const opened = window.open(url, "_blank");
       if (!opened) {
         window.location.href = url;
