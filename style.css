@@ -1201,7 +1201,7 @@ body.revealed .wrapper {
 
 .letter h1 {
   text-align: center;
-  font-size: 19px;
+  font-size: 20px;
   font-family: "Bradley Hand", "Segoe Print", "Lucida Handwriting", "Comic Sans MS", cursive;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -1211,7 +1211,7 @@ body.revealed .wrapper {
 
 .riddle {
   text-align: center;
-  font-size: 15px;
+  font-size: 22px;
   font-family: "Bradley Hand", "Segoe Print", "Lucida Handwriting", "Comic Sans MS", cursive;
   letter-spacing: 0.01em;
   line-height: 1.35;
