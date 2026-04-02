@@ -90,6 +90,9 @@ window.addEventListener("load", () => {
   let hasActivatedMusic = false;
   let hasUnlockedQuoteVoices = false;
   let isNarrativeSequenceRunning = false;
+  let musicFadeFrame = null;
+  let musicFadeTimer = null;
+  let musicFadeToken = 0;
   const quoteVoicePlayer = new Audio();
   let quoteVoiceLoadedSrc = "";
   const IOS_AUDIO_UNLOCK_SRC = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAABCxAgAEABAAZGF0YQAAAAA=";
@@ -157,6 +160,16 @@ window.addEventListener("load", () => {
       return;
     }
 
+    musicFadeToken += 1;
+    if (musicFadeFrame) {
+      window.cancelAnimationFrame(musicFadeFrame);
+      musicFadeFrame = null;
+    }
+    if (musicFadeTimer) {
+      window.clearInterval(musicFadeTimer);
+      musicFadeTimer = null;
+    }
+
     bgMusic.preload = "none";
     bgMusic.volume = 0.55;
     bgMusic.loop = true;
@@ -167,13 +180,58 @@ window.addEventListener("load", () => {
     }
   };
 
-  const stopMusic = () => {
+  const stopMusic = (fadeDurationMs = 900) => {
     if (!bgMusic) {
-      return;
+      return Promise.resolve();
     }
 
-    bgMusic.pause();
-    bgMusic.currentTime = 0;
+    musicFadeToken += 1;
+    const currentToken = musicFadeToken;
+    if (musicFadeFrame) {
+      window.cancelAnimationFrame(musicFadeFrame);
+      musicFadeFrame = null;
+    }
+    if (musicFadeTimer) {
+      window.clearInterval(musicFadeTimer);
+      musicFadeTimer = null;
+    }
+
+    const startVolume = Math.max(0, Math.min(1, bgMusic.volume));
+    if (startVolume <= 0.01) {
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+      bgMusic.volume = 0.55;
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const fadeStart = performance.now();
+      const stepMs = 40;
+
+      musicFadeTimer = window.setInterval(() => {
+        if (currentToken !== musicFadeToken || !bgMusic) {
+          window.clearInterval(musicFadeTimer);
+          musicFadeTimer = null;
+          resolve();
+          return;
+        }
+
+        const elapsed = performance.now() - fadeStart;
+        const progress = Math.min(1, elapsed / fadeDurationMs);
+        bgMusic.volume = startVolume * (1 - progress);
+
+        if (progress < 1) {
+          return;
+        }
+
+        window.clearInterval(musicFadeTimer);
+        musicFadeTimer = null;
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+        bgMusic.volume = 0.55;
+        resolve();
+      }, stepMs);
+    });
   };
 
   quoteVoicePlayer.preload = "metadata";
@@ -890,7 +948,7 @@ window.addEventListener("load", () => {
   }
 
   if (rsvpForm) {
-    rsvpForm.addEventListener("submit", (event) => {
+    rsvpForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       if (!rsvpForm.reportValidity()) {
@@ -937,7 +995,7 @@ window.addEventListener("load", () => {
           ];
 
       const url = `https://wa.me/${rsvpWhatsAppNumber}?text=${encodeURIComponent(messageLines.join("\n"))}`;
-      stopMusic();
+      await stopMusic(1100);
       const opened = window.open(url, "_blank");
       if (!opened) {
         window.location.href = url;
