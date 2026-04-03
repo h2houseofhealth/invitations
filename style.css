@@ -1311,6 +1311,7 @@ body.revealed .wrapper {
   display: flex;
   gap: 6px;
   width: 100%;
+  flex-shrink: 0;
 }
 
 .answer-form input {
@@ -1355,6 +1356,8 @@ body.revealed .wrapper {
   align-items: center;
   gap: 8px;
   min-height: 84px;
+  flex-shrink: 0;
+  margin-top: 6px;
 }
 
 .hint-bottle {
