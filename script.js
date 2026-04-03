@@ -1066,7 +1066,7 @@ window.addEventListener("load", () => {
     hintWords.classList.remove("hidden");
     hintWords.classList.remove("spill");
     hintWords.classList.add("armed");
-    result.textContent = "Wrong answer. Tap the bottle for hints.";
+    result.textContent = "";
     result.style.color = "#b42318";
   });
 });
