@@ -101,6 +101,7 @@ body.end-active .end-screen {
   display: grid;
   place-items: center;
   isolation: isolate;
+  overflow: hidden;
 }
 
 .cinematic-stage::before {
@@ -145,6 +146,7 @@ body.end-active .end-screen {
   display: grid;
   place-items: center;
   z-index: 1;
+  overflow: hidden;
 }
 
 .quote-layer {
@@ -335,6 +337,7 @@ body.end-active .end-screen {
   gap: 22px;
   padding: 24px;
   text-align: center;
+  justify-content: center;
 }
 
 .identity-panel.hidden,
@@ -350,7 +353,7 @@ body.end-active .end-screen {
 
 .identity-title {
   height: clamp(205px, 37vh, 430px);
-  width: clamp(700px, 94vw, 1360px);
+  width: min(clamp(700px, 94vw, 1360px), 98vw);
   max-width: 98vw;
   display: block;
   object-fit: contain;
