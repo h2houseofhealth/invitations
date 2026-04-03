@@ -1066,7 +1066,7 @@ window.addEventListener("load", () => {
     hintWords.classList.remove("hidden");
     hintWords.classList.remove("spill");
     hintWords.classList.add("armed");
-    result.textContent = "";
+    result.textContent = "Tap on Hints";
     result.style.color = "#b42318";
   });
 });
