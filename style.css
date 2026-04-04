@@ -26,7 +26,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Trakya-Sans", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   background: #0b0b0b;
   overflow: hidden;
   padding:
@@ -73,7 +73,11 @@ body.card-burning .scene {
 
 .end-screen {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   z-index: 20;
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.04), transparent 32%),
@@ -81,10 +85,11 @@ body.card-burning .scene {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px 16px;
+  padding: 0;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.8s ease;
+  overflow: hidden;
 }
 
 body.end-active .end-screen {
@@ -94,10 +99,9 @@ body.end-active .end-screen {
 
 .cinematic-stage {
   position: relative;
-  width: 100%;
-  min-height: 100vh;
-  min-height: 100svh;
-  min-height: 100dvh;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   display: grid;
   place-items: center;
   isolation: isolate;
@@ -157,8 +161,10 @@ body.end-active .end-screen {
 
 .quote-write-stage {
   position: relative;
-  width: min(90vw, 860px);
+  width: 100%;
+  max-width: min(90vw, 860px);
   margin: 0 auto;
+  text-align: center;
 }
 
 .quill-writer {
@@ -617,7 +623,7 @@ body.end-active .end-screen {
 }
 
 .invitation-text .value {
-  font-family: "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive;
+  font-family: "Great Vibes", cursive;
   font-size: clamp(1.12rem, 2.7vw, 1.7rem);
   font-weight: 500;
   line-height: 1.18;
@@ -1225,7 +1231,7 @@ body.revealed .wrapper {
 .letter h1 {
   text-align: center;
   font-size: 20px;
-  font-family: "Bradley Hand", "Segoe Print", "Lucida Handwriting", "Comic Sans MS", cursive;
+  font-family: "Dancing Script", cursive;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: #000;
@@ -1235,7 +1241,7 @@ body.revealed .wrapper {
 .riddle {
   text-align: center;
   font-size: 13px;
-  font-family: "Bradley Hand", "Segoe Print", "Lucida Handwriting", "Comic Sans MS", cursive;
+  font-family: "Dancing Script", cursive;
   letter-spacing: 0.01em;
   line-height: 1.35;
   color: #000;
@@ -1258,8 +1264,8 @@ body.revealed .wrapper {
 .letter::before {
   z-index: 3;
   background-image:
-    url("noise.jpg"),
-    url("noise.jpg"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
     linear-gradient(
       180deg,
       #fff 0%,
@@ -1974,7 +1980,7 @@ body.opened .tap-open {
     letter-spacing: 0.03em;
     text-align: center;
     margin-inline: auto;
-    width: fit-content;
+    width: 100%;
     max-width: 92vw;
   }
 
@@ -1983,7 +1989,8 @@ body.opened .tap-open {
   }
 
   .quote-write-stage {
-    width: min(94vw, 860px);
+    width: 100%;
+    max-width: min(94vw, 860px);
     display: grid;
     justify-items: center;
   }
@@ -2025,7 +2032,6 @@ body.opened .tap-open {
     max-width: 96vw;
     margin-inline: auto;
     object-position: center;
-    transform: translateX(-4%);
   }
 
   .lock-copy,
@@ -2144,7 +2150,6 @@ body.opened .tap-open {
 
   .identity-title {
     height: clamp(108px, 23vh, 170px);
-    transform: translateX(-5%);
   }
 
   .lock-button {

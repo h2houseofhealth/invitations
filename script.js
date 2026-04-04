@@ -1058,7 +1058,7 @@ window.addEventListener("load", () => {
       answerInput.disabled = true;
       submitButton.disabled = true;
       hintBottle.setAttribute("tabindex", "-1");
-      letter.setAttribute("aria-hidden", "true");
+      letter.inert = true;
       runSuccessJourney();
       return;
     }
