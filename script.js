@@ -44,7 +44,7 @@ window.addEventListener("load", () => {
   const rsvpWhatsAppNumber = "919000141936";
 
   const quotes = [
-    { text: "you are the chosen one!", className: "from-center quill-feather", duration: 4800 },
+    { text: "you are the chosen one!", className: "from-center quill-feather", duration: 7200 },
     {
       text: "In a world obsessed with disease,\na few choose prevention.",
       className: "from-top-left windsong typewriter",
@@ -155,6 +155,47 @@ window.addEventListener("load", () => {
 
   lockZoomInteractions();
 
+  /* ── Asset preloader ─────────────────────────────────────────────
+     Fetch every image and audio file into the browser cache so
+     nothing stalls mid-experience on slow mobile connections.     */
+  const preloadAssets = () => {
+    const images = [
+      "seal.png",
+      "seal-broken.png",
+      "quill_transparent2.png",
+      "h2-bg-removed.png",
+      "h2-black-logo-removebg-preview.png",
+      "end-scroll-card-removebg-preview2.png",
+      "castle.png",
+      "logo-h2.svg"
+    ];
+
+    const audioFiles = [
+      "Hedwigs_HP_music.mp3",
+      "voicesai-dumbledore-1.mp3",
+      "voicesai-dumbledore-2.mp3",
+      "voicesai-dumbledore-3.mp3",
+      "voicesai-dumbledore-4.mp3",
+      "voicesai-dumbledore-5.mp3"
+    ];
+
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+
+    audioFiles.forEach((src) => {
+      try {
+        const req = new XMLHttpRequest();
+        req.open("GET", src, true);
+        req.responseType = "blob";
+        req.send();
+      } catch (_) { /* silent — best effort */ }
+    });
+  };
+
+  preloadAssets();
+
   const tryStartMusic = () => {
     if (!bgMusic) {
       return;
@@ -170,7 +211,6 @@ window.addEventListener("load", () => {
       musicFadeTimer = null;
     }
 
-    bgMusic.preload = "none";
     bgMusic.volume = 0.55;
     bgMusic.loop = true;
 
@@ -513,119 +553,360 @@ window.addEventListener("load", () => {
 
   const QUILL_GLYPH_STROKES = {
     a: [
-      { x: 0.15, y: 0.62 },
-      { x: 0.36, y: 0.42 },
-      { x: 0.64, y: 0.42 },
-      { x: 0.82, y: 0.62 },
-      { x: 0.62, y: 0.76 },
-      { x: 0.34, y: 0.76 },
-      { x: 0.2, y: 0.6 }
+      { x: 0.52, y: 0.32 },
+      { x: 0.36, y: 0.34 },
+      { x: 0.22, y: 0.44 },
+      { x: 0.18, y: 0.58 },
+      { x: 0.22, y: 0.72 },
+      { x: 0.36, y: 0.80 },
+      { x: 0.54, y: 0.80 },
+      { x: 0.68, y: 0.72 },
+      { x: 0.72, y: 0.58 },
+      { x: 0.68, y: 0.44 },
+      { x: 0.54, y: 0.36 },
+      { x: 0.72, y: 0.42 },
+      { x: 0.76, y: 0.58 },
+      { x: 0.76, y: 0.78 },
+      { x: 0.80, y: 0.88 }
     ],
     b: [
-      { x: 0.18, y: 0.2 },
-      { x: 0.18, y: 0.9 },
-      { x: 0.45, y: 0.72 },
-      { x: 0.75, y: 0.62 },
-      { x: 0.46, y: 0.46 },
-      { x: 0.2, y: 0.54 }
+      { x: 0.22, y: 0.18 },
+      { x: 0.22, y: 0.36 },
+      { x: 0.22, y: 0.56 },
+      { x: 0.22, y: 0.76 },
+      { x: 0.22, y: 0.88 },
+      { x: 0.36, y: 0.82 },
+      { x: 0.54, y: 0.76 },
+      { x: 0.68, y: 0.66 },
+      { x: 0.72, y: 0.56 },
+      { x: 0.64, y: 0.46 },
+      { x: 0.48, y: 0.42 },
+      { x: 0.28, y: 0.46 }
     ],
     c: [
-      { x: 0.8, y: 0.4 },
-      { x: 0.58, y: 0.3 },
-      { x: 0.26, y: 0.5 },
-      { x: 0.34, y: 0.78 },
-      { x: 0.72, y: 0.72 }
+      { x: 0.76, y: 0.38 },
+      { x: 0.64, y: 0.30 },
+      { x: 0.48, y: 0.28 },
+      { x: 0.34, y: 0.34 },
+      { x: 0.22, y: 0.46 },
+      { x: 0.20, y: 0.58 },
+      { x: 0.24, y: 0.72 },
+      { x: 0.36, y: 0.80 },
+      { x: 0.52, y: 0.82 },
+      { x: 0.68, y: 0.78 },
+      { x: 0.78, y: 0.72 }
     ],
     d: [
-      { x: 0.72, y: 0.18 },
-      { x: 0.72, y: 0.92 },
-      { x: 0.46, y: 0.76 },
-      { x: 0.2, y: 0.56 },
-      { x: 0.36, y: 0.32 },
-      { x: 0.7, y: 0.44 }
+      { x: 0.74, y: 0.18 },
+      { x: 0.74, y: 0.36 },
+      { x: 0.74, y: 0.56 },
+      { x: 0.74, y: 0.76 },
+      { x: 0.74, y: 0.88 },
+      { x: 0.60, y: 0.82 },
+      { x: 0.44, y: 0.78 },
+      { x: 0.30, y: 0.68 },
+      { x: 0.24, y: 0.56 },
+      { x: 0.28, y: 0.42 },
+      { x: 0.40, y: 0.34 },
+      { x: 0.56, y: 0.32 },
+      { x: 0.72, y: 0.38 }
     ],
     e: [
-      { x: 0.78, y: 0.48 },
-      { x: 0.52, y: 0.38 },
-      { x: 0.27, y: 0.52 },
-      { x: 0.45, y: 0.7 },
-      { x: 0.77, y: 0.62 }
+      { x: 0.22, y: 0.56 },
+      { x: 0.36, y: 0.52 },
+      { x: 0.54, y: 0.48 },
+      { x: 0.72, y: 0.48 },
+      { x: 0.76, y: 0.42 },
+      { x: 0.68, y: 0.34 },
+      { x: 0.50, y: 0.30 },
+      { x: 0.34, y: 0.36 },
+      { x: 0.22, y: 0.48 },
+      { x: 0.20, y: 0.62 },
+      { x: 0.26, y: 0.74 },
+      { x: 0.40, y: 0.82 },
+      { x: 0.58, y: 0.82 },
+      { x: 0.74, y: 0.76 }
+    ],
+    f: [
+      { x: 0.68, y: 0.22 },
+      { x: 0.56, y: 0.18 },
+      { x: 0.44, y: 0.24 },
+      { x: 0.40, y: 0.38 },
+      { x: 0.40, y: 0.56 },
+      { x: 0.40, y: 0.76 },
+      { x: 0.40, y: 0.88 },
+      { x: 0.26, y: 0.44 },
+      { x: 0.40, y: 0.44 },
+      { x: 0.58, y: 0.44 }
+    ],
+    g: [
+      { x: 0.72, y: 0.38 },
+      { x: 0.58, y: 0.30 },
+      { x: 0.42, y: 0.30 },
+      { x: 0.28, y: 0.40 },
+      { x: 0.24, y: 0.54 },
+      { x: 0.30, y: 0.68 },
+      { x: 0.46, y: 0.76 },
+      { x: 0.62, y: 0.74 },
+      { x: 0.74, y: 0.64 },
+      { x: 0.76, y: 0.42 },
+      { x: 0.76, y: 0.62 },
+      { x: 0.76, y: 0.82 },
+      { x: 0.72, y: 0.96 },
+      { x: 0.58, y: 1.04 },
+      { x: 0.40, y: 1.02 }
     ],
     h: [
-      { x: 0.17, y: 0.2 },
-      { x: 0.17, y: 0.88 },
-      { x: 0.25, y: 0.64 },
-      { x: 0.5, y: 0.5 },
-      { x: 0.78, y: 0.68 },
-      { x: 0.78, y: 0.88 }
+      { x: 0.22, y: 0.18 },
+      { x: 0.22, y: 0.36 },
+      { x: 0.22, y: 0.56 },
+      { x: 0.22, y: 0.76 },
+      { x: 0.22, y: 0.88 },
+      { x: 0.28, y: 0.56 },
+      { x: 0.40, y: 0.44 },
+      { x: 0.54, y: 0.40 },
+      { x: 0.66, y: 0.46 },
+      { x: 0.74, y: 0.58 },
+      { x: 0.76, y: 0.72 },
+      { x: 0.76, y: 0.88 }
+    ],
+    i: [
+      { x: 0.48, y: 0.24 },
+      { x: 0.48, y: 0.28 },
+      { x: 0.48, y: 0.42 },
+      { x: 0.48, y: 0.56 },
+      { x: 0.48, y: 0.72 },
+      { x: 0.48, y: 0.88 }
+    ],
+    j: [
+      { x: 0.56, y: 0.24 },
+      { x: 0.56, y: 0.28 },
+      { x: 0.56, y: 0.44 },
+      { x: 0.56, y: 0.62 },
+      { x: 0.56, y: 0.78 },
+      { x: 0.52, y: 0.92 },
+      { x: 0.42, y: 1.00 },
+      { x: 0.30, y: 0.96 }
+    ],
+    k: [
+      { x: 0.24, y: 0.18 },
+      { x: 0.24, y: 0.36 },
+      { x: 0.24, y: 0.56 },
+      { x: 0.24, y: 0.76 },
+      { x: 0.24, y: 0.88 },
+      { x: 0.60, y: 0.32 },
+      { x: 0.46, y: 0.46 },
+      { x: 0.32, y: 0.56 },
+      { x: 0.46, y: 0.68 },
+      { x: 0.64, y: 0.82 },
+      { x: 0.76, y: 0.88 }
     ],
     l: [
-      { x: 0.35, y: 0.2 },
-      { x: 0.35, y: 0.88 },
-      { x: 0.56, y: 0.88 }
+      { x: 0.40, y: 0.18 },
+      { x: 0.40, y: 0.36 },
+      { x: 0.40, y: 0.56 },
+      { x: 0.40, y: 0.76 },
+      { x: 0.40, y: 0.88 },
+      { x: 0.54, y: 0.88 }
+    ],
+    m: [
+      { x: 0.12, y: 0.88 },
+      { x: 0.12, y: 0.68 },
+      { x: 0.12, y: 0.48 },
+      { x: 0.18, y: 0.38 },
+      { x: 0.28, y: 0.44 },
+      { x: 0.36, y: 0.56 },
+      { x: 0.42, y: 0.68 },
+      { x: 0.48, y: 0.56 },
+      { x: 0.56, y: 0.44 },
+      { x: 0.66, y: 0.38 },
+      { x: 0.74, y: 0.44 },
+      { x: 0.80, y: 0.58 },
+      { x: 0.84, y: 0.74 },
+      { x: 0.86, y: 0.88 }
     ],
     n: [
-      { x: 0.2, y: 0.7 },
-      { x: 0.2, y: 0.42 },
-      { x: 0.45, y: 0.52 },
-      { x: 0.7, y: 0.7 },
-      { x: 0.7, y: 0.42 }
+      { x: 0.22, y: 0.88 },
+      { x: 0.22, y: 0.68 },
+      { x: 0.22, y: 0.48 },
+      { x: 0.28, y: 0.38 },
+      { x: 0.42, y: 0.36 },
+      { x: 0.56, y: 0.42 },
+      { x: 0.66, y: 0.54 },
+      { x: 0.74, y: 0.68 },
+      { x: 0.76, y: 0.88 }
     ],
     o: [
-      { x: 0.22, y: 0.58 },
-      { x: 0.4, y: 0.36 },
-      { x: 0.68, y: 0.36 },
-      { x: 0.84, y: 0.58 },
-      { x: 0.67, y: 0.78 },
-      { x: 0.38, y: 0.78 },
-      { x: 0.22, y: 0.58 }
-    ],
-    s: [
-      { x: 0.76, y: 0.36 },
-      { x: 0.49, y: 0.28 },
-      { x: 0.28, y: 0.45 },
-      { x: 0.55, y: 0.56 },
-      { x: 0.77, y: 0.72 },
-      { x: 0.45, y: 0.82 },
-      { x: 0.24, y: 0.74 }
-    ],
-    t: [
-      { x: 0.46, y: 0.2 },
-      { x: 0.46, y: 0.88 },
-      { x: 0.28, y: 0.42 },
-      { x: 0.68, y: 0.42 }
-    ],
-    u: [
+      { x: 0.50, y: 0.30 },
+      { x: 0.36, y: 0.32 },
       { x: 0.24, y: 0.42 },
-      { x: 0.24, y: 0.74 },
-      { x: 0.52, y: 0.82 },
-      { x: 0.78, y: 0.72 },
+      { x: 0.20, y: 0.56 },
+      { x: 0.22, y: 0.70 },
+      { x: 0.34, y: 0.80 },
+      { x: 0.50, y: 0.84 },
+      { x: 0.66, y: 0.80 },
+      { x: 0.78, y: 0.70 },
+      { x: 0.80, y: 0.56 },
+      { x: 0.76, y: 0.42 },
+      { x: 0.64, y: 0.32 },
+      { x: 0.50, y: 0.30 }
+    ],
+    p: [
+      { x: 0.24, y: 0.38 },
+      { x: 0.24, y: 0.56 },
+      { x: 0.24, y: 0.76 },
+      { x: 0.24, y: 0.92 },
+      { x: 0.24, y: 1.06 },
+      { x: 0.30, y: 0.42 },
+      { x: 0.46, y: 0.34 },
+      { x: 0.62, y: 0.36 },
+      { x: 0.72, y: 0.46 },
+      { x: 0.74, y: 0.58 },
+      { x: 0.66, y: 0.70 },
+      { x: 0.50, y: 0.76 },
+      { x: 0.32, y: 0.74 }
+    ],
+    q: [
+      { x: 0.68, y: 0.38 },
+      { x: 0.54, y: 0.30 },
+      { x: 0.38, y: 0.32 },
+      { x: 0.26, y: 0.44 },
+      { x: 0.22, y: 0.58 },
+      { x: 0.28, y: 0.72 },
+      { x: 0.44, y: 0.80 },
+      { x: 0.60, y: 0.76 },
+      { x: 0.72, y: 0.64 },
+      { x: 0.74, y: 0.48 },
+      { x: 0.74, y: 0.68 },
+      { x: 0.74, y: 0.88 },
+      { x: 0.74, y: 1.04 }
+    ],
+    r: [
+      { x: 0.24, y: 0.88 },
+      { x: 0.24, y: 0.72 },
+      { x: 0.24, y: 0.56 },
+      { x: 0.24, y: 0.42 },
+      { x: 0.32, y: 0.38 },
+      { x: 0.44, y: 0.34 },
+      { x: 0.58, y: 0.32 },
+      { x: 0.70, y: 0.36 },
       { x: 0.78, y: 0.42 }
     ],
+    s: [
+      { x: 0.72, y: 0.34 },
+      { x: 0.58, y: 0.28 },
+      { x: 0.42, y: 0.28 },
+      { x: 0.28, y: 0.34 },
+      { x: 0.24, y: 0.44 },
+      { x: 0.32, y: 0.52 },
+      { x: 0.48, y: 0.56 },
+      { x: 0.64, y: 0.62 },
+      { x: 0.74, y: 0.72 },
+      { x: 0.68, y: 0.82 },
+      { x: 0.52, y: 0.86 },
+      { x: 0.36, y: 0.84 },
+      { x: 0.24, y: 0.78 }
+    ],
+    t: [
+      { x: 0.46, y: 0.18 },
+      { x: 0.46, y: 0.36 },
+      { x: 0.46, y: 0.56 },
+      { x: 0.46, y: 0.72 },
+      { x: 0.48, y: 0.84 },
+      { x: 0.56, y: 0.88 },
+      { x: 0.28, y: 0.40 },
+      { x: 0.40, y: 0.40 },
+      { x: 0.56, y: 0.40 },
+      { x: 0.68, y: 0.40 }
+    ],
+    u: [
+      { x: 0.22, y: 0.38 },
+      { x: 0.22, y: 0.52 },
+      { x: 0.24, y: 0.66 },
+      { x: 0.30, y: 0.76 },
+      { x: 0.42, y: 0.82 },
+      { x: 0.56, y: 0.82 },
+      { x: 0.68, y: 0.76 },
+      { x: 0.74, y: 0.66 },
+      { x: 0.76, y: 0.52 },
+      { x: 0.76, y: 0.38 }
+    ],
     v: [
-      { x: 0.2, y: 0.42 },
-      { x: 0.46, y: 0.84 },
-      { x: 0.8, y: 0.42 }
+      { x: 0.18, y: 0.36 },
+      { x: 0.26, y: 0.52 },
+      { x: 0.36, y: 0.68 },
+      { x: 0.48, y: 0.84 },
+      { x: 0.60, y: 0.68 },
+      { x: 0.72, y: 0.52 },
+      { x: 0.80, y: 0.36 }
+    ],
+    w: [
+      { x: 0.10, y: 0.36 },
+      { x: 0.18, y: 0.56 },
+      { x: 0.26, y: 0.76 },
+      { x: 0.34, y: 0.88 },
+      { x: 0.42, y: 0.72 },
+      { x: 0.48, y: 0.56 },
+      { x: 0.54, y: 0.72 },
+      { x: 0.62, y: 0.88 },
+      { x: 0.70, y: 0.76 },
+      { x: 0.78, y: 0.56 },
+      { x: 0.86, y: 0.36 }
+    ],
+    x: [
+      { x: 0.20, y: 0.34 },
+      { x: 0.34, y: 0.48 },
+      { x: 0.48, y: 0.58 },
+      { x: 0.64, y: 0.72 },
+      { x: 0.78, y: 0.86 },
+      { x: 0.78, y: 0.34 },
+      { x: 0.64, y: 0.48 },
+      { x: 0.48, y: 0.58 },
+      { x: 0.34, y: 0.72 },
+      { x: 0.20, y: 0.86 }
     ],
     y: [
-      { x: 0.17, y: 0.38 },
-      { x: 0.46, y: 0.74 },
-      { x: 0.74, y: 0.4 },
-      { x: 0.58, y: 0.74 },
-      { x: 0.47, y: 1.02 },
-      { x: 0.62, y: 1.3 }
+      { x: 0.18, y: 0.36 },
+      { x: 0.28, y: 0.48 },
+      { x: 0.38, y: 0.60 },
+      { x: 0.48, y: 0.72 },
+      { x: 0.58, y: 0.60 },
+      { x: 0.68, y: 0.48 },
+      { x: 0.78, y: 0.36 },
+      { x: 0.52, y: 0.80 },
+      { x: 0.48, y: 0.92 },
+      { x: 0.42, y: 1.02 },
+      { x: 0.34, y: 1.08 }
+    ],
+    z: [
+      { x: 0.22, y: 0.36 },
+      { x: 0.40, y: 0.36 },
+      { x: 0.60, y: 0.36 },
+      { x: 0.76, y: 0.36 },
+      { x: 0.60, y: 0.52 },
+      { x: 0.46, y: 0.66 },
+      { x: 0.30, y: 0.80 },
+      { x: 0.22, y: 0.86 },
+      { x: 0.40, y: 0.86 },
+      { x: 0.60, y: 0.86 },
+      { x: 0.76, y: 0.86 }
     ],
     "!": [
-      { x: 0.48, y: 0.2 },
-      { x: 0.48, y: 0.72 },
-      { x: 0.48, y: 0.9 }
+      { x: 0.48, y: 0.20 },
+      { x: 0.48, y: 0.36 },
+      { x: 0.48, y: 0.52 },
+      { x: 0.48, y: 0.68 },
+      { x: 0.48, y: 0.88 },
+      { x: 0.48, y: 0.92 }
     ]
   };
 
   const DEFAULT_QUILL_STROKE = [
-    { x: 0.15, y: 0.7 },
-    { x: 0.42, y: 0.45 },
-    { x: 0.78, y: 0.7 }
+    { x: 0.20, y: 0.68 },
+    { x: 0.34, y: 0.52 },
+    { x: 0.50, y: 0.44 },
+    { x: 0.66, y: 0.52 },
+    { x: 0.80, y: 0.68 }
   ];
 
   const getQuillStrokeForGlyph = (character) => {
@@ -671,11 +952,17 @@ window.addEventListener("load", () => {
       return;
     }
 
+    /* ── quill travels to the first stroke point of this letter ── */
+    const travelMs = Math.min(120, Math.max(40, letterBudgetMs * 0.22));
     positionQuillTipAtStrokePoint(letterEl, stroke[0], sweepTilt);
+    await wait(travelMs);
+
+    const remainingBudget = Math.max(30, letterBudgetMs - travelMs);
 
     if (stroke.length > 1) {
-      const traceBudgetMs = Math.max(20, letterBudgetMs * 0.74);
-      const segmentMs = Math.max(10, traceBudgetMs / (stroke.length - 1));
+      /* use 88% of remaining budget for tracing so the quill really follows each curve */
+      const traceBudgetMs = Math.max(30, remainingBudget * 0.88);
+      const segmentMs = Math.max(18, traceBudgetMs / (stroke.length - 1));
 
       for (let pointIndex = 1; pointIndex < stroke.length; pointIndex += 1) {
         const currentPoint = stroke[pointIndex];
@@ -685,14 +972,13 @@ window.addEventListener("load", () => {
       }
 
       letterEl.classList.add("revealed");
-      await wait(Math.max(8, letterBudgetMs - segmentMs * (stroke.length - 1)));
+      await wait(Math.max(6, remainingBudget - traceBudgetMs));
       return;
     }
 
-    const moveLeadMs = Math.min(70, Math.max(28, letterBudgetMs * 0.45));
-    await wait(moveLeadMs);
+    /* single-point stroke */
     letterEl.classList.add("revealed");
-    await wait(Math.max(8, letterBudgetMs - moveLeadMs));
+    await wait(Math.max(8, remainingBudget));
   };
 
   const renderQuillLetters = (text) => {
@@ -722,8 +1008,8 @@ window.addEventListener("load", () => {
 
     const writingLetters = renderQuillLetters(text);
     const letterCount = Math.max(writingLetters.length, 1);
-    const writeDuration = Math.max(1500, Math.min(duration - 900, letterCount * 95));
-    const stepMs = Math.max(40, writeDuration / letterCount);
+    const writeDuration = Math.max(2400, Math.min(duration - 600, letterCount * 320));
+    const stepMs = Math.max(160, writeDuration / letterCount);
     const quoteStart = performance.now();
 
     if (quillWriter) {
@@ -745,8 +1031,14 @@ window.addEventListener("load", () => {
     }
 
     const elapsed = performance.now() - quoteStart;
-    const remainingDuration = Math.max(0, duration - elapsed);
-    await wait(remainingDuration);
+    const lingerMs = 900;                       // keep the finished quote visible briefly
+    await wait(lingerMs);
+
+    /* fade the whole quote out smoothly, then hide the quill */
+    quoteEl.style.transition = "opacity 500ms ease, transform 500ms ease";
+    quoteEl.style.opacity = "0";
+    quoteEl.style.transform = "translateY(-14px) scale(1.01)";
+    await wait(520);
     hideQuillWriter();
   };
 
@@ -1041,7 +1333,7 @@ window.addEventListener("load", () => {
 
     window.setTimeout(() => {
       playNarrativeSequence();
-    }, 350);
+    }, 900);
   };
 
   form.addEventListener("submit", (event) => {
