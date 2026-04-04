@@ -7,19 +7,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Tangerine:wght@700&family=WindSong:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="preload" href="Hedwigs_HP_music.mp3" as="fetch" crossorigin>
-  <link rel="preload" href="voicesai-dumbledore-1.mp3" as="fetch" crossorigin>
-  <link rel="preload" href="voicesai-dumbledore-2.mp3" as="fetch" crossorigin>
-  <link rel="preload" href="voicesai-dumbledore-3.mp3" as="fetch" crossorigin>
-  <link rel="preload" href="voicesai-dumbledore-4.mp3" as="fetch" crossorigin>
-  <link rel="preload" href="voicesai-dumbledore-5.mp3" as="fetch" crossorigin>
-  <link rel="preload" href="quill_transparent2.png" as="image">
-  <link rel="preload" href="seal.png" as="image">
-  <link rel="preload" href="seal-broken.png" as="image">
-  <link rel="stylesheet" href="style.css">
+  <link rel="preload" href="/Hedwigs_HP_music.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/voicesai-dumbledore-1.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/voicesai-dumbledore-2.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/voicesai-dumbledore-3.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/voicesai-dumbledore-4.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/voicesai-dumbledore-5.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/quill_transparent2.png" as="image">
+  <link rel="preload" href="/seal.png" as="image">
+  <link rel="preload" href="/seal-broken.png" as="image">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
- <audio id="bg-music" src="Hedwigs_HP_music.mp3" loop preload="auto" playsinline></audio>
+ <audio id="bg-music" src="/Hedwigs_HP_music.mp3" loop preload="auto" playsinline></audio>
 
   <div class="scene">
     <div class="light" aria-hidden="true"></div>
@@ -28,8 +28,8 @@
       <div class="lid two"></div>
       <div class="envelope"></div>
       <div class="seal" id="seal-button" role="button" tabindex="0" aria-label="Open envelope seal">
-        <img class="seal-image seal-intact" src="seal.png" alt="" aria-hidden="true" decoding="async">
-        <img class="seal-image seal-broken" src="seal-broken.png" alt="" aria-hidden="true" decoding="async">
+        <img class="seal-image seal-intact" src="/seal.png" alt="" aria-hidden="true" decoding="async">
+        <img class="seal-image seal-broken" src="/seal-broken.png" alt="" aria-hidden="true" decoding="async">
       </div>
       <div class="letter">
         <h1>WHAT AM I?</h1>
@@ -67,14 +67,14 @@
       <div class="quote-layer" id="quote-layer" aria-live="polite">
         <div class="quote-write-stage">
           <div class="quill-writer hidden" id="quill-writer" aria-hidden="true">
-            <img class="quill-feather-image" src="quill_transparent2.png" alt="" role="presentation" aria-hidden="true" decoding="async" />
+            <img class="quill-feather-image" src="/quill_transparent2.png" alt="" role="presentation" aria-hidden="true" decoding="async" />
           </div>
           <p class="cinematic-quote" id="cinematic-quote"></p>
         </div>
       </div>
 
       <div class="identity-panel hidden" id="identity-panel">
-        <img class="identity-title" src="h2-bg-removed.png" alt="H2 House of Health" decoding="async">
+        <img class="identity-title" src="/h2-bg-removed.png" alt="H2 House of Health" decoding="async">
 
         <div class="lock-panel" id="lock-panel">
           <button class="lock-button" id="lock-button" type="button" aria-label="Reveal the experience">
@@ -94,24 +94,21 @@
         <div class="particle-field" id="event-particle-field" aria-hidden="true"></div>
 
         <article class="event-card">
-          <!-- <div class="event-key" aria-hidden="true">🗝️</div>
-          <p class="accepted-copy">Your key has been accepted.</p> -->
-
           <div class="event-image-card">
-            <img class="event-image" src="end-scroll-card-removebg-preview2.png" alt="Grand opening invitation card" decoding="async">
+            <img class="event-image" src="/end-scroll-card-removebg-preview2.png" alt="Grand opening invitation card" decoding="async">
             <div class="event-image-details">
-              <p class="event-detail-line invitation-text"><span class="value">You are cordially invited<br>to the Grand Opening of<br><span class="invite-brand"><img class="invite-brand-logo" src="h2-black-logo-removebg-preview.png" alt="H2 House of Health" loading="lazy" decoding="async"></span></span></p>
+              <p class="event-detail-line invitation-text"><span class="value">You are cordially invited<br>to the Grand Opening of<br><span class="invite-brand"><img class="invite-brand-logo" src="/h2-black-logo-removebg-preview.png" alt="H2 House of Health" loading="lazy" decoding="async"></span></span></p>
               <div class="event-meta-footer" aria-label="Event details">
-                <p class="event-detail-line"><span class="label">DATE</span><span class="value">19 March 2026</span></p>
+                <p class="event-detail-line"><span class="label">DATE</span><span class="value" id="event-date">8 April 2026</span></p>
                 <p class="event-detail-line location-detail-line">
                   <a class="location-map-link" href="https://www.google.com/maps/place/17°25'19.6%22N+78°24'27.4%22E/@17.422112,78.4050411,17z/data=!3m1!4b1!4m4!3m3!8m2!3d17.422112!4d78.407616!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDMxNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="Open venue location on Google Maps">
-                    <img class="location-castle-icon" src="castle.png" alt="" loading="lazy" decoding="async">
+                    <img class="location-castle-icon" src="/castle.png" alt="" loading="lazy" decoding="async">
                     <span class="view-map-hint">View</span>
                   </a>
                   <span class="label">LOCATION</span>
                   <span class="value">Jubilee Hills</span>
                 </p>
-                <p class="event-detail-line"><span class="label">TIME</span><span class="value">11 am</span></p>
+                <p class="event-detail-line"><span class="label">TIME</span><span class="value" id="event-time">10:00 AM</span></p>
               </div>
             </div>
             <div class="rsvp-row">
@@ -144,8 +141,7 @@
                 <p class="rsvp-success-title" id="rsvp-success-title">RSVP Ready ✅</p>
                 <p class="rsvp-success-copy" id="rsvp-success-copy">Your message is prepared in WhatsApp. Please review and tap send.</p>
                 <div class="rsvp-actions">
-                  <a class="rsvp-action" id="rsvp-add-calendar" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Grand%20Opening&dates=20260319T110000/20260319T130000&details=H2%20House%20of%20Health%20Grand%20Opening&location=Jubilee%20Hills&ctz=Asia%2FKolkata" target="_blank" rel="noopener">📅 Add to Calendar</a>
-                  <!-- <a class="rsvp-action secondary" id="rsvp-view-location" href="https://www.google.com/maps/search/?api=1&query=Jubilee%20Hills" target="_blank" rel="noopener">📍 View Location</a> -->
+                  <a class="rsvp-action" id="rsvp-add-calendar" href="#" target="_blank" rel="noopener">📅 Add to Calendar</a>
                 </div>
               </div>
 
@@ -157,6 +153,6 @@
     </div>
   </section>
 
-  <script src="script.js"></script>
+  <script src="/script.js"></script>
 </body>
 </html>
