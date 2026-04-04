@@ -262,8 +262,8 @@ body.end-active .end-screen {
 .cinematic-quote.quill-feather .quill-char {
   display: inline-block;
   opacity: 0;
-  transform: translateY(8px) scale(0.92);
-  filter: blur(1.2px);
+  transform: translateY(6px) scale(0.94);
+  will-change: opacity, transform;
 }
 
 .cinematic-quote.quill-feather .quill-char.revealed {
@@ -284,12 +284,12 @@ body.end-active .end-screen {
 .cinematic-quote.typewriter .type-char {
   display: inline-block;
   opacity: 0;
-  transform: translateY(6px) scale(0.97);
-  filter: blur(1px);
+  transform: translateY(4px);
+  will-change: opacity, transform;
 }
 
 .cinematic-quote.typewriter .type-char.revealed {
-  animation: typewriterInkIn 220ms ease forwards;
+  animation: typewriterInkIn 180ms ease forwards;
 }
 
 .cinematic-quote.typewriter .type-space {
@@ -881,13 +881,13 @@ body.end-active .end-screen {
 }
 
 @keyframes quillInkIn {
-  0% { opacity: 0; transform: translateY(8px) scale(0.92); filter: blur(1.2px); }
-  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  0% { opacity: 0; transform: translateY(6px) scale(0.94); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes typewriterInkIn {
-  0% { opacity: 0; transform: translateY(6px) scale(0.97); filter: blur(1px); }
-  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  0% { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInSoft {

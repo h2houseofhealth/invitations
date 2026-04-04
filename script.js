@@ -1081,10 +1081,25 @@ window.addEventListener("load", () => {
     void quoteEl.offsetWidth;
     quoteEl.classList.add("play");
 
-    for (let index = 0; index < writingLetters.length; index += 1) {
-      writingLetters[index].classList.add("revealed");
-      await wait(stepMs);
-    }
+    /* Use rAF-driven loop so letters stay in sync with the display
+       even when setTimeout drifts on slow mobile devices.          */
+    await new Promise((resolve) => {
+      let revealed = 0;
+      const tick = () => {
+        const elapsed = performance.now() - quoteStart;
+        const target = Math.min(letterCount, Math.floor(elapsed / stepMs) + 1);
+        while (revealed < target) {
+          writingLetters[revealed].classList.add("revealed");
+          revealed += 1;
+        }
+        if (revealed < letterCount) {
+          requestAnimationFrame(tick);
+        } else {
+          resolve();
+        }
+      };
+      requestAnimationFrame(tick);
+    });
 
     const elapsed = performance.now() - quoteStart;
     const remainingDuration = Math.max(0, duration - elapsed);
