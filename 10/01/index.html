@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>H2 House of Health — Grand Opening Invitation</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="/icon.jpg" type="image/jpeg">
+
+  <!-- Open Graph / WhatsApp preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="INVITATIONS">
+  <meta property="og:description" content="H2 House of Health">
+  <meta property="og:image" content="https://invitations.h2houseofhealth.com/icon.jpg">
+  <meta property="og:site_name" content="H2 House of Health">
+
+  <!-- Twitter card (also used by some apps) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="INVITATIONS">
+  <meta name="twitter:description" content="H2 House of Health">
+  <meta name="twitter:image" content="https://invitations.h2houseofhealth.com/icon.jpg">
+
+  <meta name="description" content="An exclusive invitation to the Grand Opening of H2 House of Health. Open the seal and discover what awaits.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Tangerine:wght@700&family=WindSong:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preload" href="/Hedwigs_HP_music.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/voicesai-dumbledore-1.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/voicesai-dumbledore-2.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/voicesai-dumbledore-3.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/voicesai-dumbledore-4.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/voicesai-dumbledore-5.mp3" as="fetch" crossorigin>
+  <link rel="preload" href="/quill_transparent2.png" as="image">
+  <link rel="preload" href="/seal.png" as="image">
+  <link rel="preload" href="/seal-broken.png" as="image">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+ <audio id="bg-music" src="/Hedwigs_HP_music.mp3" loop preload="auto" playsinline></audio>
+
+  <div class="scene">
+    <div class="light" aria-hidden="true"></div>
+    <div class="wrapper">
+      <div class="lid one"></div>
+      <div class="lid two"></div>
+      <div class="envelope"></div>
+      <div class="seal" id="seal-button" role="button" tabindex="0" aria-label="Open envelope seal">
+        <img class="seal-image seal-intact" src="/seal.png" alt="" aria-hidden="true" decoding="async">
+        <img class="seal-image seal-broken" src="/seal-broken.png" alt="" aria-hidden="true" decoding="async">
+      </div>
+      <div class="letter">
+        <h1>WHAT AM I?</h1>
+        <p class="riddle">
+          You measure me in years,<br>
+          But I am shaped in habits.<br><br>
+          I decline in silence,<br>
+          Or rise by design
+        </p>
+        <form class="answer-form" id="answer-form">
+          <input id="riddle-answer" type="text" placeholder="Type your answer..." autocomplete="off">
+          <button type="submit">Submit</button>
+        </form>
+        <div class="hint hidden" id="hint-words" aria-live="polite">
+          <span class="hint-bottle" id="hint-bottle" role="button" tabindex="0" aria-label="Show hint pills">
+            <span class="hint-bottle-cap"></span>
+            <span class="hint-bottle-label">Hints</span>
+          </span>
+          <span class="hint-pills">
+            <button class="hint-pill" type="button">age</button>
+            <button class="hint-pill" type="button">health</button>
+            <button class="hint-pill" type="button">time</button>
+          </span>
+        </div>
+        <p class="result" id="result"></p>
+      </div>
+    </div>
+    <button id="tap-open" class="tap-open" type="button">Tap to Open</button>
+  </div>
+
+  <section class="end-screen" id="end-screen" aria-hidden="true">
+    <div class="cinematic-stage" id="cinematic-stage">
+      <div class="quote-particle-field hidden" id="quote-particle-field" aria-hidden="true"></div>
+
+      <div class="quote-layer" id="quote-layer" aria-live="polite">
+        <div class="quote-write-stage">
+          <div class="quill-writer hidden" id="quill-writer" aria-hidden="true">
+            <img class="quill-feather-image" src="/quill_transparent2.png" alt="" role="presentation" aria-hidden="true" decoding="async" />
+          </div>
+          <p class="cinematic-quote" id="cinematic-quote"></p>
+        </div>
+      </div>
+
+      <div class="identity-panel hidden" id="identity-panel">
+        <img class="identity-title" src="/h2-bg-removed.png" alt="H2 House of Health" decoding="async">
+
+        <div class="lock-panel" id="lock-panel">
+          <button class="lock-button" id="lock-button" type="button" aria-label="Reveal the experience">
+            <span class="lock-icon" aria-hidden="true">🔒</span>
+          </button>
+          <p class="lock-copy">Reveal the experience</p>
+        </div>
+
+        <div class="key-panel hidden" id="key-panel" aria-live="polite">
+          <div class="key-icon" aria-hidden="true">🗝️</div>
+          <p class="key-status hidden" id="key-status">Your key has been accepted</p>
+          <button class="enter-button hidden" id="enter-button" type="button">Enter</button>
+        </div>
+      </div>
+
+      <div class="event-stage hidden" id="event-stage" aria-hidden="true">
+        <div class="particle-field" id="event-particle-field" aria-hidden="true"></div>
+
+        <article class="event-card">
+          <div class="event-image-card">
+            <img class="event-image" src="/end-scroll-card-removebg-preview2.png" alt="Grand opening invitation card" decoding="async">
+            <div class="event-image-details">
+              <p class="event-detail-line invitation-text"><span class="value">You are cordially invited<br>to the Grand Opening of<br><span class="invite-brand"><img class="invite-brand-logo" src="/h2-black-logo-removebg-preview.png" alt="H2 House of Health" loading="lazy" decoding="async"></span></span></p>
+              <div class="event-meta-footer" aria-label="Event details">
+                <p class="event-detail-line"><span class="label">DATE</span><span class="value" id="event-date">8 April 2026</span></p>
+                <p class="event-detail-line location-detail-line">
+                  <a class="location-map-link" href="https://www.google.com/maps/place/17°25'19.6%22N+78°24'27.4%22E/@17.422112,78.4050411,17z/data=!3m1!4b1!4m4!3m3!8m2!3d17.422112!4d78.407616!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDMxNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="Open venue location on Google Maps">
+                    <img class="location-castle-icon" src="/castle.png" alt="" loading="lazy" decoding="async">
+                    <span class="view-map-hint">View</span>
+                  </a>
+                  <span class="label">LOCATION</span>
+                  <span class="value">Jubilee Hills</span>
+                </p>
+                <p class="event-detail-line"><span class="label">TIME</span><span class="value" id="event-time">10:00 AM</span></p>
+              </div>
+            </div>
+            <div class="rsvp-row">
+              <button class="rsvp-button" id="rsvp-button" type="button" aria-expanded="false">RSVP</button>
+            </div>
+
+            <div class="rsvp-panel hidden" id="rsvp-panel" aria-hidden="true">
+              <h3 class="rsvp-title">RSVP</h3>
+              <form class="rsvp-form" id="rsvp-form">
+                <label class="rsvp-field">
+                  <span>Full Name *</span>
+                  <input id="rsvp-name" name="fullName" type="text" autocomplete="name" required>
+                </label>
+                <label class="rsvp-field">
+                  <span>Will you attend? *</span>
+                  <select id="rsvp-attend" name="attend" required>
+                    <option value="" disabled selected>Select one</option>
+                    <option value="Yes">Yes, attending</option>
+                    <option value="No">No, unable to attend</option>
+                  </select>
+                </label>
+                <label class="rsvp-field hidden" id="rsvp-guests-field">
+                  <span>Number of Guests *</span>
+                  <input id="rsvp-guests" name="guests" type="number" min="1" max="20" inputmode="numeric">
+                </label>
+                <button class="rsvp-submit" type="submit">Submit RSVP</button>
+              </form>
+
+              <div class="rsvp-success hidden" id="rsvp-success" aria-live="polite">
+                <p class="rsvp-success-title" id="rsvp-success-title">RSVP Ready ✅</p>
+                <p class="rsvp-success-copy" id="rsvp-success-copy">Your message is prepared in WhatsApp. Please review and tap send.</p>
+                <div class="rsvp-actions">
+                  <a class="rsvp-action" id="rsvp-add-calendar" href="#" target="_blank" rel="noopener">📅 Add to Calendar</a>
+                </div>
+              </div>
+
+              <p class="rsvp-error hidden" id="rsvp-error" role="alert"></p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <script src="/script.js"></script>
+</body>
+</html>
