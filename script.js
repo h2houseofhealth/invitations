@@ -2,35 +2,20 @@ window.addEventListener("load", () => {
   const body = document.body;
   const bgMusic = document.querySelector("#bg-music");
 
-  /* ── Slot config from URL (/DD/SS) ──────────────────────────── */
-  const SLOT_MAP = {
-    "08/01": { date: "8 April 2026",  day: "08", time: "10:00 AM",  calStart: "20260408T100000", calEnd: "20260408T120000" },
-    "08/02": { date: "8 April 2026",  day: "08", time: "2:00 PM",   calStart: "20260408T140000", calEnd: "20260408T160000" },
-    "08/03": { date: "8 April 2026",  day: "08", time: "5:30 PM",   calStart: "20260408T173000", calEnd: "20260408T193000" },
-    "09/01": { date: "9 April 2026",  day: "09", time: "10:00 AM",  calStart: "20260409T100000", calEnd: "20260409T120000" },
-    "09/02": { date: "9 April 2026",  day: "09", time: "2:00 PM",   calStart: "20260409T140000", calEnd: "20260409T160000" },
-    "09/03": { date: "9 April 2026",  day: "09", time: "5:30 PM",   calStart: "20260409T173000", calEnd: "20260409T193000" },
-    "10/01": { date: "10 April 2026", day: "10", time: "10:00 AM",  calStart: "20260410T100000", calEnd: "20260410T120000" },
-    "10/02": { date: "10 April 2026", day: "10", time: "2:00 PM",   calStart: "20260410T140000", calEnd: "20260410T160000" },
-    "10/03": { date: "10 April 2026", day: "10", time: "5:30 PM",   calStart: "20260410T173000", calEnd: "20260410T193000" },
-    "11/01": { date: "11 April 2026", day: "11", time: "10:00 AM",  calStart: "20260411T100000", calEnd: "20260411T120000" },
-    "11/02": { date: "11 April 2026", day: "11", time: "2:00 PM",   calStart: "20260411T140000", calEnd: "20260411T160000" },
-    "11/03": { date: "11 April 2026", day: "11", time: "5:30 PM",   calStart: "20260411T173000", calEnd: "20260411T193000" },
-    "12/01": { date: "12 April 2026", day: "12", time: "10:00 AM",  calStart: "20260412T100000", calEnd: "20260412T120000" },
-    "12/02": { date: "12 April 2026", day: "12", time: "2:00 PM",   calStart: "20260412T140000", calEnd: "20260412T160000" },
-    "12/03": { date: "12 April 2026", day: "12", time: "5:30 PM",   calStart: "20260412T173000", calEnd: "20260412T193000" }
+  const eventSlot = {
+    date: "8 April 2026",
+    time: "10:00 AM",
+    calStart: "20260408T100000",
+    calEnd: "20260408T120000"
   };
 
-  const pathKey = window.location.pathname.replace(/^\//, "").replace(/\/$/, "");
-  const slot = SLOT_MAP[pathKey] || SLOT_MAP["08/01"];   // fallback to first slot
-
-  /* inject slot date/time into the page */
+  /* keep the invitation locked to one event slot */
   const _dateEl = document.querySelector("#event-date");
   const _timeEl = document.querySelector("#event-time");
   const _calEl  = document.querySelector("#rsvp-add-calendar");
-  if (_dateEl) _dateEl.textContent = slot.date;
-  if (_timeEl) _timeEl.textContent = slot.time;
-  if (_calEl)  _calEl.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Grand%20Opening&dates=${slot.calStart}/${slot.calEnd}&details=H2%20House%20of%20Health%20Grand%20Opening&location=Jubilee%20Hills&ctz=Asia%2FKolkata`;
+  if (_dateEl) _dateEl.textContent = eventSlot.date;
+  if (_timeEl) _timeEl.textContent = eventSlot.time;
+  if (_calEl)  _calEl.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Grand%20Opening&dates=${eventSlot.calStart}/${eventSlot.calEnd}&details=H2%20House%20of%20Health%20Grand%20Opening&location=Jubilee%20Hills&ctz=Asia%2FKolkata`;
   const scene = document.querySelector(".scene");
   const light = document.querySelector(".light");
   const wrapper = document.querySelector(".wrapper");
