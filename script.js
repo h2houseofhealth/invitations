@@ -4,18 +4,12 @@ window.addEventListener("load", () => {
 
   const eventSlot = {
     date: "8 April 2026",
-    time: "10:00 AM",
-    calStart: "20260408T100000",
-    calEnd: "20260408T120000"
+    time: "10:00 AM"
   };
 
   /* keep the invitation locked to one event slot */
-  const _dateEl = document.querySelector("#event-date");
-  const _timeEl = document.querySelector("#event-time");
   const _calEl  = document.querySelector("#rsvp-add-calendar");
-  if (_dateEl) _dateEl.textContent = eventSlot.date;
-  if (_timeEl) _timeEl.textContent = eventSlot.time;
-  if (_calEl)  _calEl.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Grand%20Opening&dates=${eventSlot.calStart}/${eventSlot.calEnd}&details=H2%20House%20of%20Health%20Grand%20Opening&location=Jubilee%20Hills&ctz=Asia%2FKolkata`;
+  if (_calEl)  _calEl.href = "#";
   const scene = document.querySelector(".scene");
   const light = document.querySelector(".light");
   const wrapper = document.querySelector(".wrapper");
@@ -45,18 +39,111 @@ window.addEventListener("load", () => {
   const eventParticleField = document.querySelector("#event-particle-field");
   const rsvpButton = document.querySelector("#rsvp-button");
   const rsvpPanel = document.querySelector("#rsvp-panel");
+  const rsvpClose = document.querySelector("#rsvp-close");
   const eventImageCard = document.querySelector(".event-image-card");
   const rsvpForm = document.querySelector("#rsvp-form");
   const rsvpName = document.querySelector("#rsvp-name");
   const rsvpAttend = document.querySelector("#rsvp-attend");
   const rsvpGuestsField = document.querySelector("#rsvp-guests-field");
   const rsvpGuests = document.querySelector("#rsvp-guests");
+  const rsvpDateField = document.querySelector("#rsvp-date-field");
+  const rsvpDate = document.querySelector("#rsvp-date");
+  const rsvpTimeField = document.querySelector("#rsvp-time-field");
+  const rsvpHour = document.querySelector("#rsvp-hour");
+  const rsvpMinute = document.querySelector("#rsvp-minute");
+  const rsvpPeriod = document.querySelector("#rsvp-period");
   const rsvpSuccess = document.querySelector("#rsvp-success");
   const rsvpSuccessTitle = document.querySelector("#rsvp-success-title");
   const rsvpSuccessCopy = document.querySelector("#rsvp-success-copy");
   const rsvpAddCalendar = document.querySelector("#rsvp-add-calendar");
   const rsvpError = document.querySelector("#rsvp-error");
   const rsvpWhatsAppNumber = "919000141936";
+
+  const formatRsvpDate = (value) => {
+    if (!value) {
+      return "";
+    }
+
+    const [year, month, day] = value.split("-");
+    if (!year || !month || !day) {
+      return value;
+    }
+
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
+    return date.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+  };
+
+  const buildTime24Hour = (hourValue, minuteValue, periodValue) => {
+    if (!hourValue || !minuteValue || !periodValue) {
+      return "";
+    }
+
+    const hour = Number(hourValue);
+    if (!Number.isFinite(hour) || hour < 1 || hour > 12) {
+      return "";
+    }
+
+    let hours24 = hour % 12;
+    if (periodValue === "PM") {
+      hours24 += 12;
+    }
+
+    return `${String(hours24).padStart(2, "0")}:${minuteValue}`;
+  };
+
+  const formatRsvpTime = (hourValue, minuteValue, periodValue) => {
+    const value = buildTime24Hour(hourValue, minuteValue, periodValue);
+    if (!value) {
+      return "";
+    }
+
+    const [hours, minutes] = value.split(":");
+
+    const date = new Date();
+    date.setHours(Number(hours), Number(minutes), 0, 0);
+    return date.toLocaleTimeString("en-IN", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    });
+  };
+
+  const buildCalendarLink = (dateValue, timeValue) => {
+    if (!dateValue || !timeValue) {
+      return "#";
+    }
+
+    const startDate = new Date(`${dateValue}T${timeValue}:00`);
+    if (Number.isNaN(startDate.getTime())) {
+      return "#";
+    }
+
+    const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
+    const toCalendarStamp = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      const seconds = String(date.getSeconds()).padStart(2, "0");
+      return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+    };
+
+    const params = new URLSearchParams({
+      action: "TEMPLATE",
+      text: "Grand Opening",
+      dates: `${toCalendarStamp(startDate)}/${toCalendarStamp(endDate)}`,
+      details: "H2 House of Health Grand Opening",
+      location: "Jubilee Hills",
+      ctz: "Asia/Kolkata"
+    });
+
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  };
 
   const quotes = [
     { text: "you are the chosen one!", className: "from-center quill-feather", duration: 7200 },
@@ -1239,34 +1326,63 @@ window.addEventListener("load", () => {
     showEventCard();
   });
 
+  const setRsvpPanelState = (isOpen) => {
+    if (!rsvpPanel || !eventImageCard || !rsvpButton) {
+      return;
+    }
+
+    rsvpPanel.classList.toggle("hidden", !isOpen);
+    rsvpPanel.setAttribute("aria-hidden", isOpen ? "false" : "true");
+    rsvpButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    eventImageCard.classList.toggle("show-rsvp", isOpen);
+  };
+
   if (rsvpButton && rsvpPanel && eventImageCard) {
     rsvpButton.addEventListener("click", () => {
       tryStartMusic();
-      rsvpPanel.classList.toggle("hidden");
-      const isHidden = rsvpPanel.classList.contains("hidden");
-      rsvpPanel.setAttribute("aria-hidden", isHidden ? "true" : "false");
-      rsvpButton.setAttribute("aria-expanded", isHidden ? "false" : "true");
-      eventImageCard.classList.toggle("show-rsvp", !isHidden);
+      setRsvpPanelState(rsvpPanel.classList.contains("hidden"));
+    });
+  }
+
+  if (rsvpClose) {
+    rsvpClose.addEventListener("click", () => {
+      setRsvpPanelState(false);
     });
   }
 
   const syncRsvpGuestsField = () => {
-    if (!rsvpAttend || !rsvpGuestsField || !rsvpGuests) {
+    if (!rsvpAttend || !rsvpGuestsField || !rsvpGuests || !rsvpDateField || !rsvpDate || !rsvpTimeField || !rsvpHour || !rsvpMinute || !rsvpPeriod) {
       return;
     }
 
     const isAttending = rsvpAttend.value.toLowerCase() === "yes";
     rsvpGuestsField.classList.toggle("hidden", !isAttending);
+    rsvpDateField.classList.toggle("hidden", !isAttending);
+    rsvpTimeField.classList.toggle("hidden", !isAttending);
     rsvpGuests.required = isAttending;
+    rsvpDate.required = isAttending;
+    rsvpHour.required = isAttending;
+    rsvpMinute.required = isAttending;
+    rsvpPeriod.required = isAttending;
 
     if (!isAttending) {
       rsvpGuests.value = "";
+      rsvpDate.value = "";
+      rsvpHour.value = "";
+      rsvpMinute.value = "";
+      rsvpPeriod.value = "";
     }
   };
 
   if (rsvpAttend) {
     rsvpAttend.addEventListener("change", syncRsvpGuestsField);
     syncRsvpGuestsField();
+  }
+
+  if (rsvpDate) {
+    rsvpDate.addEventListener("change", () => {
+      rsvpDate.blur();
+    });
   }
 
   if (rsvpForm) {
@@ -1290,6 +1406,9 @@ window.addEventListener("load", () => {
 
       const isAttending = rsvpAttend.value.toLowerCase() === "yes";
       const guestCount = isAttending ? rsvpGuests?.value?.trim() || "1" : "0";
+      const selectedDate = isAttending ? formatRsvpDate(rsvpDate?.value) : "";
+      const selectedTime = isAttending ? formatRsvpTime(rsvpHour?.value, rsvpMinute?.value, rsvpPeriod?.value) : "";
+      const selectedTime24 = isAttending ? buildTime24Hour(rsvpHour?.value, rsvpMinute?.value, rsvpPeriod?.value) : "";
 
       const parsedGuestCount = Number.parseInt(guestCount, 10);
       const hasMultipleGuests = Number.isFinite(parsedGuestCount) && parsedGuestCount > 1;
@@ -1305,7 +1424,8 @@ window.addEventListener("load", () => {
             "",
             `Name: ${rsvpName.value.trim()}`,
             `Number of Guests: ${guestCount}`,
-            `Slot: ${slot.date} at ${slot.time}`
+            `Date: ${selectedDate}`,
+            `Time: ${selectedTime}`
           ]
         : [
             "Hello H2 House of Health Team,",
@@ -1313,7 +1433,7 @@ window.addEventListener("load", () => {
             "With sincere regrets, I am unable to attend the Grand Opening.",
             `Name: ${rsvpName.value.trim()}`,
             "Attending: No",
-            `Slot: ${slot.date} at ${slot.time}`,
+            `Event Slot: ${eventSlot.date} at ${eventSlot.time}`,
             "",
             "Sending warm wishes for a wonderful celebration and continued success."
           ];
@@ -1330,20 +1450,23 @@ window.addEventListener("load", () => {
         rsvpSuccess.classList.remove("hidden");
       }
       if (rsvpSuccessTitle) {
-        rsvpSuccessTitle.textContent = isAttending ? "RSVP Confirmed ✅" : "Regret Noted ✅";
+        rsvpSuccessTitle.textContent = isAttending ? "H2 Experience Summoned ✅" : "Response Noted ✅";
       }
       if (rsvpSuccessCopy) {
         rsvpSuccessCopy.textContent = isAttending
-          ? "Your WhatsApp RSVP is ready. Please review and tap send."
-          : "Your WhatsApp regret message is ready. Please review and tap send.";
+          ? "Your WhatsApp experience message is ready. Please review and tap send."
+          : "Your WhatsApp response is ready. Please review and tap send.";
       }
       if (rsvpAddCalendar) {
         rsvpAddCalendar.classList.toggle("hidden", !isAttending);
+        if (isAttending) {
+          rsvpAddCalendar.href = buildCalendarLink(rsvpDate?.value, selectedTime24);
+        }
       }
 
       if (submitButton) {
         submitButton.disabled = false;
-        submitButton.textContent = "Submit RSVP";
+        submitButton.textContent = "Summon My Experience";
       }
     });
   }

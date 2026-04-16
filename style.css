@@ -655,9 +655,10 @@ body.end-active .end-screen {
 
 .event-meta-footer {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(8px, 1.8vw, 16px);
-  align-items: end;
+  align-items: center;
+  justify-items: center;
   transform: translateY(-20px);
 }
 
@@ -671,6 +672,8 @@ body.end-active .end-screen {
 
 .location-detail-line {
   align-items: center;
+  justify-items: center;
+  text-align: center;
 }
 
 .location-map-link {
@@ -766,12 +769,45 @@ body.end-active .end-screen {
   display: none;
 }
 
+.rsvp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
 .rsvp-title {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.95rem;
   color: #8b4326;
-  margin-bottom: 12px;
+  margin-bottom: 0;
+}
+
+.rsvp-close {
+  border: 1px solid rgba(143, 66, 38, 0.3);
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 248, 240, 0.82);
+  color: #8b4326;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.63rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 8px 16px rgba(76, 48, 30, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.rsvp-close:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 250, 244, 0.95);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 10px 18px rgba(76, 48, 30, 0.12);
 }
 
 .rsvp-form {
@@ -807,6 +843,27 @@ body.end-active .end-screen {
   box-shadow:
     inset 0 2px 4px rgba(76, 48, 30, 0.16),
     inset 0 -1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.rsvp-time-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.rsvp-time-picker select {
+  border-radius: 999px;
+  text-align: center;
+  text-align-last: center;
+  appearance: none;
+  min-height: 42px;
+  padding-inline: 14px;
+  background:
+    linear-gradient(180deg, rgba(251, 245, 235, 0.98) 0%, rgba(232, 215, 194, 0.96) 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(76, 48, 30, 0.16),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.7),
+    0 8px 18px rgba(76, 48, 30, 0.12);
 }
 
 .rsvp-submit {
@@ -2101,6 +2158,10 @@ body.opened .tap-open {
 
   .rsvp-form {
     gap: 10px;
+  }
+
+  .rsvp-time-picker {
+    grid-template-columns: 1fr;
   }
 
   .label {
