@@ -18,5 +18,5 @@ class SPAHandler(http.server.SimpleHTTPRequestHandler):
         return super().do_GET()
 
 print(f"Serving at http://localhost:{PORT}")
-print(f"Try: http://localhost:{PORT}/08/01  http://localhost:{PORT}/10/03  etc.")
+print(f"Open: http://localhost:{PORT}/")
 http.server.HTTPServer(("", PORT), SPAHandler).serve_forever()
