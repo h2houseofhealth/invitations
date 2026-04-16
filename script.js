@@ -38,6 +38,7 @@ window.addEventListener("load", () => {
   const eventStage = document.querySelector("#event-stage");
   const eventParticleField = document.querySelector("#event-particle-field");
   const rsvpButton = document.querySelector("#rsvp-button");
+  const rsvpRow = document.querySelector("#rsvp-row");
   const rsvpPanel = document.querySelector("#rsvp-panel");
   const rsvpClose = document.querySelector("#rsvp-close");
   const eventImageCard = document.querySelector(".event-image-card");
@@ -47,7 +48,9 @@ window.addEventListener("load", () => {
   const rsvpGuestsField = document.querySelector("#rsvp-guests-field");
   const rsvpGuests = document.querySelector("#rsvp-guests");
   const rsvpDateField = document.querySelector("#rsvp-date-field");
-  const rsvpDate = document.querySelector("#rsvp-date");
+  const rsvpDay = document.querySelector("#rsvp-day");
+  const rsvpMonth = document.querySelector("#rsvp-month");
+  const rsvpYear = document.querySelector("#rsvp-year");
   const rsvpTimeField = document.querySelector("#rsvp-time-field");
   const rsvpHour = document.querySelector("#rsvp-hour");
   const rsvpMinute = document.querySelector("#rsvp-minute");
@@ -59,15 +62,21 @@ window.addEventListener("load", () => {
   const rsvpError = document.querySelector("#rsvp-error");
   const rsvpWhatsAppNumber = "919000141936";
 
-  const formatRsvpDate = (value) => {
+  const buildDateValue = (dayValue, monthValue, yearValue) => {
+    if (!dayValue || !monthValue || !yearValue) {
+      return "";
+    }
+
+    return `${yearValue}-${monthValue}-${String(dayValue).padStart(2, "0")}`;
+  };
+
+  const formatRsvpDate = (dayValue, monthValue, yearValue) => {
+    const value = buildDateValue(dayValue, monthValue, yearValue);
     if (!value) {
       return "";
     }
 
     const [year, month, day] = value.split("-");
-    if (!year || !month || !day) {
-      return value;
-    }
 
     const date = new Date(Number(year), Number(month) - 1, Number(day));
     return date.toLocaleDateString("en-IN", {
@@ -143,6 +152,29 @@ window.addEventListener("load", () => {
     });
 
     return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  };
+
+  const syncRsvpDays = () => {
+    if (!rsvpDay || !rsvpMonth || !rsvpYear) {
+      return;
+    }
+
+    const currentValue = rsvpDay.value;
+    const month = Number(rsvpMonth.value);
+    const year = Number(rsvpYear.value);
+    const daysInMonth = month && year ? new Date(year, month, 0).getDate() : 31;
+
+    rsvpDay.innerHTML = '<option value="" disabled selected>Day</option>';
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const option = document.createElement("option");
+      option.value = String(day).padStart(2, "0");
+      option.textContent = String(day);
+      rsvpDay.append(option);
+    }
+
+    if (currentValue && Number(currentValue) <= daysInMonth) {
+      rsvpDay.value = currentValue.padStart(2, "0");
+    }
   };
 
   const quotes = [
@@ -1335,11 +1367,14 @@ window.addEventListener("load", () => {
     rsvpPanel.setAttribute("aria-hidden", isOpen ? "false" : "true");
     rsvpButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
     eventImageCard.classList.toggle("show-rsvp", isOpen);
+    if (rsvpRow) {
+      rsvpRow.classList.toggle("hidden", isOpen);
+    }
   };
 
   if (rsvpButton && rsvpPanel && eventImageCard) {
-    rsvpButton.addEventListener("click", () => {
-      tryStartMusic();
+    rsvpButton.addEventListener("click", async () => {
+      await stopMusic(450);
       setRsvpPanelState(rsvpPanel.classList.contains("hidden"));
     });
   }
@@ -1351,7 +1386,7 @@ window.addEventListener("load", () => {
   }
 
   const syncRsvpGuestsField = () => {
-    if (!rsvpAttend || !rsvpGuestsField || !rsvpGuests || !rsvpDateField || !rsvpDate || !rsvpTimeField || !rsvpHour || !rsvpMinute || !rsvpPeriod) {
+    if (!rsvpAttend || !rsvpGuestsField || !rsvpGuests || !rsvpDateField || !rsvpDay || !rsvpMonth || !rsvpYear || !rsvpTimeField || !rsvpHour || !rsvpMinute || !rsvpPeriod) {
       return;
     }
 
@@ -1360,14 +1395,18 @@ window.addEventListener("load", () => {
     rsvpDateField.classList.toggle("hidden", !isAttending);
     rsvpTimeField.classList.toggle("hidden", !isAttending);
     rsvpGuests.required = isAttending;
-    rsvpDate.required = isAttending;
+    rsvpDay.required = isAttending;
+    rsvpMonth.required = isAttending;
+    rsvpYear.required = isAttending;
     rsvpHour.required = isAttending;
     rsvpMinute.required = isAttending;
     rsvpPeriod.required = isAttending;
 
     if (!isAttending) {
       rsvpGuests.value = "";
-      rsvpDate.value = "";
+      rsvpDay.value = "";
+      rsvpMonth.value = "";
+      rsvpYear.value = "";
       rsvpHour.value = "";
       rsvpMinute.value = "";
       rsvpPeriod.value = "";
@@ -1379,11 +1418,15 @@ window.addEventListener("load", () => {
     syncRsvpGuestsField();
   }
 
-  if (rsvpDate) {
-    rsvpDate.addEventListener("change", () => {
-      rsvpDate.blur();
-    });
+  if (rsvpMonth) {
+    rsvpMonth.addEventListener("change", syncRsvpDays);
   }
+
+  if (rsvpYear) {
+    rsvpYear.addEventListener("change", syncRsvpDays);
+  }
+
+  syncRsvpDays();
 
   if (rsvpForm) {
     rsvpForm.addEventListener("submit", async (event) => {
@@ -1406,7 +1449,8 @@ window.addEventListener("load", () => {
 
       const isAttending = rsvpAttend.value.toLowerCase() === "yes";
       const guestCount = isAttending ? rsvpGuests?.value?.trim() || "1" : "0";
-      const selectedDate = isAttending ? formatRsvpDate(rsvpDate?.value) : "";
+      const selectedDate = isAttending ? formatRsvpDate(rsvpDay?.value, rsvpMonth?.value, rsvpYear?.value) : "";
+      const selectedDateValue = isAttending ? buildDateValue(rsvpDay?.value, rsvpMonth?.value, rsvpYear?.value) : "";
       const selectedTime = isAttending ? formatRsvpTime(rsvpHour?.value, rsvpMinute?.value, rsvpPeriod?.value) : "";
       const selectedTime24 = isAttending ? buildTime24Hour(rsvpHour?.value, rsvpMinute?.value, rsvpPeriod?.value) : "";
 
@@ -1460,7 +1504,7 @@ window.addEventListener("load", () => {
       if (rsvpAddCalendar) {
         rsvpAddCalendar.classList.toggle("hidden", !isAttending);
         if (isAttending) {
-          rsvpAddCalendar.href = buildCalendarLink(rsvpDate?.value, selectedTime24);
+          rsvpAddCalendar.href = buildCalendarLink(selectedDateValue, selectedTime24);
         }
       }
 

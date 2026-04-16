@@ -10,6 +10,7 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   touch-action: manipulation;
+  overscroll-behavior-x: none;
 }
 
 :root {
@@ -29,6 +30,7 @@ body {
   font-family: "Helvetica Neue", Arial, sans-serif;
   background: #0b0b0b;
   overflow: hidden;
+  overscroll-behavior-x: none;
   padding:
     calc(12px + env(safe-area-inset-top))
     calc(10px + env(safe-area-inset-right))
@@ -467,10 +469,14 @@ body.end-active .end-screen {
 .event-stage {
   display: none;
   position: relative;
+  width: 100%;
+  max-width: 100%;
   place-items: center;
   padding: 24px;
   overflow: hidden;
+  overflow-x: clip;
   background: #0b0b0b;
+  touch-action: pan-y;
 }
 
 .event-stage::before,
@@ -539,7 +545,11 @@ body.end-active .end-screen {
 .event-card {
   position: relative;
   z-index: 3;
-  width: min(92vw, 720px);
+  width: min(100%, 720px);
+  max-width: 100%;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
   padding: 0;
   border-radius: 0;
   background: none;
@@ -582,7 +592,8 @@ body.end-active .end-screen {
 
 .event-image-card {
   position: relative;
-  width: min(92vw, 680px);
+  width: min(100%, 680px);
+  max-width: 100%;
   margin-inline: auto;
   transform-origin: center;
   animation: scrollCardZoomIn 8.2s cubic-bezier(0.18, 0.8, 0.24, 1) forwards;
@@ -716,13 +727,11 @@ body.end-active .end-screen {
 }
 
 .rsvp-row {
-  position: absolute;
-  left: 50%;
-  bottom: -2%;
-  transform: translateX(-50%);
   display: flex;
   justify-content: center;
-  z-index: 3;
+  width: 100%;
+  margin-top: 6px;
+  max-width: 100%;
 }
 
 .rsvp-button {
@@ -740,6 +749,7 @@ body.end-active .end-screen {
     inset 0 0 0 1px rgba(255, 255, 255, 0.45),
     0 12px 24px rgba(45, 29, 18, 0.22);
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  max-width: 100%;
 }
 
 .rsvp-button:hover {
@@ -845,12 +855,14 @@ body.end-active .end-screen {
     inset 0 -1px 0 rgba(255, 255, 255, 0.7);
 }
 
+.rsvp-date-picker,
 .rsvp-time-picker {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
+.rsvp-date-picker select,
 .rsvp-time-picker select {
   border-radius: 999px;
   text-align: center;
@@ -881,8 +893,7 @@ body.end-active .end-screen {
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
-.event-image-card.show-rsvp .event-image-details,
-.event-image-card.show-rsvp .rsvp-row {
+.event-image-card.show-rsvp .event-image-details {
   opacity: 0;
   pointer-events: none;
 }
@@ -2130,7 +2141,7 @@ body.opened .tap-open {
   }
 
   .event-card {
-    width: min(96vw, 420px);
+    width: min(100%, 420px);
   }
 
   .event-image-details {
@@ -2147,10 +2158,6 @@ body.opened .tap-open {
     transform: translateY(-15px);
   }
 
-  .rsvp-row {
-    bottom: -1%;
-  }
-
   .rsvp-panel {
     inset: 10% 9% 11%;
     padding: 14px 12px;
@@ -2161,6 +2168,10 @@ body.opened .tap-open {
   }
 
   .rsvp-time-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .rsvp-date-picker {
     grid-template-columns: 1fr;
   }
 
@@ -2214,7 +2225,7 @@ body.opened .tap-open {
   }
 
   .event-image-card {
-    width: min(94vw, 390px);
+    width: min(100%, 390px);
   }
 
   .identity-panel {
