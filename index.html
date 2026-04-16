@@ -117,7 +117,6 @@
             <div class="event-image-details">
               <p class="event-detail-line invitation-text"><span class="value">You are cordially invited<br>to the Grand Opening of<br><span class="invite-brand"><img class="invite-brand-logo" src="/h2-black-logo-removebg-preview.png" alt="H2 House of Health" loading="lazy" decoding="async"></span></span></p>
               <div class="event-meta-footer" aria-label="Event details">
-                <p class="event-detail-line"><span class="label">DATE</span><span class="value" id="event-date">8 April 2026</span></p>
                 <p class="event-detail-line location-detail-line">
                   <a class="location-map-link" href="https://www.google.com/maps/place/17°25'19.6%22N+78°24'27.4%22E/@17.422112,78.4050411,17z/data=!3m1!4b1!4m4!3m3!8m2!3d17.422112!4d78.407616!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDMxNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="Open venue location on Google Maps">
                     <img class="location-castle-icon" src="/castle.png" alt="" loading="lazy" decoding="async">
@@ -126,15 +125,17 @@
                   <span class="label">LOCATION</span>
                   <span class="value">Jubilee Hills</span>
                 </p>
-                <p class="event-detail-line"><span class="label">TIME</span><span class="value" id="event-time">10:00 AM</span></p>
               </div>
             </div>
             <div class="rsvp-row">
-              <button class="rsvp-button" id="rsvp-button" type="button" aria-expanded="false">RSVP</button>
+              <button class="rsvp-button" id="rsvp-button" type="button" aria-expanded="false">Summon Your H2 Experience</button>
             </div>
 
             <div class="rsvp-panel hidden" id="rsvp-panel" aria-hidden="true">
-              <h3 class="rsvp-title">RSVP</h3>
+              <div class="rsvp-header">
+                <h3 class="rsvp-title">Summon Your H2 Experience</h3>
+                <button class="rsvp-close" id="rsvp-close" type="button" aria-label="Close booking panel">Close</button>
+              </div>
               <form class="rsvp-form" id="rsvp-form">
                 <label class="rsvp-field">
                   <span>Full Name *</span>
@@ -152,12 +153,56 @@
                   <span>Number of Guests *</span>
                   <input id="rsvp-guests" name="guests" type="number" min="1" max="20" inputmode="numeric">
                 </label>
-                <button class="rsvp-submit" type="submit">Submit RSVP</button>
+                <label class="rsvp-field hidden" id="rsvp-date-field">
+                  <span>Date *</span>
+                  <input id="rsvp-date" name="eventDate" type="date">
+                </label>
+                <label class="rsvp-field hidden" id="rsvp-time-field">
+                  <span>Time *</span>
+                  <div class="rsvp-time-picker" aria-label="Select time">
+                    <select id="rsvp-hour" name="eventHour">
+                      <option value="" disabled selected>Hour</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+                    <select id="rsvp-minute" name="eventMinute">
+                      <option value="" disabled selected>Min</option>
+                      <option value="00">00</option>
+                      <option value="05">05</option>
+                      <option value="10">10</option>
+                      <option value="15">15</option>
+                      <option value="20">20</option>
+                      <option value="25">25</option>
+                      <option value="30">30</option>
+                      <option value="35">35</option>
+                      <option value="40">40</option>
+                      <option value="45">45</option>
+                      <option value="50">50</option>
+                      <option value="55">55</option>
+                    </select>
+                    <select id="rsvp-period" name="eventPeriod">
+                      <option value="" disabled selected>AM/PM</option>
+                      <option value="AM">AM</option>
+                      <option value="PM">PM</option>
+                    </select>
+                  </div>
+                </label>
+                <button class="rsvp-submit" type="submit">Summon My Experience</button>
               </form>
 
               <div class="rsvp-success hidden" id="rsvp-success" aria-live="polite">
-                <p class="rsvp-success-title" id="rsvp-success-title">RSVP Ready ✅</p>
-                <p class="rsvp-success-copy" id="rsvp-success-copy">Your message is prepared in WhatsApp. Please review and tap send.</p>
+                <p class="rsvp-success-title" id="rsvp-success-title">Experience Request Ready ✅</p>
+                <p class="rsvp-success-copy" id="rsvp-success-copy">Your WhatsApp experience message is prepared. Please review and tap send.</p>
                 <div class="rsvp-actions">
                   <a class="rsvp-action" id="rsvp-add-calendar" href="#" target="_blank" rel="noopener">📅 Add to Calendar</a>
                 </div>
