@@ -61,6 +61,8 @@ window.addEventListener("load", () => {
   const rsvpAddCalendar = document.querySelector("#rsvp-add-calendar");
   const rsvpError = document.querySelector("#rsvp-error");
   const rsvpWhatsAppNumber = "919000141936";
+  const rsvpWindowStart = new Date(2026, 3, 22);
+  const rsvpWindowEnd = new Date(2026, 4, 15, 23, 59, 59, 999);
 
   const buildDateValue = (dayValue, monthValue, yearValue) => {
     if (!dayValue || !monthValue || !yearValue) {
@@ -68,6 +70,17 @@ window.addEventListener("load", () => {
     }
 
     return `${yearValue}-${monthValue}-${String(dayValue).padStart(2, "0")}`;
+  };
+
+  const isAllowedDate = (dayValue, monthValue, yearValue) => {
+    const value = buildDateValue(dayValue, monthValue, yearValue);
+    if (!value) {
+      return false;
+    }
+
+    const [year, month, day] = value.split("-");
+    const selectedDate = new Date(Number(year), Number(month) - 1, Number(day));
+    return selectedDate >= rsvpWindowStart && selectedDate <= rsvpWindowEnd;
   };
 
   const formatRsvpDate = (dayValue, monthValue, yearValue) => {
@@ -99,6 +112,13 @@ window.addEventListener("load", () => {
     let hours24 = hour % 12;
     if (periodValue === "PM") {
       hours24 += 12;
+    }
+
+    const totalMinutes = (hours24 * 60) + Number(minuteValue);
+    const minAllowedMinutes = 11 * 60;
+    const maxAllowedMinutes = 19 * 60;
+    if (totalMinutes < minAllowedMinutes || totalMinutes > maxAllowedMinutes) {
+      return "";
     }
 
     return `${String(hours24).padStart(2, "0")}:${minuteValue}`;
@@ -162,18 +182,74 @@ window.addEventListener("load", () => {
     const currentValue = rsvpDay.value;
     const month = Number(rsvpMonth.value);
     const year = Number(rsvpYear.value);
-    const daysInMonth = month && year ? new Date(year, month, 0).getDate() : 31;
+    let firstDay = 1;
+    let lastDay = month && year ? new Date(year, month, 0).getDate() : 31;
 
-    rsvpDay.innerHTML = '<option value="" disabled selected>Day</option>';
-    for (let day = 1; day <= daysInMonth; day += 1) {
+    if (year === 2026 && month === 4) {
+      firstDay = 22;
+    }
+
+    if (year === 2026 && month === 5) {
+      lastDay = 15;
+    }
+
+    rsvpDay.innerHTML = '<option value="" disabled selected>Date</option>';
+    for (let day = firstDay; day <= lastDay; day += 1) {
       const option = document.createElement("option");
       option.value = String(day).padStart(2, "0");
       option.textContent = String(day);
       rsvpDay.append(option);
     }
 
-    if (currentValue && Number(currentValue) <= daysInMonth) {
+    if (currentValue && Number(currentValue) >= firstDay && Number(currentValue) <= lastDay) {
       rsvpDay.value = currentValue.padStart(2, "0");
+    }
+  };
+
+  const syncRsvpPeriods = () => {
+    if (!rsvpHour || !rsvpPeriod) {
+      return;
+    }
+
+    const currentValue = rsvpPeriod.value;
+    const hour = Number(rsvpHour.value);
+    const allowedPeriods = !hour ? ["AM", "PM"] : hour === 11 ? ["AM"] : ["PM"];
+
+    rsvpPeriod.innerHTML = '<option value="" disabled selected>AM/PM</option>';
+    allowedPeriods.forEach((period) => {
+      const option = document.createElement("option");
+      option.value = period;
+      option.textContent = period;
+      rsvpPeriod.append(option);
+    });
+
+    if (allowedPeriods.includes(currentValue)) {
+      rsvpPeriod.value = currentValue;
+    }
+  };
+
+  const syncRsvpMinutes = () => {
+    if (!rsvpHour || !rsvpMinute || !rsvpPeriod) {
+      return;
+    }
+
+    const currentValue = rsvpMinute.value;
+    const hour = Number(rsvpHour.value);
+    const period = rsvpPeriod.value;
+    const minuteOptions = hour === 7 && period === "PM"
+      ? ["00"]
+      : ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
+
+    rsvpMinute.innerHTML = '<option value="" disabled selected>Min</option>';
+    minuteOptions.forEach((minute) => {
+      const option = document.createElement("option");
+      option.value = minute;
+      option.textContent = minute;
+      rsvpMinute.append(option);
+    });
+
+    if (minuteOptions.includes(currentValue)) {
+      rsvpMinute.value = currentValue;
     }
   };
 
@@ -1410,6 +1486,8 @@ window.addEventListener("load", () => {
       rsvpHour.value = "";
       rsvpMinute.value = "";
       rsvpPeriod.value = "";
+      syncRsvpPeriods();
+      syncRsvpMinutes();
     }
   };
 
@@ -1427,6 +1505,20 @@ window.addEventListener("load", () => {
   }
 
   syncRsvpDays();
+
+  if (rsvpHour) {
+    rsvpHour.addEventListener("change", () => {
+      syncRsvpPeriods();
+      syncRsvpMinutes();
+    });
+  }
+
+  if (rsvpPeriod) {
+    rsvpPeriod.addEventListener("change", syncRsvpMinutes);
+  }
+
+  syncRsvpPeriods();
+  syncRsvpMinutes();
 
   if (rsvpForm) {
     rsvpForm.addEventListener("submit", async (event) => {
