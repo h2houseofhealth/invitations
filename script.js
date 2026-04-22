@@ -236,7 +236,7 @@ window.addEventListener("load", () => {
     const currentValue = rsvpMinute.value;
     const hour = Number(rsvpHour.value);
     const period = rsvpPeriod.value;
-    const minuteOptions = hour === 7 && period === "PM"
+    const minuteOptions = hour === 7
       ? ["00"]
       : ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
 
